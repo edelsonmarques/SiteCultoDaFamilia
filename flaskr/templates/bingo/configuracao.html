@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% extends 'base.html' %}
+    {% block header %}
+        <h1>{% block title %}Configurações{% endblock %}</h1>
+    {% endblock %}
+</head>
+<body>
+    {% block content %}
+        <section class="content_header_config">
+            <header>
+                <h1>Configuração API</h1>
+            </header>
+        </section>
+        <form method="post">
+            <label for="confAPI">API configurada: {{ bolas['bolasDoBingoJson']['ConfAPI'][0] }}</label>
+            <input name="confAPI" id="confAPI" type="text" value="{{ request.form['confAPI'] }}" required>
+            <input type="submit" value="Save">
+        </form>
+        <br>
+        <section class="content_header_config">
+            <header>
+                <h1>Mês do sorteio</h1>
+            </header>
+        </section>
+        <form method="post">
+            <label>Escolha o mês que queira realizar o sorteio: {{ bolas['bolasDoBingoJson']['MesSorteio'] }}</label>
+
+            <select name="carregar">
+                {% for mes in bolas['bolasDoBingoJson']['ListaMesSorteio'] %}
+                    <option>{{mes}}</option>
+                {% endfor %}
+            </select>
+<!--            <input name="carregar" id="carregar" type="text" value="{{ request.form['carregar'] }}">-->
+            <input name="carregar" type="submit" value="Carregar">
+        </form>
+        <br>
+        <section class="content_header_config">
+            <header>
+                <h1>Dinâmica de Casais</h1>
+            </header>
+        </section>
+        <form method="post">
+            <label for="dinamica">Cartão fidelidade para a dinâmica do grupo: [Congregação|N° cartão fidelidade]</label>
+            <label >Quantidade de cartões cadastrados: {{ bolas['bolasDoBingoJson']['ListaDinamica'].__len__() }}</label>
+            <input name="dinamica" id="dinamica" type="text" value="{{ request.form['dinamica'] }}" required>
+            <input type="submit" value="Inserir">
+        </form>
+        <br>
+        <section class="content_header_config">
+            <header>
+                <h1>Ensaio de Casais
+                </h1>
+            </header>
+        </section>
+        <form method="post">
+                <p> Dia de ensaio?
+                    {% if bolas['bolasDoBingoJson']['HabilitarEnsaio'][0] == 'true' %}
+                        <input type="submit" name="habilitarEnsaio" value="Desabilitar">
+                    {% else %}
+                        <input type="submit" name="habilitarEnsaio" value="Habilitar">
+                    {% endif %}
+                </p>
+        </form>
+        <form method="post">
+                {% if bolas['bolasDoBingoJson']['HabilitarEnsaio'][0] == 'true' %}
+                    <label>N° cartão fidelidade para inserir na lista de sorteio do ensaio: [Congregação|N° cartão fidelidade]</label>
+                    <label for="ensaio">Quantidade de cartões cadastrados: {{ bolas['bolasDoBingoJson']['ListaEnsaio'].__len__() }}</label>
+                    <input name="ensaio" id="ensaio" type="text" value="{{ request.form['ensaio'] }}" required>
+                    <input type="submit" value="Inserir">
+                {% endif %}
+        </form>
+        <br>
+        <form method="post">
+            <input name="cancel" type="submit" value="Voltar">
+        </form>
+    {% endblock %}
+</body>
+</html>
