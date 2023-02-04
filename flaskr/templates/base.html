@@ -3,32 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <title>
-        {% block title %}{% endblock %} - Flaskr
+        {% block title %}{% endblock %}
     </title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reset.css') }}">
+<!--    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
 </head>
 <body class="corpo_base">
-    <nav>
-        <h1>Flaskr</h1>
-        <ul>
-            {% if g.user %}
-                <li>
-                    <span>{{ g.user['username'] }}</span>
-                </li>
-                <li>
-                    <a href="{{ url_for('auth.logout') }}">Log Out</a>
-                </li>
-            {% else %}
-                <li>
-                    <a href="{{ url_for('auth.register') }}">Register</a>
-                </li>
-                <li>
-                    <a href="{{ url_for('auth.login') }}">Log In</a>
-                </li>
-            {% endif %}
-        </ul>
-    </nav>
-    <section>
+    <header class="cabecalho">
+        <a>
+            <p class="logo">Culto de Casais</p>
+        </a>
+
+        <nav>
+            <ul class="menu">
+                {% if g.user %}
+                    <li><span>{{ g.user['username'] }}</span></li>
+                    <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('auth.register') }}">Register</a></li>
+                    <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <section class="corpo_content">
         <section class="content_header">
             <header>
                 {% block header %}{% endblock %}

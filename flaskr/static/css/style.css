@@ -242,6 +242,7 @@ input[type=submit] {
     align-items: center;
     justify-content: center;
 }
+
 .tela_principal .sorteado{
     font-size:80px;
     word-wrap:break-word;
