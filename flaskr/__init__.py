@@ -33,13 +33,13 @@ def create_app(test_config=None):
     from flaskr import db
     db.init_app(app)
 
-    import auth
+    from flaskr import auth
     app.register_blueprint(auth.bp)
 
     # from . import blog
     # app.register_blueprint(blog.bp)
 
-    import bingo
+    from flaskr import bingo
     app.register_blueprint(bingo.bp)
     app.add_url_rule('/', endpoint='index')
 
