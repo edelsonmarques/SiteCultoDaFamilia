@@ -150,3 +150,8 @@ print()
 #     for nome in dados[usuario]:
 #         print(nome)
 # print()
+
+if __name__ == '__main__':
+    from pathlib import Path
+    file_path = Path(__file__).parts
+    print(file_path)

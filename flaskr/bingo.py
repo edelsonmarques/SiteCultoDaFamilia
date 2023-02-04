@@ -1,8 +1,8 @@
 from flask import (
     Blueprint, g, redirect, render_template, request, url_for
 )
-from .db import get_db
-from .auth import login_required
+from db import get_db
+from auth import login_required
 import random
 import ast
 import requests
@@ -10,7 +10,7 @@ import pandas as pd
 import json
 from datetime import datetime, date
 import platform
-
+from pathlib import Path
 
 bp = Blueprint('bingo', __name__)
 Cartelas = dict()
@@ -60,16 +60,9 @@ def index(imagem: str = 'images/globo.gif'):
         listaGeral = bolas[0]['bolasDoBingoJson']['ListaGeral']
         listaDinamica = bolas[0]['bolasDoBingoJson']['ListaDinamica']
         listaNiverCasamento = bolas[0]['bolasDoBingoJson']['ListaNiverCasamento']
-        confAPI = bolas[0]['bolasDoBingoJson']['ConfAPI']
-        listaVisitante = bolas[0]['bolasDoBingoJson']['ListaVisitante']
-        listaMenor = bolas[0]['bolasDoBingoJson']['ListaMenor']
         listaEnsaio = bolas[0]['bolasDoBingoJson']['ListaEnsaio']
-        mes = bolas[0]['bolasDoBingoJson']['MesSorteio']
         nomeSorteado = bolas[0]['bolasDoBingoJson']['NomeSorteado']
         proximo = bolas[0]['bolasDoBingoJson']['Proximo']
-        ensaio = bolas[0]['bolasDoBingoJson']['Ensaio']
-        habilitarEnsaio = bolas[0]['bolasDoBingoJson']['HabilitarEnsaio']
-        opcao = ['adultos/casados']
         if len(listaGeral) != 0:
             nomeSorteado = [random.choice(listaGeral)]
             db = get_db()
@@ -84,21 +77,27 @@ def index(imagem: str = 'images/globo.gif'):
                 listaNiverCasamento.remove(nomeSorteado[0])
             except:
                 pass
+            try:
+                listaEnsaio.remove(nomeSorteado[0])
+            except:
+                pass
 
         jsonMontado = {
-            'ConfAPI': confAPI,
+            'ConfAPI': bolas[0]['bolasDoBingoJson']['ConfAPI'],
             'ListaGeral': listaGeral,
-            'ListaVisitante': listaVisitante,
-            'ListaMenor': listaMenor,
+            'ListaVisitante': bolas[0]['bolasDoBingoJson']['ListaVisitante'],
+            'ListaMenor': bolas[0]['bolasDoBingoJson']['ListaMenor'],
             'ListaDinamica': listaDinamica,
             'ListaNiverCasamento': listaNiverCasamento,
             'ListaEnsaio': listaEnsaio,
-            'MesSorteio': mes,
+            'MesSorteio': bolas[0]['bolasDoBingoJson']['MesSorteio'],
+            'ListaMesSorteio': bolas[0]['bolasDoBingoJson']['ListaMesSorteio'],
+            'NomeSorteadoAnterior': bolas[0]['bolasDoBingoJson']['NomeSorteado'],
             'NomeSorteado': nomeSorteado,
-            'Opcao': opcao,
+            'Opcao': ['adultos/casados'],
             'Proximo': proximo,
-            'Ensaio': ensaio,
-            'HabilitarEnsaio': habilitarEnsaio
+            'Ensaio': bolas[0]['bolasDoBingoJson']['Ensaio'],
+            'HabilitarEnsaio': bolas[0]['bolasDoBingoJson']['HabilitarEnsaio']
         }
 
         id = bolas[0]['id']
@@ -114,19 +113,9 @@ def index(imagem: str = 'images/globo.gif'):
 
     if request.method == 'POST' and 'menores' in request.form:
         # print('Bolas do Bingo:', BolasDoBingo)
-        listaGeral = bolas[0]['bolasDoBingoJson']['ListaGeral']
-        listaDinamica = bolas[0]['bolasDoBingoJson']['ListaDinamica']
-        listaNiverCasamento = bolas[0]['bolasDoBingoJson']['ListaNiverCasamento']
-        confAPI = bolas[0]['bolasDoBingoJson']['ConfAPI']
-        listaVisitante = bolas[0]['bolasDoBingoJson']['ListaVisitante']
         listaMenor = bolas[0]['bolasDoBingoJson']['ListaMenor']
-        listaEnsaio = bolas[0]['bolasDoBingoJson']['ListaEnsaio']
-        mes = bolas[0]['bolasDoBingoJson']['MesSorteio']
         nomeSorteado = bolas[0]['bolasDoBingoJson']['NomeSorteado']
         proximo = bolas[0]['bolasDoBingoJson']['Proximo']
-        ensaio = bolas[0]['bolasDoBingoJson']['Ensaio']
-        habilitarEnsaio = bolas[0]['bolasDoBingoJson']['HabilitarEnsaio']
-        opcao = ['menores']
         if len(listaMenor) != 0:
             nomeSorteado = [random.choice(listaMenor)]
             db = get_db()
@@ -135,19 +124,21 @@ def index(imagem: str = 'images/globo.gif'):
             proximo = ['True']
 
         jsonMontado = {
-            'ConfAPI': confAPI,
-            'ListaGeral': listaGeral,
-            'ListaVisitante': listaVisitante,
+            'ConfAPI': bolas[0]['bolasDoBingoJson']['ConfAPI'],
+            'ListaGeral': bolas[0]['bolasDoBingoJson']['ListaGeral'],
+            'ListaVisitante': bolas[0]['bolasDoBingoJson']['ListaVisitante'],
             'ListaMenor': listaMenor,
-            'ListaDinamica': listaDinamica,
-            'ListaNiverCasamento': listaNiverCasamento,
-            'ListaEnsaio': listaEnsaio,
-            'MesSorteio': mes,
+            'ListaDinamica': bolas[0]['bolasDoBingoJson']['ListaDinamica'],
+            'ListaNiverCasamento': bolas[0]['bolasDoBingoJson']['ListaNiverCasamento'],
+            'ListaEnsaio': bolas[0]['bolasDoBingoJson']['ListaEnsaio'],
+            'MesSorteio': bolas[0]['bolasDoBingoJson']['MesSorteio'],
+            'ListaMesSorteio': bolas[0]['bolasDoBingoJson']['ListaMesSorteio'],
+            'NomeSorteadoAnterior': bolas[0]['bolasDoBingoJson']['NomeSorteado'],
             'NomeSorteado': nomeSorteado,
-            'Opcao': opcao,
+            'Opcao': ['menores'],
             'Proximo': proximo,
-            'Ensaio': ensaio,
-            'HabilitarEnsaio': habilitarEnsaio
+            'Ensaio': bolas[0]['bolasDoBingoJson']['Ensaio'],
+            'HabilitarEnsaio': bolas[0]['bolasDoBingoJson']['HabilitarEnsaio']
         }
 
         id = bolas[0]['id']
@@ -163,19 +154,9 @@ def index(imagem: str = 'images/globo.gif'):
 
     if request.method == 'POST' and 'visitantes' in request.form:
         # print('Bolas do Bingo:', BolasDoBingo)
-        listaGeral = bolas[0]['bolasDoBingoJson']['ListaGeral']
-        listaDinamica = bolas[0]['bolasDoBingoJson']['ListaDinamica']
-        listaNiverCasamento = bolas[0]['bolasDoBingoJson']['ListaNiverCasamento']
-        confAPI = bolas[0]['bolasDoBingoJson']['ConfAPI']
         listaVisitante = bolas[0]['bolasDoBingoJson']['ListaVisitante']
-        listaMenor = bolas[0]['bolasDoBingoJson']['ListaMenor']
-        listaEnsaio = bolas[0]['bolasDoBingoJson']['ListaEnsaio']
-        mes = bolas[0]['bolasDoBingoJson']['MesSorteio']
         nomeSorteado = bolas[0]['bolasDoBingoJson']['NomeSorteado']
         proximo = bolas[0]['bolasDoBingoJson']['Proximo']
-        ensaio = bolas[0]['bolasDoBingoJson']['Ensaio']
-        habilitarEnsaio = bolas[0]['bolasDoBingoJson']['HabilitarEnsaio']
-        opcao = ['visitantes']
         if len(listaVisitante) != 0:
             nomeSorteado = [random.choice(listaVisitante)]
             db = get_db()
@@ -184,19 +165,21 @@ def index(imagem: str = 'images/globo.gif'):
             proximo = ['True']
 
         jsonMontado = {
-            'ConfAPI': confAPI,
-            'ListaGeral': listaGeral,
+            'ConfAPI': bolas[0]['bolasDoBingoJson']['ConfAPI'],
+            'ListaGeral': bolas[0]['bolasDoBingoJson']['ListaGeral'],
             'ListaVisitante': listaVisitante,
-            'ListaMenor': listaMenor,
-            'ListaDinamica': listaDinamica,
-            'ListaNiverCasamento': listaNiverCasamento,
-            'ListaEnsaio': listaEnsaio,
-            'MesSorteio': mes,
+            'ListaMenor': bolas[0]['bolasDoBingoJson']['ListaMenor'],
+            'ListaDinamica': bolas[0]['bolasDoBingoJson']['ListaDinamica'],
+            'ListaNiverCasamento': bolas[0]['bolasDoBingoJson']['ListaNiverCasamento'],
+            'ListaEnsaio': bolas[0]['bolasDoBingoJson']['ListaEnsaio'],
+            'MesSorteio': bolas[0]['bolasDoBingoJson']['MesSorteio'],
+            'ListaMesSorteio': bolas[0]['bolasDoBingoJson']['ListaMesSorteio'],
+            'NomeSorteadoAnterior': bolas[0]['bolasDoBingoJson']['NomeSorteado'],
             'NomeSorteado': nomeSorteado,
-            'Opcao': opcao,
+            'Opcao': ['visitantes'],
             'Proximo': proximo,
-            'Ensaio': ensaio,
-            'HabilitarEnsaio': habilitarEnsaio
+            'Ensaio': bolas[0]['bolasDoBingoJson']['Ensaio'],
+            'HabilitarEnsaio': bolas[0]['bolasDoBingoJson']['HabilitarEnsaio']
         }
 
         id = bolas[0]['id']
@@ -215,16 +198,9 @@ def index(imagem: str = 'images/globo.gif'):
         listaGeral = bolas[0]['bolasDoBingoJson']['ListaGeral']
         listaDinamica = bolas[0]['bolasDoBingoJson']['ListaDinamica']
         listaNiverCasamento = bolas[0]['bolasDoBingoJson']['ListaNiverCasamento']
-        confAPI = bolas[0]['bolasDoBingoJson']['ConfAPI']
-        listaVisitante = bolas[0]['bolasDoBingoJson']['ListaVisitante']
-        listaMenor = bolas[0]['bolasDoBingoJson']['ListaMenor']
         listaEnsaio = bolas[0]['bolasDoBingoJson']['ListaEnsaio']
-        mes = bolas[0]['bolasDoBingoJson']['MesSorteio']
         nomeSorteado = bolas[0]['bolasDoBingoJson']['NomeSorteado']
         proximo = bolas[0]['bolasDoBingoJson']['Proximo']
-        ensaio = bolas[0]['bolasDoBingoJson']['Ensaio']
-        habilitarEnsaio = bolas[0]['bolasDoBingoJson']['HabilitarEnsaio']
-        opcao = ['aniversario']
         if len(listaNiverCasamento) != 0:
             nomeSorteado = [random.choice(listaNiverCasamento)]
             db = get_db()
@@ -239,21 +215,27 @@ def index(imagem: str = 'images/globo.gif'):
                 listaGeral.remove(nomeSorteado[0])
             except:
                 pass
+            try:
+                listaEnsaio.remove(nomeSorteado[0])
+            except:
+                pass
 
         jsonMontado = {
-            'ConfAPI': confAPI,
+            'ConfAPI': bolas[0]['bolasDoBingoJson']['ConfAPI'],
             'ListaGeral': listaGeral,
-            'ListaVisitante': listaVisitante,
-            'ListaMenor': listaMenor,
+            'ListaVisitante': bolas[0]['bolasDoBingoJson']['ListaVisitante'],
+            'ListaMenor': bolas[0]['bolasDoBingoJson']['ListaMenor'],
             'ListaDinamica': listaDinamica,
             'ListaNiverCasamento': listaNiverCasamento,
             'ListaEnsaio': listaEnsaio,
-            'MesSorteio': mes,
+            'MesSorteio': bolas[0]['bolasDoBingoJson']['MesSorteio'],
+            'ListaMesSorteio': bolas[0]['bolasDoBingoJson']['ListaMesSorteio'],
+            'NomeSorteadoAnterior': bolas[0]['bolasDoBingoJson']['NomeSorteado'],
             'NomeSorteado': nomeSorteado,
-            'Opcao': opcao,
+            'Opcao': ['aniversario'],
             'Proximo': proximo,
-            'Ensaio': ensaio,
-            'HabilitarEnsaio': habilitarEnsaio
+            'Ensaio': bolas[0]['bolasDoBingoJson']['Ensaio'],
+            'HabilitarEnsaio': bolas[0]['bolasDoBingoJson']['HabilitarEnsaio']
         }
 
         id = bolas[0]['id']
@@ -272,16 +254,9 @@ def index(imagem: str = 'images/globo.gif'):
         listaGeral = bolas[0]['bolasDoBingoJson']['ListaGeral']
         listaDinamica = bolas[0]['bolasDoBingoJson']['ListaDinamica']
         listaNiverCasamento = bolas[0]['bolasDoBingoJson']['ListaNiverCasamento']
-        confAPI = bolas[0]['bolasDoBingoJson']['ConfAPI']
-        listaVisitante = bolas[0]['bolasDoBingoJson']['ListaVisitante']
-        listaMenor = bolas[0]['bolasDoBingoJson']['ListaMenor']
         listaEnsaio = bolas[0]['bolasDoBingoJson']['ListaEnsaio']
-        mes = bolas[0]['bolasDoBingoJson']['MesSorteio']
         nomeSorteado = bolas[0]['bolasDoBingoJson']['NomeSorteado']
         proximo = bolas[0]['bolasDoBingoJson']['Proximo']
-        ensaio = bolas[0]['bolasDoBingoJson']['Ensaio']
-        habilitarEnsaio = bolas[0]['bolasDoBingoJson']['HabilitarEnsaio']
-        opcao = ['dinamica']
         if len(listaDinamica) != 0:
             nomeSorteado = [random.choice(listaDinamica)]
             db = get_db()
@@ -296,21 +271,27 @@ def index(imagem: str = 'images/globo.gif'):
                 listaGeral.remove(nomeSorteado[0])
             except:
                 pass
+            try:
+                listaEnsaio.remove(nomeSorteado[0])
+            except:
+                pass
 
         jsonMontado = {
-            'ConfAPI': confAPI,
+            'ConfAPI': bolas[0]['bolasDoBingoJson']['ConfAPI'],
             'ListaGeral': listaGeral,
-            'ListaVisitante': listaVisitante,
-            'ListaMenor': listaMenor,
+            'ListaVisitante': bolas[0]['bolasDoBingoJson']['ListaVisitante'],
+            'ListaMenor': bolas[0]['bolasDoBingoJson']['ListaMenor'],
             'ListaDinamica': listaDinamica,
             'ListaNiverCasamento': listaNiverCasamento,
             'ListaEnsaio': listaEnsaio,
-            'MesSorteio': mes,
+            'MesSorteio': bolas[0]['bolasDoBingoJson']['MesSorteio'],
+            'ListaMesSorteio': bolas[0]['bolasDoBingoJson']['ListaMesSorteio'],
+            'NomeSorteadoAnterior': bolas[0]['bolasDoBingoJson']['NomeSorteado'],
             'NomeSorteado': nomeSorteado,
-            'Opcao': opcao,
+            'Opcao': ['dinamica'],
             'Proximo': proximo,
-            'Ensaio': ensaio,
-            'HabilitarEnsaio': habilitarEnsaio
+            'Ensaio': bolas[0]['bolasDoBingoJson']['Ensaio'],
+            'HabilitarEnsaio': bolas[0]['bolasDoBingoJson']['HabilitarEnsaio']
         }
 
         id = bolas[0]['id']
@@ -329,16 +310,9 @@ def index(imagem: str = 'images/globo.gif'):
         listaGeral = bolas[0]['bolasDoBingoJson']['ListaGeral']
         listaDinamica = bolas[0]['bolasDoBingoJson']['ListaDinamica']
         listaNiverCasamento = bolas[0]['bolasDoBingoJson']['ListaNiverCasamento']
-        confAPI = bolas[0]['bolasDoBingoJson']['ConfAPI']
-        listaVisitante = bolas[0]['bolasDoBingoJson']['ListaVisitante']
-        listaMenor = bolas[0]['bolasDoBingoJson']['ListaMenor']
         listaEnsaio = bolas[0]['bolasDoBingoJson']['ListaEnsaio']
-        mes = bolas[0]['bolasDoBingoJson']['MesSorteio']
         nomeSorteado = bolas[0]['bolasDoBingoJson']['NomeSorteado']
         proximo = bolas[0]['bolasDoBingoJson']['Proximo']
-        ensaio = bolas[0]['bolasDoBingoJson']['Ensaio']
-        habilitarEnsaio = bolas[0]['bolasDoBingoJson']['HabilitarEnsaio']
-        opcao = ['ensaio']
         if len(listaEnsaio) != 0:
             nomeSorteado = [random.choice(listaEnsaio)]
             db = get_db()
@@ -359,19 +333,21 @@ def index(imagem: str = 'images/globo.gif'):
                 pass
 
         jsonMontado = {
-            'ConfAPI': confAPI,
+            'ConfAPI': bolas[0]['bolasDoBingoJson']['ConfAPI'],
             'ListaGeral': listaGeral,
-            'ListaVisitante': listaVisitante,
-            'ListaMenor': listaMenor,
+            'ListaVisitante': bolas[0]['bolasDoBingoJson']['ListaVisitante'],
+            'ListaMenor': bolas[0]['bolasDoBingoJson']['ListaMenor'],
             'ListaDinamica': listaDinamica,
             'ListaNiverCasamento': listaNiverCasamento,
             'ListaEnsaio': listaEnsaio,
-            'MesSorteio': mes,
+            'MesSorteio': bolas[0]['bolasDoBingoJson']['MesSorteio'],
+            'ListaMesSorteio': bolas[0]['bolasDoBingoJson']['ListaMesSorteio'],
+            'NomeSorteadoAnterior': bolas[0]['bolasDoBingoJson']['NomeSorteado'],
             'NomeSorteado': nomeSorteado,
-            'Opcao': opcao,
+            'Opcao': ['ensaio'],
             'Proximo': proximo,
-            'Ensaio': ensaio,
-            'HabilitarEnsaio': habilitarEnsaio
+            'Ensaio': bolas[0]['bolasDoBingoJson']['Ensaio'],
+            'HabilitarEnsaio': bolas[0]['bolasDoBingoJson']['HabilitarEnsaio']
         }
 
         id = bolas[0]['id']
@@ -390,17 +366,9 @@ def index(imagem: str = 'images/globo.gif'):
         listaGeral = bolas[0]['bolasDoBingoJson']['ListaGeral']
         listaDinamica = bolas[0]['bolasDoBingoJson']['ListaDinamica']
         listaNiverCasamento = bolas[0]['bolasDoBingoJson']['ListaNiverCasamento']
-        confAPI = bolas[0]['bolasDoBingoJson']['ConfAPI']
-        listaVisitante = bolas[0]['bolasDoBingoJson']['ListaVisitante']
-        listaMenor = bolas[0]['bolasDoBingoJson']['ListaMenor']
         listaEnsaio = bolas[0]['bolasDoBingoJson']['ListaEnsaio']
-        mes = bolas[0]['bolasDoBingoJson']['MesSorteio']
         nomeSorteado = bolas[0]['bolasDoBingoJson']['NomeSorteado']
         opcao = bolas[0]['bolasDoBingoJson']['Opcao']
-        ensaio = bolas[0]['bolasDoBingoJson']['Ensaio']
-        habilitarEnsaio = bolas[0]['bolasDoBingoJson']['HabilitarEnsaio']
-        db = get_db()
-
         if opcao[0] in ['adultos/casados', 'dinamica', 'aniversario', 'ensaio']:
             # Remove o ganhador
 
@@ -429,22 +397,24 @@ def index(imagem: str = 'images/globo.gif'):
                 listaDinamica = removerPessoa(listaDinamica)
             except:
                 pass
-        proximo = ['']
 
+        db = get_db()
         jsonMontado = {
-            'ConfAPI': confAPI,
+            'ConfAPI': bolas[0]['bolasDoBingoJson']['ConfAPI'],
             'ListaGeral': listaGeral,
-            'ListaVisitante': listaVisitante,
-            'ListaMenor': listaMenor,
+            'ListaVisitante': bolas[0]['bolasDoBingoJson']['ListaVisitante'],
+            'ListaMenor': bolas[0]['bolasDoBingoJson']['ListaMenor'],
             'ListaDinamica': listaDinamica,
             'ListaNiverCasamento': listaNiverCasamento,
             'ListaEnsaio': listaEnsaio,
-            'MesSorteio': mes,
+            'MesSorteio': bolas[0]['bolasDoBingoJson']['MesSorteio'],
+            'ListaMesSorteio': bolas[0]['bolasDoBingoJson']['ListaMesSorteio'],
+            'NomeSorteadoAnterior': bolas[0]['bolasDoBingoJson']['NomeSorteadoAnterior'],
             'NomeSorteado': nomeSorteado,
             'Opcao': opcao,
-            'Proximo': proximo,
-            'Ensaio': ensaio,
-            'HabilitarEnsaio': habilitarEnsaio
+            'Proximo': [''],
+            'Ensaio': bolas[0]['bolasDoBingoJson']['Ensaio'],
+            'HabilitarEnsaio': bolas[0]['bolasDoBingoJson']['HabilitarEnsaio']
         }
 
         id = bolas[0]['id']
@@ -460,35 +430,23 @@ def index(imagem: str = 'images/globo.gif'):
 
     if request.method == 'POST' and 'nao' in request.form:
         # print('Bolas do Bingo:', BolasDoBingo)
-        listaGeral = bolas[0]['bolasDoBingoJson']['ListaGeral']
-        listaDinamica = bolas[0]['bolasDoBingoJson']['ListaDinamica']
-        listaNiverCasamento = bolas[0]['bolasDoBingoJson']['ListaNiverCasamento']
-        confAPI = bolas[0]['bolasDoBingoJson']['ConfAPI']
-        listaVisitante = bolas[0]['bolasDoBingoJson']['ListaVisitante']
-        listaMenor = bolas[0]['bolasDoBingoJson']['ListaMenor']
-        listaEnsaio = bolas[0]['bolasDoBingoJson']['ListaEnsaio']
-        mes = bolas[0]['bolasDoBingoJson']['MesSorteio']
-        nomeSorteado = bolas[0]['bolasDoBingoJson']['NomeSorteado']
-        proximo = ['']
-        opcao = bolas[0]['bolasDoBingoJson']['Opcao']
-        ensaio = bolas[0]['bolasDoBingoJson']['Ensaio']
-        habilitarEnsaio = bolas[0]['bolasDoBingoJson']['HabilitarEnsaio']
         db = get_db()
-
         jsonMontado = {
-            'ConfAPI': confAPI,
-            'ListaGeral': listaGeral,
-            'ListaVisitante': listaVisitante,
-            'ListaMenor': listaMenor,
-            'ListaDinamica': listaDinamica,
-            'ListaNiverCasamento': listaNiverCasamento,
-            'ListaEnsaio': listaEnsaio,
-            'MesSorteio': mes,
-            'NomeSorteado': nomeSorteado,
-            'Opcao': opcao,
-            'Proximo': proximo,
-            'Ensaio': ensaio,
-            'HabilitarEnsaio': habilitarEnsaio
+            'ConfAPI': bolas[0]['bolasDoBingoJson']['ConfAPI'],
+            'ListaGeral': bolas[0]['bolasDoBingoJson']['ListaGeral'],
+            'ListaVisitante': bolas[0]['bolasDoBingoJson']['ListaVisitante'],
+            'ListaMenor': bolas[0]['bolasDoBingoJson']['ListaMenor'],
+            'ListaDinamica': bolas[0]['bolasDoBingoJson']['ListaDinamica'],
+            'ListaNiverCasamento': bolas[0]['bolasDoBingoJson']['ListaNiverCasamento'],
+            'ListaEnsaio': bolas[0]['bolasDoBingoJson']['ListaEnsaio'],
+            'MesSorteio': bolas[0]['bolasDoBingoJson']['MesSorteio'],
+            'ListaMesSorteio': bolas[0]['bolasDoBingoJson']['ListaMesSorteio'],
+            'NomeSorteadoAnterior': bolas[0]['bolasDoBingoJson']['NomeSorteadoAnterior'],
+            'NomeSorteado': bolas[0]['bolasDoBingoJson']['NomeSorteado'],
+            'Opcao': bolas[0]['bolasDoBingoJson']['Opcao'],
+            'Proximo': [''],
+            'Ensaio': bolas[0]['bolasDoBingoJson']['Ensaio'],
+            'HabilitarEnsaio': bolas[0]['bolasDoBingoJson']['HabilitarEnsaio']
         }
 
         id = bolas[0]['id']
@@ -514,6 +472,8 @@ def index(imagem: str = 'images/globo.gif'):
             'ListaNiverCasamento': [],
             'ListaEnsaio': [],
             'MesSorteio': [''],
+            'ListaMesSorteio': [],
+            'NomeSorteadoAnterior': [''],
             'NomeSorteado': [''],
             'Opcao': [''],
             'Proximo': [''],
@@ -555,13 +515,56 @@ def config(id):
         bolas[0]['bolasDoBingoJson'] = json.loads(bolas[0]['bolasDoBingoJson'].replace("'", '"'))
         # bolas[0]['bolasDoBingoJson'] = json.loads(bolas[0]['bolasDoBingoJson'])
 
+    def carregarAPI(url: str):
+        # if confAPI == ['']:
+        connect = file_local()
+        chaves = pd.DataFrame(connect['presenca']).keys().values
+        listaChaves = [chave for chave in chaves]
+
+        return listaChaves
+
     def file_local():
         if platform.system() == 'Windows':
-            endereco = 'E:\\WebOS_CLI\\APPS\\bingoApp\\python\\instance\\teste.json'
+            endereco = resource_local(platform.system()) + 'instance\\teste.json'
         else:
-            endereco = 'E:/WebOS_CLI/APPS/bingoApp/python/instance/teste.json'
+            endereco = resource_local(platform.system()) + 'instance/teste.json'
         with open(endereco, encoding='utf-8') as file:
             return json.load(file)
+
+    def resource_local(_platform: str = platform.system(), folder: str = '') -> str:
+        file_path = Path(__file__).parts
+        index = 0
+        for x in range(len(file_path), 0, -1):
+            if file_path[x - 1].lower() == 'flaskr':
+                index = x
+                break
+        file_path_final = ''
+        for i in range(index):
+            if _platform == 'Darwin':
+                if file_path[i] == '/':
+                    file_path_final += file_path[i]
+                else:
+                    file_path_final += file_path[i] + '/'
+            if _platform == 'Windows':
+                if file_path[i].__contains__('\\'):
+                    file_path_final += file_path[i]
+                else:
+                    file_path_final += file_path[i] + '\\'
+        if _platform == 'Darwin':
+            file_path_final += '/../'
+        if _platform == 'Windows':
+            file_path_final += '\\..\\'
+        if folder != '':
+            if _platform == 'Darwin':
+                return file_path_final + folder + '/'
+            if _platform == 'Windows':
+                return file_path_final + folder + '\\'
+        return file_path_final
+
+    if 'ConfAPI' in bolas[0]['bolasDoBingoJson'] and 'ListaMesSorteio' in bolas[0]['bolasDoBingoJson']:
+        if not bolas[0]['bolasDoBingoJson']['ListaMesSorteio']:
+            listaChaves = carregarAPI(bolas[0]['bolasDoBingoJson']['ConfAPI'])
+            bolas[0]['bolasDoBingoJson']['ListaMesSorteio'] = sorted(listaChaves)
 
     if request.method == 'POST' and 'carregar' in request.form:
         def pegarMes(mesAtual):
@@ -594,14 +597,14 @@ def config(id):
             return mesAtual
 
         # Realizar chamada para o banco da API
-        mes = f"{pegarMes(request.form['carregar'].lower())}"
+        mes = [f"{pegarMes(request.form['carregar'].lower())}"]
         url = bolas[0]['bolasDoBingoJson']['ConfAPI'][0]
         # conect = requests.get(url + 'presenca/'+ meses + '.json')
         # conect = requests.get(url + '.json')
         # dados = pd.DataFrame(conect.json())
 
         connect = file_local()
-        dados = pd.DataFrame(connect['presenca'][mes])
+        dados = pd.DataFrame(connect['presenca'][mes[0]])
 
         def juntar(df, coluna):
             df[coluna] = df[coluna].apply(str)
@@ -617,34 +620,45 @@ def config(id):
             else:
                 return nascimento
 
-        def niverCasamento(casamento):
+        def niverCasamento(casamento, mesTeste=0):
             if casamento not in ['nan', '']:
-                casamento = datetime.strptime(casamento, "%d/%m/%Y").date()
-                casamento = casamento.month
-                if casamento in [1, 2]:
-                    casamento = 2
-                elif casamento in [11, 12]:
-                    casamento = 11
-                if mes.lower() in ['janeiro', 'fevereiro']:
-                    mesTeste = 2
-                elif mes.lower() in ['novembro', 'dezembro']:
-                    mesTeste = 11
-                elif mes.lower() in ['março']:
-                    mesTeste = 3
-                elif mes.lower() in ['abril']:
-                    mesTeste = 4
-                elif mes.lower() in ['maio']:
-                    mesTeste = 5
-                elif mes.lower() in ['junho']:
-                    mesTeste = 6
-                elif mes.lower() in ['julho']:
-                    mesTeste = 7
-                elif mes.lower() in ['agosto']:
-                    mesTeste = 8
-                elif mes.lower() in ['setembro']:
-                    mesTeste = 9
+                if mesTeste == 0:
+                    casamento = datetime.strptime(casamento, "%d/%m/%Y").date()
+                    casamento = casamento.month
+                    if casamento in [1, 2]:
+                        casamento = 2
+                    elif casamento in [11, 12]:
+                        casamento = 11
+
+                    if mes[0].lower().__contains__('janeiro') or\
+                            mes[0].lower().__contains__('fevereiro'):
+                        mesTeste = 2
+                    elif mes[0].lower().__contains__('novembro') or \
+                            mes[0].lower().__contains__('dezembro'):
+                        mesTeste = 11
+                    elif mes[0].lower().__contains__('marco'):
+                        mesTeste = 3
+                    elif mes[0].lower().__contains__('abril'):
+                        mesTeste = 4
+                    elif mes[0].lower().__contains__('maio'):
+                        mesTeste = 5
+                    elif mes[0].lower().__contains__('junho'):
+                        mesTeste = 6
+                    elif mes[0].lower().__contains__('julho'):
+                        mesTeste = 7
+                    elif mes[0].lower().__contains__('agosto'):
+                        mesTeste = 8
+                    elif mes[0].lower().__contains__('setembro'):
+                        mesTeste = 9
+                    elif mes[0].lower().__contains__('outubro'):
+                        mesTeste = 10
+                    else:
+                        return niverCasamento(casamento, datetime.now().date().month)
                 else:
-                    mesTeste = 10
+                    if mesTeste in [1, 2]:
+                        mesTeste = 2
+                    elif mesTeste in [11, 12]:
+                        mesTeste = 11
                 if casamento == mesTeste:
                     return True
                 else:
@@ -693,15 +707,13 @@ def config(id):
                         listaGeral.append(index)
                         if niverCasamento(str(index).split('|')[4]):
                             listaNiverCasamento.append(index)
+                        if mes[0].lower().__contains__('ensaio'):
+                            listaEnsaio.append(index)
 
         # Colocar os dados adquiridos na tabela correta
-        confAPI = bolas[0]['bolasDoBingoJson']['ConfAPI']
-        ensaio = bolas[0]['bolasDoBingoJson']['Ensaio']
-        habilitarEnsaio = bolas[0]['bolasDoBingoJson']['HabilitarEnsaio']
-        listaMes = bolas[0]['bolasDoBingoJson']['ListaMesSorteio']
         db = get_db()
         jsonMontado = {
-            'ConfAPI': confAPI,
+            'ConfAPI': bolas[0]['bolasDoBingoJson']['ConfAPI'],
             'ListaGeral': listaGeral,
             'ListaVisitante': listaVisitante,
             'ListaMenor': listaMenor,
@@ -709,12 +721,13 @@ def config(id):
             'ListaNiverCasamento': listaNiverCasamento,
             'ListaEnsaio': listaEnsaio,
             'MesSorteio': mes,
-            'ListaMesSorteio': listaMes,
+            'ListaMesSorteio': bolas[0]['bolasDoBingoJson']['ListaMesSorteio'],
+            'NomeSorteadoAnterior': [''],
             'NomeSorteado': [''],
             'Opcao': [''],
             'Proximo': [''],
-            'Ensaio': ensaio,
-            'HabilitarEnsaio': habilitarEnsaio
+            'Ensaio': bolas[0]['bolasDoBingoJson']['Ensaio'],
+            'HabilitarEnsaio': bolas[0]['bolasDoBingoJson']['HabilitarEnsaio']
         }
         db.execute(
             'UPDATE bolasDoBingo SET bolasDoBingoJson = ?, author_id = ?'
@@ -731,9 +744,6 @@ def config(id):
         congregacao = request.form['dinamica'].split('|')[0]
         NumCartao = request.form['dinamica'].split('|')[1]
         listaGeral = bolas[0]['bolasDoBingoJson']['ListaGeral']
-        ensaio = bolas[0]['bolasDoBingoJson']['Ensaio']
-        listaMes = bolas[0]['bolasDoBingoJson']['ListaMesSorteio']
-        habilitarEnsaio = bolas[0]['bolasDoBingoJson']['HabilitarEnsaio']
         listaDinamica = set(bolas[0]['bolasDoBingoJson']['ListaDinamica'])
         ultimoItem = ''
         for item in listaGeral:
@@ -756,12 +766,13 @@ def config(id):
             'ListaNiverCasamento': bolas[0]['bolasDoBingoJson']['ListaNiverCasamento'],
             'ListaEnsaio': bolas[0]['bolasDoBingoJson']['ListaEnsaio'],
             'MesSorteio': bolas[0]['bolasDoBingoJson']['MesSorteio'],
-            'ListaMesSorteio': listaMes,
-            'NomeSorteado': [''],
+            'ListaMesSorteio': bolas[0]['bolasDoBingoJson']['ListaMesSorteio'],
+            'NomeSorteadoAnterior': bolas[0]['bolasDoBingoJson']['NomeSorteadoAnterior'],
+            'NomeSorteado': bolas[0]['bolasDoBingoJson']['NomeSorteado'],
             'Opcao': [''],
             'Proximo': [''],
-            'Ensaio': ensaio,
-            'HabilitarEnsaio': habilitarEnsaio
+            'Ensaio': bolas[0]['bolasDoBingoJson']['Ensaio'],
+            'HabilitarEnsaio': bolas[0]['bolasDoBingoJson']['HabilitarEnsaio']
         }
         db.execute(
             'UPDATE bolasDoBingo SET bolasDoBingoJson = ?, author_id = ?'
@@ -773,57 +784,52 @@ def config(id):
 
         return redirect(url_for('bingo.config', id=id))
 
-    if request.method == 'POST' and 'ensaio' in request.form:
-        # Realizar chamada para o banco da API
-        congregacao = request.form['ensaio'].split('|')[0]
-        NumCartao = request.form['ensaio'].split('|')[1]
-        listaGeral = bolas[0]['bolasDoBingoJson']['ListaGeral']
-        ensaio = bolas[0]['bolasDoBingoJson']['Ensaio']
-        habilitarEnsaio = bolas[0]['bolasDoBingoJson']['HabilitarEnsaio']
-        listaEnsaio = set(bolas[0]['bolasDoBingoJson']['ListaEnsaio'])
-        listaMes = bolas[0]['bolasDoBingoJson']['ListaMesSorteio']
-
-        for item in listaGeral:
-            if item.split('|')[1] == congregacao and item.split('|')[2] == NumCartao:
-                listaEnsaio.add(item)
-
-        # Colocar os dados adquiridos na tabela correta
-        confAPI = bolas[0]['bolasDoBingoJson']['ConfAPI']
-        db = get_db()
-        jsonMontado = {
-            'ConfAPI': confAPI,
-            'ListaGeral': listaGeral,
-            'ListaVisitante': bolas[0]['bolasDoBingoJson']['ListaVisitante'],
-            'ListaMenor': bolas[0]['bolasDoBingoJson']['ListaMenor'],
-            'ListaDinamica': bolas[0]['bolasDoBingoJson']['ListaDinamica'],
-            'ListaNiverCasamento': bolas[0]['bolasDoBingoJson']['ListaNiverCasamento'],
-            'ListaEnsaio': list(listaEnsaio),
-            'MesSorteio': bolas[0]['bolasDoBingoJson']['MesSorteio'],
-            'ListaMesSorteio': listaMes,
-            'NomeSorteado': [''],
-            'Opcao': [''],
-            'Proximo': [''],
-            'Ensaio': ensaio,
-            'HabilitarEnsaio': habilitarEnsaio
-        }
-        db.execute(
-            'UPDATE bolasDoBingo SET bolasDoBingoJson = ?, author_id = ?'
-            ' WHERE id = ?',
-            (str(jsonMontado),
-             g.user['id'], id)
-        )
-        db.commit()
-
-        return redirect(url_for('bingo.config', id=id))
+    # if request.method == 'POST' and 'ensaio' in request.form:
+    #     # Realizar chamada para o banco da API
+    #
+    #     congregacao = request.form['ensaio'].split('|')[0]
+    #     NumCartao = request.form['ensaio'].split('|')[1]
+    #     listaGeral = bolas[0]['bolasDoBingoJson']['ListaGeral']
+    #     listaEnsaio = set(bolas[0]['bolasDoBingoJson']['ListaEnsaio'])
+    #     for item in listaGeral:
+    #         if item.split('|')[1] == congregacao and item.split('|')[2] == NumCartao:
+    #             listaEnsaio.add(item)
+    #
+    #     # Colocar os dados adquiridos na tabela correta
+    #     confAPI = bolas[0]['bolasDoBingoJson']['ConfAPI']
+    #     db = get_db()
+    #     jsonMontado = {
+    #         'ConfAPI': confAPI,
+    #         'ListaGeral': listaGeral,
+    #         'ListaVisitante': bolas[0]['bolasDoBingoJson']['ListaVisitante'],
+    #         'ListaMenor': bolas[0]['bolasDoBingoJson']['ListaMenor'],
+    #         'ListaDinamica': bolas[0]['bolasDoBingoJson']['ListaDinamica'],
+    #         'ListaNiverCasamento': bolas[0]['bolasDoBingoJson']['ListaNiverCasamento'],
+    #         'ListaEnsaio': list(listaEnsaio),
+    #         'MesSorteio': bolas[0]['bolasDoBingoJson']['MesSorteio'],
+    #         'ListaMesSorteio': bolas[0]['bolasDoBingoJson']['ListaMesSorteio'],
+    #         'NomeSorteadoAnterior': bolas[0]['bolasDoBingoJson']['NomeSorteadoAnterior'],
+    #         'NomeSorteado': bolas[0]['bolasDoBingoJson']['NomeSorteado'],
+    #         'Opcao': [''],
+    #         'Proximo': [''],
+    #         'Ensaio': bolas[0]['bolasDoBingoJson']['Ensaio'],
+    #         'HabilitarEnsaio': bolas[0]['bolasDoBingoJson']['HabilitarEnsaio']
+    #     }
+    #     db.execute(
+    #         'UPDATE bolasDoBingo SET bolasDoBingoJson = ?, author_id = ?'
+    #         ' WHERE id = ?',
+    #         (str(jsonMontado),
+    #          g.user['id'], id)
+    #     )
+    #     db.commit()
+    #
+    #     return redirect(url_for('bingo.config', id=id))
 
     if request.method == 'POST' and 'confAPI' in request.form:
         confAPI = request.form['confAPI']
 
         ### carregar chamada das chaves
-        # if confAPI == '':
-        connect = file_local()
-        chaves = pd.DataFrame(connect['presenca']).keys().values
-        listaChaves = [chave for chave in chaves]
+        listaChaves = carregarAPI(confAPI)
 
         db = get_db()
         jsonMontado = {
@@ -836,6 +842,7 @@ def config(id):
             'ListaEnsaio': [],
             'MesSorteio': [''],
             'ListaMesSorteio': sorted(listaChaves),
+            'NomeSorteadoAnterior': [''],
             'NomeSorteado': [''],
             'Opcao': [''],
             'Proximo': [''],
@@ -853,36 +860,24 @@ def config(id):
         return redirect(url_for('bingo.config', id=id))
 
     if request.method == 'POST' and 'cancel' in request.form:
-        confAPI = bolas[0]['bolasDoBingoJson']['ConfAPI']
-        listaGeral = bolas[0]['bolasDoBingoJson']['ListaGeral']
-        listaVisitante = bolas[0]['bolasDoBingoJson']['ListaVisitante']
-        listaMenor = bolas[0]['bolasDoBingoJson']['ListaMenor']
-        listaDinamica = bolas[0]['bolasDoBingoJson']['ListaDinamica']
-        listaNiverCasamento = bolas[0]['bolasDoBingoJson']['ListaNiverCasamento']
-        listaEnsaio = bolas[0]['bolasDoBingoJson']['ListaEnsaio']
-        mes = bolas[0]['bolasDoBingoJson']['MesSorteio']
-        listaMes = bolas[0]['bolasDoBingoJson']['ListaMesSorteio']
-        nomeSorteado = bolas[0]['bolasDoBingoJson']['NomeSorteado']
-        opcao = bolas[0]['bolasDoBingoJson']['Opcao']
-        proximo = bolas[0]['bolasDoBingoJson']['Proximo']
-        ensaio = bolas[0]['bolasDoBingoJson']['Ensaio']
-        habilitarEnsaio = bolas[0]['bolasDoBingoJson']['HabilitarEnsaio']
         db = get_db()
+        list().__len__()
         jsonMontado = {
-            'ConfAPI': confAPI,
-            'ListaGeral': listaGeral,
-            'ListaVisitante': listaVisitante,
-            'ListaMenor': listaMenor,
-            'ListaDinamica': listaDinamica,
-            'ListaNiverCasamento': listaNiverCasamento,
-            'ListaEnsaio': listaEnsaio,
-            'MesSorteio': mes,
-            'ListaMesSorteio': listaMes,
-            'NomeSorteado': nomeSorteado,
-            'Opcao': opcao,
-            'Proximo': proximo,
-            'Ensaio': ensaio,
-            'HabilitarEnsaio': habilitarEnsaio
+            'ConfAPI': bolas[0]['bolasDoBingoJson']['ConfAPI'],
+            'ListaGeral': bolas[0]['bolasDoBingoJson']['ListaGeral'],
+            'ListaVisitante': bolas[0]['bolasDoBingoJson']['ListaVisitante'],
+            'ListaMenor': bolas[0]['bolasDoBingoJson']['ListaMenor'],
+            'ListaDinamica': bolas[0]['bolasDoBingoJson']['ListaDinamica'],
+            'ListaNiverCasamento': bolas[0]['bolasDoBingoJson']['ListaNiverCasamento'],
+            'ListaEnsaio': bolas[0]['bolasDoBingoJson']['ListaEnsaio'],
+            'MesSorteio': bolas[0]['bolasDoBingoJson']['MesSorteio'],
+            'ListaMesSorteio': bolas[0]['bolasDoBingoJson']['ListaMesSorteio'],
+            'NomeSorteadoAnterior': bolas[0]['bolasDoBingoJson']['NomeSorteadoAnterior'],
+            'NomeSorteado': bolas[0]['bolasDoBingoJson']['NomeSorteado'],
+            'Opcao': bolas[0]['bolasDoBingoJson']['Opcao'],
+            'Proximo': bolas[0]['bolasDoBingoJson']['Proximo'],
+            'Ensaio': bolas[0]['bolasDoBingoJson']['Ensaio'],
+            'HabilitarEnsaio': bolas[0]['bolasDoBingoJson']['HabilitarEnsaio']
         }
         db.execute(
             'UPDATE bolasDoBingo SET bolasDoBingoJson = ?, author_id = ?'
@@ -894,34 +889,22 @@ def config(id):
         return redirect(url_for('bingo.index'))
 
     if request.method == 'POST' and 'habilitarEnsaio' in request.form:
-        confAPI = bolas[0]['bolasDoBingoJson']['ConfAPI']
-        listaGeral = bolas[0]['bolasDoBingoJson']['ListaGeral']
-        listaVisitante = bolas[0]['bolasDoBingoJson']['ListaVisitante']
-        listaMenor = bolas[0]['bolasDoBingoJson']['ListaMenor']
-        listaDinamica = bolas[0]['bolasDoBingoJson']['ListaDinamica']
-        listaNiverCasamento = bolas[0]['bolasDoBingoJson']['ListaNiverCasamento']
-        listaEnsaio = bolas[0]['bolasDoBingoJson']['ListaEnsaio']
-        mes = bolas[0]['bolasDoBingoJson']['MesSorteio']
-        listaMes = bolas[0]['bolasDoBingoJson']['ListaMesSorteio']
-        nomeSorteado = bolas[0]['bolasDoBingoJson']['NomeSorteado']
-        opcao = bolas[0]['bolasDoBingoJson']['Opcao']
-        proximo = bolas[0]['bolasDoBingoJson']['Proximo']
-        ensaio = bolas[0]['bolasDoBingoJson']['Ensaio']
         db = get_db()
         jsonMontado = {
-            'ConfAPI': confAPI,
-            'ListaGeral': listaGeral,
-            'ListaVisitante': listaVisitante,
-            'ListaMenor': listaMenor,
-            'ListaDinamica': listaDinamica,
-            'ListaNiverCasamento': listaNiverCasamento,
-            'ListaEnsaio': listaEnsaio,
-            'MesSorteio': mes,
-            'ListaMesSorteio': listaMes,
-            'NomeSorteado': nomeSorteado,
-            'Opcao': opcao,
-            'Proximo': proximo,
-            'Ensaio': ensaio,
+            'ConfAPI': bolas[0]['bolasDoBingoJson']['ConfAPI'],
+            'ListaGeral': bolas[0]['bolasDoBingoJson']['ListaGeral'],
+            'ListaVisitante': bolas[0]['bolasDoBingoJson']['ListaVisitante'],
+            'ListaMenor': bolas[0]['bolasDoBingoJson']['ListaMenor'],
+            'ListaDinamica': bolas[0]['bolasDoBingoJson']['ListaDinamica'],
+            'ListaNiverCasamento': bolas[0]['bolasDoBingoJson']['ListaNiverCasamento'],
+            'ListaEnsaio': bolas[0]['bolasDoBingoJson']['ListaEnsaio'],
+            'MesSorteio': bolas[0]['bolasDoBingoJson']['MesSorteio'],
+            'ListaMesSorteio': bolas[0]['bolasDoBingoJson']['ListaMesSorteio'],
+            'NomeSorteadoAnterior': bolas[0]['bolasDoBingoJson']['NomeSorteadoAnterior'],
+            'NomeSorteado': bolas[0]['bolasDoBingoJson']['NomeSorteado'],
+            'Opcao': bolas[0]['bolasDoBingoJson']['Opcao'],
+            'Proximo': bolas[0]['bolasDoBingoJson']['Proximo'],
+            'Ensaio': bolas[0]['bolasDoBingoJson']['Ensaio'],
             'HabilitarEnsaio': ['true'] if request.form['habilitarEnsaio'] == 'Habilitar' else ['']
         }
         db.execute(
@@ -938,23 +921,67 @@ def config(id):
 
 
 if __name__ == '__main__':
-    BolasDoBingo = list()
-    # IniciarBingo(BolasDoBingo)
-    # print(BolasDoBingo)
-    desejo = 'S'
-    BolasSorteadas = list()
-    BolaEscolhida = 0
-    while desejo.upper() == 'S':
-        print('Quantidade de bolas restantes: ' + str(len(BolasDoBingo)))
-        BolaEscolhida = random.choice(BolasDoBingo)
-        print(BolaEscolhida)
-        BolasSorteadas.append(BolaEscolhida)
-        desejo = input('Deseja continuar(S/N)? ')
-        while True:
-            if desejo.upper() == 'S' or desejo.upper() == 'N':
+    # BolasDoBingo = list()
+    # # IniciarBingo(BolasDoBingo)
+    # # print(BolasDoBingo)
+    # desejo = 'S'
+    # BolasSorteadas = list()
+    # BolaEscolhida = 0
+    # while desejo.upper() == 'S':
+    #     print('Quantidade de bolas restantes: ' + str(len(BolasDoBingo)))
+    #     BolaEscolhida = random.choice(BolasDoBingo)
+    #     print(BolaEscolhida)
+    #     BolasSorteadas.append(BolaEscolhida)
+    #     desejo = input('Deseja continuar(S/N)? ')
+    #     while True:
+    #         if desejo.upper() == 'S' or desejo.upper() == 'N':
+    #             break
+    #         else:
+    #             desejo = input("Digite 'S' ou 'N':  ")
+    #     # ImprimirQuadro(BolasSorteadas)
+    #     BolasDoBingo.remove(BolaEscolhida)
+    # print('O último número foi: ' + str(BolaEscolhida))
+    def file_local():
+        if platform.system() == 'Windows':
+            endereco = resource_local(platform.system()) + 'instance\\teste.json'
+        else:
+            endereco = resource_local(platform.system()) + 'instance/teste.json'
+        with open(endereco, encoding='utf-8') as file:
+            return json.load(file)
+
+    def resource_local(_platform: str = platform.system(), folder: str = '') -> str:
+        file_path = Path(__file__).parts
+        index = 0
+        for x in range(len(file_path), 0, -1):
+            if file_path[x - 1].lower() == 'flaskr':
+                index = x
                 break
-            else:
-                desejo = input("Digite 'S' ou 'N':  ")
-        # ImprimirQuadro(BolasSorteadas)
-        BolasDoBingo.remove(BolaEscolhida)
-    print('O último número foi: ' + str(BolaEscolhida))
+        file_path_final = ''
+        for i in range(index):
+            if _platform == 'Darwin':
+                if file_path[i] == '/':
+                    file_path_final += file_path[i]
+                else:
+                    file_path_final += file_path[i] + '/'
+            if _platform == 'Windows':
+                if file_path[i].__contains__('\\'):
+                    file_path_final += file_path[i]
+                else:
+                    file_path_final += file_path[i] + '\\'
+        if _platform == 'Darwin':
+            file_path_final += '/../'
+        if _platform == 'Windows':
+            file_path_final += '\\..\\'
+        print()
+        print()
+        print(file_path_final)
+        print()
+        print()
+        if folder != '':
+            if _platform == 'Darwin':
+                return file_path_final + folder + '/'
+            if _platform == 'Windows':
+                return file_path_final + folder + '\\'
+        return file_path_final
+
+    print(resource_local())

@@ -31,20 +31,23 @@ def create_app(test_config=None):
     def hello():
         return 'Hello, World!'
 
-    from . import db
+    import db
     db.init_app(app)
 
-    from . import auth
+    import auth
     app.register_blueprint(auth.bp)
 
     # from . import blog
     # app.register_blueprint(blog.bp)
 
-    from . import bingo
+    import bingo
     app.register_blueprint(bingo.bp)
     app.add_url_rule('/', endpoint='index')
 
-    return app
+    return app.run(debug=True)
+
+if __name__ == '__main__':
+    app = create_app()
 
 # export FLASK_APP=flaskr
 # export FLASK_ENV=development
