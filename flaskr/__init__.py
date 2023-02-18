@@ -2,6 +2,7 @@ import os
 from flask import Flask
 # from .utils.momentjs import *
 
+
 def create_app(test_config=None):
     # create and configure the app
     # app = Flask(__name__, instance_relative_config=True)
@@ -30,22 +31,20 @@ def create_app(test_config=None):
     def hello():
         return 'Hello, World!'
 
-    from flaskr import db
+    import db
     db.init_app(app)
 
-    from flaskr import auth
+    import auth
     app.register_blueprint(auth.bp)
 
     # from . import blog
     # app.register_blueprint(blog.bp)
 
-    from flaskr import bingo
+    import bingo
     app.register_blueprint(bingo.bp)
     app.add_url_rule('/', endpoint='index')
 
-    return app.run(debug=True, port=8900)
-
-app = create_app()
+    return app.run(debug=True)
 
 if __name__ == '__main__':
     app = create_app()
