@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<!--    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/telaPequena.css') }}">
+    {% extends 'base.html' %}
+    {% block header %}
+      <h1>{% block title %}Log In{% endblock %}</h1>
+    {% endblock %}
+</head>
+<body>
+    {% block content %}
+        <form method="post">
+            <div class="centralizar">
+                <div class="user">
+                    <label for="username">Username:</label>
+                    <input name="username" id="username" required>
+                </div>
+                <div class="pass">
+                    <label for="password">Password: </label>
+                    <input type="password" name="password" id="password" required>
+                </div>
+            </div>
+            <div class="centralizar">
+                <input type="submit" value="Log In">
+            </div>
+        </form>
+    {% endblock %}
+
+</body>
+</html>
