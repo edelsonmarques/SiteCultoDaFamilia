@@ -1,8 +1,8 @@
 from flask import (
     Blueprint, g, redirect, render_template, request, url_for
 )
-from flaskr.db import get_db
-from flaskr.auth import login_required
+from db import get_db
+from auth import login_required
 import random
 import ast
 import requests
@@ -528,6 +528,7 @@ def config(id):
             endereco = resource_local(platform.system()) + 'instance\\teste.json'
         else:
             endereco = resource_local(platform.system()) + 'instance/teste.json'
+        print(endereco)
         with open(endereco, encoding='utf-8') as file:
             return json.load(file)
 
@@ -550,10 +551,6 @@ def config(id):
                     file_path_final += file_path[i]
                 else:
                     file_path_final += file_path[i] + '\\'
-        if _platform == 'Darwin':
-            file_path_final += '/../'
-        if _platform == 'Windows':
-            file_path_final += '\\..\\'
         if folder != '':
             if _platform == 'Darwin':
                 return file_path_final + folder + '/'

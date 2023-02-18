@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>
+        Tela de login
+    </title>
+    <link rel="stylesheet" href="/cultoparacasais/src/css/reset.css">
+    <link rel="stylesheet" href="/cultoparacasais/src/css/base.css">
+    <link rel="stylesheet" href="/cultoparacasais/src/css/telaPequena.css">
+    <script type="text/javascript" src="/cultoparacasais/src/js/index.js"></script>
+    <!-- <link rel="stylesheet" href="src/css/reset.css" />
+    <link rel="stylesheet" href="src/css/base.css" />
+    <link rel="stylesheet" href="src/css/telaPequena.css" />
+    <script type="text/javascript" src="src/js/index.js"></script> -->
+</head>
+<body class="corpo_base">
+    <header class="cabecalho">
+        <a>
+            <p class="logo">Culto de Casais</p>
+        </a>
+
+        <nav>
+            <ul class="menu">
+                <!-- inserir campos de login e logout -->
+                <!-- se logado -->
+                    <!-- nome do usuário ==> <li><span>usuário</span></li> -->
+                    <!-- botão para deslogar ==> <li><a href="">Log Out</a></li> -->
+                <!-- senão -->
+                    <!-- <li><a href="#" onchange="onChangeUsername()" id="register_button" onclick="register()">Register</a></li> -->
+                    <!-- botão para logar<li><a href="">Log In</a></li> -->
+            </ul>
+        </nav>
+    </header>
+
+    <section class="corpo_content">
+        <section class="content_header">
+            <header>
+                <h1>Log In</h1>
+            </header>
+        </section>
+        <section class="content">
+            <form method="post">
+                <div class="centralizar">
+                    <div class="user">
+                        <label for="username">Username:</label>
+                        {% if Reporter != None %}
+                            {% if Reporter.Username != None %}
+                                <input name="username" id="username" onchange="onChangeUsername()" value={{Reporter.Username}} />
+                            {% else %}
+                                <input name="username" id="username" onchange="onChangeUsername()" placeholder="Username">
+                            {% endif %}
+                        {% else %}
+                            <input name="username" id="username" onchange="onChangeUsername()" placeholder="Username">
+                        {% endif %}
+                    </div>
+                    <div class="error" id="username-required-error">Username obrigatório</div>
+                    <div class="pass">
+                        <label for="password">Password: </label>
+                        <input type="password" name="password" id="password" onchange="onChangePassword()" placeholder="Password">
+                    </div>
+                    <div class="error" id="password-required-error">Password obrigatória</div>
+                    {% if Reporter != None %}
+                        {% if Reporter.Registed != None %}
+                            <div class="error" id="registed">{{ Reporter.Registed }}</div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+                <div class="centralizar">
+                    <input type="submit" name="login" value="Login" id="login_button" disabled="true" />
+                    <input type="submit" name="register_page" value="Registrar" id="register_button" disabled="true" />
+                </div>
+                <div class="centralizar">
+                    <input type="submit" name="recover_page" value="Recuperar Senha" id="recovery_button" disabled="true" />
+                </div>
+            </form>
+        </section>
+    </section>
+</body>
+</html>

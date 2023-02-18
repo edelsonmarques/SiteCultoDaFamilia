@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/cultoparacasais/src/css/reset.css">
+    <link rel="stylesheet" href="/cultoparacasais/src/css/base.css">
+    <link rel="stylesheet" href="/cultoparacasais/src/css/telaPequena.css">
+    <script type="text/javascript" src="/cultoparacasais/src/js/index.js"></script>
+    <title>
+        Configurações
+    </title>
+</head>
+<body class="corpo_base">
+    <header class="cabecalho">
+        <a>
+            <p class="logo">Culto de Casais</p>
+        </a>
+
+        <nav>
+            <ul class="menu">
+                    <li><span>{{ Reporter.Username }}</span></li>
+                    <li><form method="post">
+                        <input name="logout" type="submit" value="Log Out"/>
+                    </form>
+                    </li>
+            </ul>
+        </nav>
+    </header>
+    <section class="corpo_content">
+        <section class="content_header">
+            <header>
+                <h1>Log In</h1>
+            </header>
+        </section>
+        <section class="content">
+            <div class="content_config_1">
+                <section class="content_header_config">
+                    <header>
+                        <h1>Configuração API</h1>
+                    </header>
+                </section>
+                <form method="post">
+                    <label for="confAPI">API configurada: {{ Reporter.bolas.bolasDoBingoJson.ConfAPI[0] }}</label>
+                    <input name="confAPI" id="confAPI" type="text" value="{{ request.form['confAPI'] }}" required>
+                    <input type="submit" value="Save">
+                </form>
+            </div>
+            <hr>
+            <div class="content_config_2">
+                <div class="mes_ensaio">
+                    <section class="content_header_config">
+                        <header>
+                            <h1>Mês do sorteio</h1>
+                        </header>
+                    </section>
+                    <form method="post">
+                        <label>Escolha o mês que queira realizar o sorteio: {{ Reporter.bolas.bolasDoBingoJson.MesSorteio[0] }}</label>
+                        <br>
+                        <select name="carregar">
+                            {% for mes in Reporter.bolas.bolasDoBingoJson.ListaMesSorteio %}
+                                <option>{{ mes }}</option>
+                            {% endfor %}
+                        </select>
+                        <input name="carregar" type="submit" value="Carregar">
+                    </form>
+                </div>
+                <div class= "vertical"></div>
+                <div>
+                    <section class="content_header_config">
+                        <header>
+                            <h1>Dinâmica de Casais</h1>
+                        </header>
+                    </section>
+                    <form method="post">
+                        <label for="dinamica">Cartão fidelidade para a dinâmica do grupo: [Congregação|N° cartão fidelidade]</label>
+                        <label >Quantidade de cartões cadastrados: {{ Reporter.bolas.bolasDoBingoJson.ListaDinamica.length }}</label>
+                        <input name="dinamica" id="dinamica" type="text" value="{{ request.form['dinamica'] }}" required>
+                        <input type="submit" value="Inserir">
+                    </form>
+                </div>
+            </div>
+            <hr>
+            <div class="content_config_3">
+                <section class="content_header_config">
+                    <header>
+                        <h1>Ensaio de Casais
+                        </h1>
+                    </header>
+                </section>
+                <form method="post">
+                        <p> Dia de ensaio?
+                            {% if Reporter.bolas.bolasDoBingoJson.HabilitarEnsaio[0] == 'true' %}
+                                <input type="submit" name="habilitarEnsaio" value="Desabilitar">
+                            {% else %}
+                                <input type="submit" name="habilitarEnsaio" value="Habilitar">
+                            {% endif %}
+                        </p>
+                </form>
+                <form method="post">
+                        {% if Reporter.bolas.bolasDoBingoJson.HabilitarEnsaio[0] == 'true' %}
+                            <label>Quantidade de cartões cadastrados: {{ Reporter.bolas.bolasDoBingoJson.ListaEnsaio.length }}</label>
+                        {% endif %}
+                </form>
+            </div>
+            <hr>
+            <div>
+                <form method="post">
+                    <input name="cancel" type="submit" value="Voltar">
+                </form>
+            </div>
+        </section>
+    </section>
+</body>
+</html>
