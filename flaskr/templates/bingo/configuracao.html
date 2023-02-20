@@ -85,6 +85,19 @@
                 <input name="cancel" type="submit" value="Voltar">
             </form>
         </div>
+        <hr>
+        <div class="content_config_1">
+            <section class="content_header_config">
+                <header>
+                    <h1>Report</h1>
+                </header>
+            </section>
+            <form method="post">
+                <label for="report">Local para salvar o Report:</label>
+                <input name="report" id="report" type="text" value="{{ request.form['report'] }}" required>
+                <input type="submit" value="Save">
+            </form>
+        </div>
     {% endblock %}
 </body>
 </html>

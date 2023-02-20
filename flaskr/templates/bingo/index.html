@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/principal.css') }}">
 <!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>-->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/animate.min.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='js/index.js') }}"/>
     {% set TITLE = 'Culto de Casais'%}
     <title>
         {% block title %}{{TITLE}}{% endblock %}
@@ -63,11 +64,18 @@
                         <p class="conjuge">
                             {{ NomeSorteado.split('|')[-1] if 'NomeSorteado' in bolas['bolasDoBingoJson'] else ''}}
                         </p>
+                        <p class="congregacao">
+                            {% if 'NomeSorteado' in bolas['bolasDoBingoJson'] %}
+                                {% if bolas['bolasDoBingoJson']['NomeSorteado'] != [''] %}
+                                    Congregação:  {{ NomeSorteado.split('|')[1] if 'NomeSorteado' in bolas['bolasDoBingoJson'] else ''}}
+                                {% endif %}
+                            {% endif %}
+                        </p>
                     </div>
                     <div class="tela_botoes">
                         {% if Proximo == '' and HabilitarEnsaio == '' %}
                             <form method="post">
-                                <input name="geral" type="submit" value="Adultos/Casados"/>
+                                <input name="geral" type="submit" value="Adultos/Casados" onclick="abc()"/>
                                 <input name="menores" type="submit" value="Menores de 18"/>
                                 <input name="visitantes" type="submit" value="Visitantes"/>
                             </form>
