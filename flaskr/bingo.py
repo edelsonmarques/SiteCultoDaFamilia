@@ -515,20 +515,30 @@ def config(id):
         bolas[0]['bolasDoBingoJson'] = json.loads(bolas[0]['bolasDoBingoJson'].replace("'", '"'))
         # bolas[0]['bolasDoBingoJson'] = json.loads(bolas[0]['bolasDoBingoJson'])
 
-    def carregarAPI(url: str):
-        # if confAPI == ['']:
-        connect = file_local()
+    def carregarAPI(url: str = '', path_file: str = ''):
+        try:
+            # url = bolas[0]['bolasDoBingoJson']['ConfAPI'][0]
+            # url = ['']
+            connect = requests.get(url + '.json')
+            connect = connect.json()
+        except Exception as e:
+            connect = file_local(path_file)
+        return connect
+
+    def carregarChavesAPI(url: str = '', path_file: str = ''):
+        connect = carregarAPI(url, path_file)
         chaves = pd.DataFrame(connect['presenca']).keys().values
         listaChaves = [chave for chave in chaves]
-
         return listaChaves
 
-    def file_local():
-        if platform.system() == 'Windows':
-            endereco = resource_local(platform.system()) + 'instance\\teste.json'
+    def file_local(path_file: str = ''):
+        if path_file == '':
+            if platform.system() == 'Windows':
+                endereco = resource_local(platform.system()) + 'instance\\teste.json'
+            else:
+                endereco = resource_local(platform.system()) + 'instance/teste.json'
         else:
-            endereco = resource_local(platform.system()) + 'instance/teste.json'
-        print(endereco)
+            endereco = path_file
         with open(endereco, encoding='utf-8') as file:
             return json.load(file)
 
@@ -560,7 +570,7 @@ def config(id):
 
     if 'ConfAPI' in bolas[0]['bolasDoBingoJson'] and 'ListaMesSorteio' in bolas[0]['bolasDoBingoJson']:
         if not bolas[0]['bolasDoBingoJson']['ListaMesSorteio']:
-            listaChaves = carregarAPI(bolas[0]['bolasDoBingoJson']['ConfAPI'])
+            listaChaves = carregarChavesAPI(bolas[0]['bolasDoBingoJson']['ConfAPI'])
             bolas[0]['bolasDoBingoJson']['ListaMesSorteio'] = sorted(listaChaves)
 
     if request.method == 'POST' and 'carregar' in request.form:
@@ -600,7 +610,7 @@ def config(id):
         # conect = requests.get(url + '.json')
         # dados = pd.DataFrame(conect.json())
 
-        connect = file_local()
+        connect = carregarAPI(url)
         dados = pd.DataFrame(connect['presenca'][mes[0]])
 
         def juntar(df, coluna):
@@ -666,6 +676,7 @@ def config(id):
         dados = dados.transpose()
         for column in dados:
             dados = juntar(dados, column)
+        print(dados)
         dados['numCartao'] = dados['idNumero'].apply(lambda x: x.split('/')[1])
         dados['congregacao'] = dados['idNumero'].apply(lambda x: x.split('/')[0])
         dados['juntosConjuge'] = (dados['nomeConjuge'] + '|' +
@@ -781,52 +792,29 @@ def config(id):
 
         return redirect(url_for('bingo.config', id=id))
 
-    # if request.method == 'POST' and 'ensaio' in request.form:
-    #     # Realizar chamada para o banco da API
-    #
-    #     congregacao = request.form['ensaio'].split('|')[0]
-    #     NumCartao = request.form['ensaio'].split('|')[1]
-    #     listaGeral = bolas[0]['bolasDoBingoJson']['ListaGeral']
-    #     listaEnsaio = set(bolas[0]['bolasDoBingoJson']['ListaEnsaio'])
-    #     for item in listaGeral:
-    #         if item.split('|')[1] == congregacao and item.split('|')[2] == NumCartao:
-    #             listaEnsaio.add(item)
-    #
-    #     # Colocar os dados adquiridos na tabela correta
-    #     confAPI = bolas[0]['bolasDoBingoJson']['ConfAPI']
-    #     db = get_db()
-    #     jsonMontado = {
-    #         'ConfAPI': confAPI,
-    #         'ListaGeral': listaGeral,
-    #         'ListaVisitante': bolas[0]['bolasDoBingoJson']['ListaVisitante'],
-    #         'ListaMenor': bolas[0]['bolasDoBingoJson']['ListaMenor'],
-    #         'ListaDinamica': bolas[0]['bolasDoBingoJson']['ListaDinamica'],
-    #         'ListaNiverCasamento': bolas[0]['bolasDoBingoJson']['ListaNiverCasamento'],
-    #         'ListaEnsaio': list(listaEnsaio),
-    #         'MesSorteio': bolas[0]['bolasDoBingoJson']['MesSorteio'],
-    #         'ListaMesSorteio': bolas[0]['bolasDoBingoJson']['ListaMesSorteio'],
-    #         'NomeSorteadoAnterior': bolas[0]['bolasDoBingoJson']['NomeSorteadoAnterior'],
-    #         'NomeSorteado': bolas[0]['bolasDoBingoJson']['NomeSorteado'],
-    #         'Opcao': [''],
-    #         'Proximo': [''],
-    #         'Ensaio': bolas[0]['bolasDoBingoJson']['Ensaio'],
-    #         'HabilitarEnsaio': bolas[0]['bolasDoBingoJson']['HabilitarEnsaio']
-    #     }
-    #     db.execute(
-    #         'UPDATE bolasDoBingo SET bolasDoBingoJson = ?, author_id = ?'
-    #         ' WHERE id = ?',
-    #         (str(jsonMontado),
-    #          g.user['id'], id)
-    #     )
-    #     db.commit()
-    #
-    #     return redirect(url_for('bingo.config', id=id))
+    if request.method == 'POST' and 'report' in request.form:
+        url = bolas[0]['bolasDoBingoJson']['ConfAPI'][0]
+        caminho = request.form['report']
+        connect = carregarAPI(url)
+        connect = connect['usuarios']
+        dados = pd.DataFrame(connect).transpose()
+        dados = dados.loc[:, ['idNumero', 'nomeTitular', 'nomeConjuge']]
+        dados['congregacao'] = dados['idNumero'].apply(lambda x: x.split('/')[0])
+        dados['idNumero'] = dados['idNumero'].apply(lambda x: x.split('/')[1])
+        dados = dados.loc[:, ['congregacao', 'idNumero', 'nomeTitular', 'nomeConjuge']]
+        if platform.system() == 'Windows':
+            caminho = caminho + '\\'
+        else:
+            caminho = caminho + '/'
+        print(dados)
+        pd.DataFrame(dados).to_excel(caminho + 'report.xlsx')
+        return redirect(url_for('bingo.config', id=id))
 
     if request.method == 'POST' and 'confAPI' in request.form:
         confAPI = request.form['confAPI']
 
         ### carregar chamada das chaves
-        listaChaves = carregarAPI(confAPI)
+        listaChaves = carregarChavesAPI(confAPI)
 
         db = get_db()
         jsonMontado = {
