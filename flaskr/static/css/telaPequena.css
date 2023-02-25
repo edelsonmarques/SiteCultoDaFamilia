@@ -78,12 +78,12 @@ select{
     border-width: 2px;
 }
 
-.content_config_2{
+.content_config_2, .content_config_1{
     display: flex;
     justify-content: space-between;
 }
 
-.content_config_2 div{
+.content_config_1 div, .content_config_2 div{
     max-width: 800px;
 }
 
@@ -92,7 +92,7 @@ select{
     padding: 0 10px;
 }
 
-.content_config_2 .vertical{
+.content_config_1 .vertical, .content_config_2 .vertical{
     border-left: 1px solid gray;
     height: 200px;
     margin-right: 10px;
@@ -106,6 +106,6 @@ hr{
     margin: 10px;
 }
 
-.content_config_2 .mes_ensaio{
+.content_config_1 .config_api, .content_config_2 .mes_ensaio{
     margin-right: 25px;
 }

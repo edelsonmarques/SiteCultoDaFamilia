@@ -43,7 +43,7 @@
     justify-content: center;
     text-align: center;
     word-wrap:break-word;
-    animation: flip-in-hor-bottom 1s cubic-bezier(.445,.05,.55,.95) 1s alternate both;
+    /*animation: flip-in-hor-bottom 1s cubic-bezier(.445,.05,.55,.95) 1s alternate both;*/
 }
 
 .tela_principal .sorteado, .tela_principal .conjuge, .tela_principal .congregacao{

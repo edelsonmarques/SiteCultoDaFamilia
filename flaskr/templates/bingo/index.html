@@ -8,7 +8,7 @@
 <!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>-->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/animate.min.css') }}"/>
     <link rel="stylesheet" href="{{ url_for('static', filename='js/index.js') }}"/>
-    {% set TITLE = 'Culto de Casais'%}
+    {% set TITLE = 'Culto da Família'%}
     <title>
         {% block title %}{{TITLE}}{% endblock %}
     </title>
@@ -52,31 +52,29 @@
                     <div class="flash">{{ message }}</div>
                 {% endfor %}
             </article>
-            {% set HabilitarEnsaio = [''] if 'HabilitarEnsaio' not in bolas['bolasDoBingoJson'] else bolas['bolasDoBingoJson']['HabilitarEnsaio'][0]%}
-            {% set Proximo = [''] if 'Proximo' not in bolas['bolasDoBingoJson'] else bolas['bolasDoBingoJson']['Proximo'][0]%}
-            {% set NomeSorteado = [''] if 'NomeSorteado' not in bolas['bolasDoBingoJson'] else bolas['bolasDoBingoJson']['NomeSorteado'][0]%}
+            {% set HabilitarEnsaio = bolas.bolasDoBingoJson.HabilitarEnsaio[0]%}
+            {% set Proximo = bolas.bolasDoBingoJson.Proximo[0]%}
+            {% set NomeSorteado = bolas.bolasDoBingoJson.NomeSorteado[0]%}
             {% block content %}
-                {% if bolas['bolasDoBingoJson'].__len__() != 0 %}
+                {% if bolas.bolasDoBingoJson.__len__() != 0 %}
                     <div class="tela_principal">
                         <p class="sorteado">
-                            {{ NomeSorteado.split('|')[0] if 'NomeSorteado' in bolas['bolasDoBingoJson'] else ''}}
+                            {{ NomeSorteado.split('|')[0] }}
                         </p>
                         <p class="conjuge">
-                            {{ NomeSorteado.split('|')[-1] if 'NomeSorteado' in bolas['bolasDoBingoJson'] else ''}}
+                            {{ NomeSorteado.split('|')[-1] }}
                         </p>
                         <p class="congregacao">
-                            {% if 'NomeSorteado' in bolas['bolasDoBingoJson'] %}
-                                {% if bolas['bolasDoBingoJson']['NomeSorteado'] != [''] %}
-                                    Congregação:  {{ NomeSorteado.split('|')[1] if 'NomeSorteado' in bolas['bolasDoBingoJson'] else ''}}
-                                {% endif %}
+                            {% if bolas.bolasDoBingoJson.NomeSorteado != [''] %}
+                                Congregação:  {{ NomeSorteado.split('|')[1] }}
                             {% endif %}
                         </p>
                     </div>
                     <div class="tela_botoes">
                         {% if Proximo == '' and HabilitarEnsaio == '' %}
                             <form method="post">
-                                <input name="geral" type="submit" value="Adultos/Casados" onclick="abc()"/>
-                                <input name="menores" type="submit" value="Menores de 18"/>
+                                <input name="geral" type="submit" value="Casados/Noivos " onclick="abc()"/>
+                                <input name="menores" type="submit" value=" Menores de 35 / Solteiros "/>
                                 <input name="visitantes" type="submit" value="Visitantes"/>
                             </form>
                         {% endif %}
@@ -90,7 +88,7 @@
                                 {% if HabilitarEnsaio == 'true' %}
                                     <input name="ensaio" type="submit" value="Ensaio"/>
                                 {% endif %}
-                                {% if HabilitarEnsaio == '' or bolas['bolasDoBingoJson']['ListaDinamica'].__len__() > 0 %}
+                                {% if HabilitarEnsaio == '' or bolas.bolasDoBingoJson.ListaDinamica.__len__() > 0 %}
                                     <input name="dinamica" type="submit" value="Dinâmica"/>
                                 {% endif %}
                                 <input name="aniversario" type="submit" value="Aniversário de Casamento"/>

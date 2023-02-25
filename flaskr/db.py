@@ -1,7 +1,6 @@
 import sqlite3
 import click
 from flask import current_app, g
-from flask.cli import with_appcontext
 
 
 def get_db():
@@ -15,7 +14,7 @@ def get_db():
     return g.db
 
 
-def close_db(e=None):
+def close_db():
     db = g.pop('db', None)
 
     if db is not None:
@@ -36,7 +35,6 @@ def init_db():
         with current_app.open_resource('schema.sql') as f:
             db.executescript(f.read().decode('utf8'))
         click.echo('Initialized the database.')
-
 
 
 # @click.command('init-db')

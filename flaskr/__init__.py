@@ -4,10 +4,10 @@ from flask import Flask
 
 
 def create_app(test_config=None):
-    # create and configure the app
+    # create and configure the app Flask
     # app = Flask(__name__, instance_relative_config=True)
     app = Flask(__name__, instance_path=os.path.abspath('./instance'))
-    #app.jinja_env.globals['momentjs'] = momentjs
+    # app.jinja_env.globals['momentjs'] = momentjs
     app.config.from_mapping(
         SECRET_KEY='dev',
         DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
@@ -46,8 +46,9 @@ def create_app(test_config=None):
 
     return app.run(debug=True, port=5000)
 
+
 if __name__ == '__main__':
-    app = create_app()
+    create_app()
 
 # export FLASK_APP=flaskr
 # export FLASK_ENV=development
