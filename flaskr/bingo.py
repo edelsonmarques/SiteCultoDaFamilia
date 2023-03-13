@@ -10,7 +10,8 @@ from utils.connect import carregar_api, carregar_chaves_api, insert_db_vazio, \
 from utils.dates import pegar_mes, retornar_idade, niver_casamento
 from utils.json_db import json_montado
 from utils.converter import converter_str
-
+from enums import nomes_colunas, meses
+from datetime import datetime
 bp = Blueprint('bingo', __name__)
 
 
@@ -81,7 +82,7 @@ def index():
         update_db(g, jsonMontado)
         return redirect(url_for('bingo.index'))
 
-    if request.method == 'POST' and 'menores' in request.form:
+    if request.method == 'POST' and 'jovens' in request.form:
         # print('Bolas do Bingo:', BolasDoBingo)
         bolasDoBingoJson = bolas[0].bolasDoBingoJson
         listaMenor = bolasDoBingoJson.ListaMenor
@@ -98,7 +99,7 @@ def index():
             lista_menor=listaMenor,
             nome_sorteado_anterior=bolasDoBingoJson.NomeSorteado,
             nome_sorteado=nomeSorteado,
-            opcao=['menores'],
+            opcao=['jovens'],
             proximo=proximo
         )
 
@@ -370,9 +371,9 @@ def config(_id):
         except KeyError:
             return redirect(url_for('bingo.config', _id=_id))
 
-        print('dados: ', dados)
-        print('keys: ', dados.keys())
-        print('dados.transpose: ', dados.transpose())
+        # print('dados: ', dados)
+        # print('keys: ', dados.keys())
+        # print('dados.transpose: ', dados.transpose())
         dados = dados.transpose()
         colunas = ['idNumero', 'nomeTitular', 'nomeConjuge', 'congregacao',
                    'numCartao', 'nascimentoConjuge', 'nascimentoTitular',
@@ -380,14 +381,15 @@ def config(_id):
         for column in colunas:
             if column not in dados:
                 dados[column] = ''
-        print('keys: ', dados.keys())
+        # print('keys: ', dados.keys())
         for column in dados:
             dados = converter_str(dados, column)
-        print(dados)
+        # print(dados)
         dados['numCartao'] = dados['idNumero'].apply(
             lambda x: x.split('/')[1])
         dados['congregacao'] = dados['idNumero'].apply(
             lambda x: x.split('/')[0])
+        # dados.to_excel('pessoas.xlsx')
         dados['juntosConjuge'] = (dados['nomeConjuge'] + '|' +
                                   dados['congregacao'] + '|' +
                                   dados['numCartao'] + '|' +
@@ -422,7 +424,8 @@ def config(_id):
                 if str(_index) != str(_index).removesuffix('nan|'):
                     _index = str(_index).removesuffix('nan|') + '|'
                 if str(_index) == str(_index).removeprefix('nan|'):
-                    if str(_index).split('|')[1].lower() == 'visitante':
+                    if str(_index).split('|')[1].lower().__contains__(
+                            'visitante'):
                         listaVisitante.append(_index)
                     elif int(str(_index).split('|')[3]) < 18 or \
                             (int(str(_index).split('|')[3]) < 35 and
@@ -513,20 +516,102 @@ def config(_id):
         ConfAPI = bolas[0].bolasDoBingoJson.ConfAPI[0]
         caminho = request.form['report']
         ConfAPI = carregar_api(ConfAPI)
-        ConfAPI = ConfAPI['usuarios']
-        dados = pd.DataFrame(ConfAPI).transpose()
-        dados = dados.loc[:, ['idNumero', 'nomeTitular', 'nomeConjuge']]
+        usuarios = ConfAPI['usuarios']
+        presenca = ConfAPI['presenca']
+        # print(pd.DataFrame(usuarios))
+        dados = pd.DataFrame(usuarios).transpose()
+        # dados = dados.loc[:, ['idNumero', 'nomeTitular', 'nomeConjuge']]
         dados['congregacao'] = dados['idNumero'].apply(
             lambda x: x.split('/')[0])
         dados['idNumero'] = dados['idNumero'].apply(
             lambda x: x.split('/')[1])
-        dados = dados.loc[:, ['congregacao', 'idNumero',
-                              'nomeTitular', 'nomeConjuge']]
+        dados = dados.loc[:, nomes_colunas.COLUNAS_REPORT]
+
+        dados_presenca = pd.DataFrame(presenca)
         if platform.system() == 'Windows':
             caminho = caminho + '\\'
         else:
             caminho = caminho + '/'
-        pd.DataFrame(dados).to_excel(caminho + 'report.xlsx')
+
+        def pdf_writer(_writer=caminho + 'report.xlsx'):
+            pd.DataFrame(dados).to_excel(_writer,
+                                         sheet_name="Dados_usuarios")
+            mes_maximo = list()
+
+            for indice in meses.DICT_NUM_MES:
+                if indice <= datetime.now().month and indice not in [1, 12]:
+                    mes_maximo.append(meses.DICT_NUM_MES[indice])
+
+            for _mes in dados_presenca:
+                if _mes in mes_maximo:
+                    presenca_transp = pd.DataFrame(presenca[_mes]).transpose()
+                    presenca_transp['congregacao'] = \
+                        presenca_transp['idNumero'].apply(
+                            lambda x: x.split('/')[0])
+                    presenca_transp['idNumero'] = \
+                        presenca_transp['idNumero'].apply(
+                            lambda x: x.split('/')[1])
+                    presenca_transp = presenca_transp.loc[
+                                      :, nomes_colunas.COLUNAS_MESES_REPORT]
+                    presenca_transp = presenca_transp.merge(dados,
+                                                            on=['congregacao',
+                                                                'idNumero'],
+                                                            how='left',
+                                                            suffixes=(
+                                                                '_left',
+                                                                '_right')
+                                                            )
+                    for index, value in pd.DataFrame(presenca_transp).iterrows():
+                        presenca_transp.loc[index, ['estadoCivil']] = \
+                            value['estadoCivil_right']
+                        presenca_transp.loc[index, ['dataCasamento']] = \
+                            value['dataCasamento_right']
+                        presenca_transp.loc[index, ['nomeTitular']] = \
+                            value['nomeTitular_left']
+                        presenca_transp.loc[index, ['nomeConjuge']] = \
+                            value['nomeConjuge_left']
+                        if str(value['nomeTitular_left']).lower() != 'nan':
+                            presenca_transp.loc[index,
+                                                ['nascimentoTitular']] = \
+                                value['nascimentoTitular_right']
+                            presenca_transp.loc[index,
+                                                ['sexoTitular']] = \
+                                value['sexoTitular']
+                        else:
+                            presenca_transp.loc[
+                                index, ['nascimentoTitular']] = \
+                                value['nascimentoTitular_left']
+                            presenca_transp.loc[
+                                index, ['sexoTitular']] = ''
+                        if str(value['nomeConjuge_left']).lower() != 'nan':
+                            presenca_transp.loc[index,
+                                                ['nascimentoConjuge']] = \
+                                value['nascimentoConjuge_right']
+                            presenca_transp.loc[index,
+                                                ['sexoConjuge']] = \
+                                value['sexoConjuge']
+                        else:
+                            presenca_transp.loc[
+                                index, ['nascimentoConjuge']] = \
+                                value['nascimentoConjuge_left']
+                            presenca_transp.loc[index,
+                                                ['sexoConjuge']] = ''
+                        # if index == 161:
+                        #     print(presenca_transp.loc[index])
+                    presenca_transp = presenca_transp.loc[
+                                      :, nomes_colunas.COLUNAS_MERGE_REPORT]
+                    presenca_transp.to_excel(_writer, sheet_name=_mes)
+        try:
+            with pd.ExcelWriter(caminho + 'report.xlsx', mode='a',
+                                if_sheet_exists="replace") as writer:
+                pdf_writer(writer)
+        except FileNotFoundError:
+            with pd.ExcelWriter(caminho + 'report.xlsx') as writer:
+                pdf_writer(writer)
+            # with pd.ExcelWriter(caminho + 'report.xlsx', mode='a',
+            #                     if_sheet_exists="replace") as writer:
+            #     pdf_writer(writer)
+
         print()
         print(f'Arquivo exportado em: {caminho}report.xlsx')
         print()

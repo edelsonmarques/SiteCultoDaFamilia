@@ -33,7 +33,7 @@ def pegar_mes(mes_atual):
 
 
 def retornar_idade(nascimento):
-    if nascimento not in ['nan', '']:
+    if nascimento not in ['nan', '', '00/00/0000']:
         nascimento = datetime.strptime(nascimento, "%d/%m/%Y").date()
         today = date.today()
         return str(today.year -
@@ -42,17 +42,19 @@ def retornar_idade(nascimento):
                            (nascimento.month, nascimento.day)
                    )
                    )
-    if nascimento not in ['nan']:
+    if nascimento not in ['nan', '00/00/0000']:
         nascimento = date.today()
         return retornar_idade(str(f"{nascimento.day}/"
                                   f"{nascimento.month}/"
                                   f"{nascimento.year}"))
+    if nascimento in ['00/00/0000']:
+        return str(30)
     else:
-        return nascimento
+        return str(30)
 
 
 def niver_casamento(casamento, mes, mes_teste=0):
-    if casamento not in ['nan', '']:
+    if casamento not in ['nan', '', '00/00/0000']:
         if mes_teste == 0:
             casamento = datetime.strptime(casamento, "%d/%m/%Y").date()
             casamento = casamento.month
