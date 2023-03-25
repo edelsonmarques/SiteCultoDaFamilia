@@ -1,0 +1,8 @@
+ALAMEDA = 'alameda - veneza'
+JARDIMCOPACABANA1 = 'jardim copacabana'
+JARDIMCOPACABANA2 = 'jardim copacabana 2'
+NOVADIVINEIA1 = 'nova divinéia'
+NOVADIVINEIA2 = 'nova divinéia 2'
+PIEDADE = 'piedade'
+VENEZA4 = 'veneza 4'
+VISITANTE = 'visitante'

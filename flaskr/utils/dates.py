@@ -1,5 +1,5 @@
 from datetime import datetime, date
-from flaskr.enums import meses
+from enums import meses
 
 
 def pegar_mes(mes_atual):

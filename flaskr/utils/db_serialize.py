@@ -1,5 +1,5 @@
-from flaskr.utils.converter import converter_str_json
-from flaskr.classes.db_classes import DadosDict, List
+from .converter import converter_str_json
+from classes.db_classes import DadosDict, List
 
 dados_dict: DadosDict
 

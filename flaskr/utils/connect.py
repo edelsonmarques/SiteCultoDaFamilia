@@ -1,10 +1,10 @@
 import requests
 import json
 import pandas as pd
-from flaskr.db import get_db
-from flaskr.utils.resources import file_local
-from flaskr.utils.db_serialize import armazenar_enums, get_dados_dict, DadosDict, List
-from flaskr.utils.json_db import json_montado
+from db import get_db
+from .resources import file_local
+from .db_serialize import armazenar_enums, get_dados_dict, DadosDict, List
+from .json_db import json_montado
 
 
 def carregar_api(url: str = '', path_file: str = '') -> json:

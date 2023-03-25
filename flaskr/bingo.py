@@ -2,15 +2,16 @@ from flask import (
     Blueprint, g, redirect, render_template, request, url_for
 )
 from auth import login_required
-import random
 import pandas as pd
 import platform
+from actions.general import remove_people, remove_congregacao
 from utils.connect import carregar_api, carregar_chaves_api, insert_db_vazio, \
     select_dict, update_db
 from utils.dates import pegar_mes, retornar_idade, niver_casamento
 from utils.json_db import json_montado
 from utils.converter import converter_str
-from enums import nomes_colunas, meses
+from enums import nomes_colunas, meses, congregacoes, actions
+from utils.print_class import print_class
 from datetime import datetime
 bp = Blueprint('bingo', __name__)
 
@@ -39,290 +40,59 @@ def index():
     #     print()
 
     if request.method == 'POST' and 'geral' in request.form:
-        # print('Bolas do Bingo:', BolasDoBingo)
-        bolasDoBingoJson = bolas[0].bolasDoBingoJson
-        listaGeral = bolasDoBingoJson.ListaGeral
-        listaDinamica = bolasDoBingoJson.ListaDinamica
-        listaNiverCasamento = bolasDoBingoJson.ListaNiverCasamento
-        listaEnsaio = bolasDoBingoJson.ListaEnsaio
-        nomeSorteado = bolasDoBingoJson.NomeSorteado
-        proximo = bolasDoBingoJson.Proximo
-        if len(listaGeral) != 0:
-            nomeSorteado = [random.choice(listaGeral)]
-            # Remove o ganhador
-            listaGeral.remove(nomeSorteado[0])
-            proximo = ['True']
-            try:
-                listaDinamica.remove(nomeSorteado[0])
-            except Exception as e:
-                print('Lista Dinâmica não tem o nome sorteado. Erro: ', e)
-                pass
-            try:
-                listaNiverCasamento.remove(nomeSorteado[0])
-            except Exception as e:
-                print('Lista Aniversário não tem o nome sorteado. Erro: ', e)
-                pass
-            try:
-                listaEnsaio.remove(nomeSorteado[0])
-            except Exception as e:
-                print('Lista Ensaio não tem o nome sorteado. Erro: ', e)
-                pass
-
-        jsonMontado = json_montado(
-            bolas_do_bingo_json=bolasDoBingoJson,
-            lista_geral=listaGeral,
-            lista_dinamica=listaDinamica,
-            lista_niver_casamento=listaNiverCasamento,
-            lista_ensaio=listaEnsaio,
-            nome_sorteado_anterior=bolasDoBingoJson.NomeSorteado,
-            nome_sorteado=nomeSorteado,
-            opcao=['adultos/casados'],
-            proximo=proximo
-        )
-        update_db(g, jsonMontado)
+        remove_people(g, bolas, actions.GERAL)
         return redirect(url_for('bingo.index'))
 
-    if request.method == 'POST' and 'jovens' in request.form:
-        # print('Bolas do Bingo:', BolasDoBingo)
-        bolasDoBingoJson = bolas[0].bolasDoBingoJson
-        listaMenor = bolasDoBingoJson.ListaMenor
-        nomeSorteado = bolasDoBingoJson.NomeSorteado
-        proximo = bolasDoBingoJson.Proximo
-        if len(listaMenor) != 0:
-            nomeSorteado = [random.choice(listaMenor)]
-            # Remove o ganhador
-            listaMenor.remove(nomeSorteado[0])
-            proximo = ['True']
-
-        jsonMontado = json_montado(
-            bolas_do_bingo_json=bolasDoBingoJson,
-            lista_menor=listaMenor,
-            nome_sorteado_anterior=bolasDoBingoJson.NomeSorteado,
-            nome_sorteado=nomeSorteado,
-            opcao=['jovens'],
-            proximo=proximo
-        )
-
-        update_db(g, jsonMontado)
+    if request.method == 'POST' and actions.JOVENS in request.form:
+        remove_people(g, bolas, actions.JOVENS)
         return redirect(url_for('bingo.index'))
 
-    if request.method == 'POST' and 'visitantes' in request.form:
-        # print('Bolas do Bingo:', BolasDoBingo)
-        bolasDoBingoJson = bolas[0].bolasDoBingoJson
-        listaVisitante = bolasDoBingoJson.ListaVisitante
-        nomeSorteado = bolasDoBingoJson.NomeSorteado
-        proximo = bolasDoBingoJson.Proximo
-        if len(listaVisitante) != 0:
-            nomeSorteado = [random.choice(listaVisitante)]
-            # Remove o ganhador
-            listaVisitante.remove(nomeSorteado[0])
-            proximo = ['True']
-
-        jsonMontado = json_montado(
-            bolas_do_bingo_json=bolasDoBingoJson,
-            lista_visitante=listaVisitante,
-            nome_sorteado_anterior=bolasDoBingoJson.NomeSorteado,
-            nome_sorteado=nomeSorteado,
-            opcao=['visitantes'],
-            proximo=proximo
-        )
-
-        update_db(g, jsonMontado)
-
+    if request.method == 'POST' and actions.VISITANTES in request.form:
+        remove_people(g, bolas, actions.VISITANTES)
         return redirect(url_for('bingo.index'))
 
-    if request.method == 'POST' and 'aniversario' in request.form:
-        # print('Bolas do Bingo:', BolasDoBingo)
-        bolasDoBingoJson = bolas[0].bolasDoBingoJson
-        listaGeral = bolasDoBingoJson.ListaGeral
-        listaDinamica = bolasDoBingoJson.ListaDinamica
-        listaNiverCasamento = bolasDoBingoJson.ListaNiverCasamento
-        listaEnsaio = bolasDoBingoJson.ListaEnsaio
-        nomeSorteado = bolasDoBingoJson.NomeSorteado
-        proximo = bolasDoBingoJson.Proximo
-        if len(listaNiverCasamento) != 0:
-            nomeSorteado = [random.choice(listaNiverCasamento)]
-            # Remove o ganhador
-            listaNiverCasamento.remove(nomeSorteado[0])
-            proximo = ['True']
-            try:
-                listaDinamica.remove(nomeSorteado[0])
-            except Exception as e:
-                print('Lista Dinâmica não tem o nome sorteado. Erro: ', e)
-                pass
-            try:
-                listaGeral.remove(nomeSorteado[0])
-            except Exception as e:
-                print('Lista Geral não tem o nome sorteado. Erro: ', e)
-                pass
-            try:
-                listaEnsaio.remove(nomeSorteado[0])
-            except Exception as e:
-                print('Lista Ensaio não tem o nome sorteado. Erro: ', e)
-                pass
-
-        jsonMontado = json_montado(
-            bolas_do_bingo_json=bolasDoBingoJson,
-            lista_geral=listaGeral,
-            lista_dinamica=listaDinamica,
-            lista_niver_casamento=listaNiverCasamento,
-            lista_ensaio=listaEnsaio,
-            nome_sorteado_anterior=bolasDoBingoJson.NomeSorteado,
-            nome_sorteado=nomeSorteado,
-            opcao=['aniversario'],
-            proximo=proximo
-        )
-
-        update_db(g, jsonMontado)
-
+    if request.method == 'POST' and actions.ANIVERSARIO in request.form:
+        remove_people(g, bolas, actions.ANIVERSARIO)
         return redirect(url_for('bingo.index'))
 
-    if request.method == 'POST' and 'dinamica' in request.form:
-        # print('Bolas do Bingo:', BolasDoBingo)
-        bolasDoBingoJson = bolas[0].bolasDoBingoJson
-        listaGeral = bolasDoBingoJson.ListaGeral
-        listaDinamica = bolasDoBingoJson.ListaDinamica
-        listaNiverCasamento = bolasDoBingoJson.ListaNiverCasamento
-        listaEnsaio = bolasDoBingoJson.ListaEnsaio
-        nomeSorteado = bolasDoBingoJson.NomeSorteado
-        proximo = bolasDoBingoJson.Proximo
-        if len(listaDinamica) != 0:
-            nomeSorteado = [random.choice(listaDinamica)]
-            # Remove o ganhador
-            listaDinamica.remove(nomeSorteado[0])
-            proximo = ['True']
-            try:
-                listaNiverCasamento.remove(nomeSorteado[0])
-            except Exception as e:
-                print('Lista Aniversário não tem o nome sorteado. Erro: ', e)
-                pass
-            try:
-                listaGeral.remove(nomeSorteado[0])
-            except Exception as e:
-                print('Lista Geral não tem o nome sorteado. Erro: ', e)
-                pass
-            try:
-                listaEnsaio.remove(nomeSorteado[0])
-            except Exception as e:
-                print('Lista Ensaio não tem o nome sorteado. Erro: ', e)
-                pass
-
-        jsonMontado = json_montado(
-            bolas_do_bingo_json=bolasDoBingoJson,
-            lista_geral=listaGeral,
-            lista_dinamica=listaDinamica,
-            lista_niver_casamento=listaNiverCasamento,
-            lista_ensaio=listaEnsaio,
-            nome_sorteado_anterior=bolasDoBingoJson.NomeSorteado,
-            nome_sorteado=nomeSorteado,
-            opcao=['dinamica'],
-            proximo=proximo
-        )
-
-        update_db(g, jsonMontado)
+    if request.method == 'POST' and actions.DINAMICA in request.form:
+        remove_people(g, bolas, actions.DINAMICA)
         return redirect(url_for('bingo.index'))
 
-    if request.method == 'POST' and 'ensaio' in request.form:
-        # print('Bolas do Bingo:', BolasDoBingo)
-        bolasDoBingoJson = bolas[0].bolasDoBingoJson
-        listaGeral = bolasDoBingoJson.ListaGeral
-        listaDinamica = bolasDoBingoJson.ListaDinamica
-        listaNiverCasamento = bolasDoBingoJson.ListaNiverCasamento
-        listaEnsaio = bolasDoBingoJson.ListaEnsaio
-        nomeSorteado = bolasDoBingoJson.NomeSorteado
-        proximo = bolasDoBingoJson.Proximo
-        if len(listaEnsaio) != 0:
-            nomeSorteado = [random.choice(listaEnsaio)]
-            # Remove o ganhador
-            listaEnsaio.remove(nomeSorteado[0])
-            proximo = ['True']
-            try:
-                listaNiverCasamento.remove(nomeSorteado[0])
-            except Exception as e:
-                print('Lista Aniversário não tem o nome sorteado. Erro: ', e)
-                pass
-            try:
-                listaGeral.remove(nomeSorteado[0])
-            except Exception as e:
-                print('Lista Geral não tem o nome sorteado. Erro: ', e)
-                pass
-            try:
-                listaDinamica.remove(nomeSorteado[0])
-            except Exception as e:
-                print('Lista Dinâmica não tem o nome sorteado. Erro: ', e)
-                pass
+    if request.method == 'POST' and actions.ENSAIO in request.form:
+        remove_people(g, bolas, actions.ENSAIO)
+        return redirect(url_for('bingo.index'))
 
-        jsonMontado = json_montado(
-            bolas_do_bingo_json=bolasDoBingoJson,
-            lista_geral=listaGeral,
-            lista_dinamica=listaDinamica,
-            lista_niver_casamento=listaNiverCasamento,
-            lista_ensaio=listaEnsaio,
-            nome_sorteado_anterior=bolasDoBingoJson.NomeSorteado,
-            nome_sorteado=nomeSorteado,
-            opcao=['ensaio'],
-            proximo=proximo
-        )
+    if request.method == 'POST' and actions.ALAMEDA in request.form:
+        remove_people(g, bolas, actions.ALAMEDA)
+        return redirect(url_for('bingo.index'))
 
-        update_db(g, jsonMontado)
+    if request.method == 'POST' and actions.JDCOPA1 in request.form:
+        remove_people(g, bolas, actions.JDCOPA1)
+        return redirect(url_for('bingo.index'))
+
+    if request.method == 'POST' and actions.JDCOPA2 in request.form:
+        remove_people(g, bolas, actions.JDCOPA2)
+        return redirect(url_for('bingo.index'))
+
+    if request.method == 'POST' and actions.ND1 in request.form:
+        remove_people(g, bolas, actions.ND1)
+        return redirect(url_for('bingo.index'))
+
+    if request.method == 'POST' and actions.ND2 in request.form:
+        remove_people(g, bolas, actions.ND2)
+        return redirect(url_for('bingo.index'))
+
+    if request.method == 'POST' and actions.PIEDADE in request.form:
+        remove_people(g, bolas, actions.PIEDADE)
+        return redirect(url_for('bingo.index'))
+
+    if request.method == 'POST' and actions.VENEZA4 in request.form:
+        remove_people(g, bolas, actions.VENEZA4)
         return redirect(url_for('bingo.index'))
 
     if request.method == 'POST' and 'sim' in request.form:
-        # print('Bolas do Bingo:', BolasDoBingo)
-        bolasDoBingoJson = bolas[0].bolasDoBingoJson
-        listaGeral = bolasDoBingoJson.ListaGeral
-        listaDinamica = bolasDoBingoJson.ListaDinamica
-        listaNiverCasamento = bolasDoBingoJson.ListaNiverCasamento
-        listaEnsaio = bolasDoBingoJson.ListaEnsaio
-        nomeSorteado = bolasDoBingoJson.NomeSorteado
-        opcao = bolasDoBingoJson.Opcao
-        if opcao[0] in ['adultos/casados',
-                        'dinamica', 'aniversario', 'ensaio']:
-            # Remove o ganhador
-
-            congregacao = nomeSorteado[0].split('|')[1]
-            numCartao = nomeSorteado[0].split('|')[2]
-
-            def remover_pessoa(lista):
-                for pessoa in lista:
-                    if pessoa.split('|')[1] == congregacao and \
-                            pessoa.split('|')[2] == numCartao:
-                        lista.remove(pessoa)
-                return lista
-
-            try:
-                listaEnsaio = remover_pessoa(listaEnsaio)
-            except Exception as e:
-                print('Lista Ensaio não tem o nome sorteado. Erro: ', e)
-                pass
-            try:
-                listaNiverCasamento = remover_pessoa(listaNiverCasamento)
-            except Exception as e:
-                print('Lista Aniversário não tem o nome sorteado. Erro: ', e)
-                pass
-            try:
-                listaGeral = remover_pessoa(listaGeral)
-            except Exception as e:
-                print('Lista Geral não tem o nome sorteado. Erro: ', e)
-                pass
-            try:
-                listaDinamica = remover_pessoa(listaDinamica)
-            except Exception as e:
-                print('Lista Dinâmica não tem o nome sorteado. Erro: ', e)
-                pass
-
-        jsonMontado = json_montado(
-            bolas_do_bingo_json=bolasDoBingoJson,
-            lista_geral=listaGeral,
-            lista_dinamica=listaDinamica,
-            lista_niver_casamento=listaNiverCasamento,
-            lista_ensaio=listaEnsaio,
-            nome_sorteado_anterior=bolasDoBingoJson.NomeSorteadoAnterior,
-            nome_sorteado=nomeSorteado,
-            proximo=['']
-        )
-
-        update_db(g, jsonMontado)
+        remove_people(g, bolas, 'sim')
         return redirect(url_for('bingo.index'))
 
     if request.method == 'POST' and 'nao' in request.form:
@@ -346,7 +116,8 @@ def index():
         _id = (bolas[0].id if 'id' in bolas[0] else g.user['id'])
         return redirect(url_for(f'bingo.config', _id=_id))
 
-    print(bolas[0])
+    print_class(bolas[0])
+    # print(bolas[0])
     return render_template('bingo/index.html', bolas=bolas[0])
 
 
@@ -418,6 +189,13 @@ def config(_id):
         listaMenor = list()
         listaNiverCasamento = list()
         listaEnsaio = list()
+        listaEnsaioAlameda = list()
+        listaEnsaioJardimCopa1 = list()
+        listaEnsaioJardimCopa2 = list()
+        listaEnsaioNovaDivineia1 = list()
+        listaEnsaioNovaDivineia2 = list()
+        listaEnsaioPiedade = list()
+        listaEnsaioVeneza4 = list()
         for column in dados:
             for _index in dados[column]:
                 _index = str(_index).removesuffix('nan')
@@ -425,7 +203,7 @@ def config(_id):
                     _index = str(_index).removesuffix('nan|') + '|'
                 if str(_index) == str(_index).removeprefix('nan|'):
                     if str(_index).split('|')[1].lower().__contains__(
-                            'visitante'):
+                            congregacoes.VISITANTE):
                         listaVisitante.append(_index)
                     elif int(str(_index).split('|')[3]) < 18 or \
                             (int(str(_index).split('|')[3]) < 35 and
@@ -437,6 +215,27 @@ def config(_id):
                             listaNiverCasamento.append(_index)
                         if mes[0].lower().__contains__('ensaio'):
                             listaEnsaio.append(_index)
+                            if str(_index).split('|')[1].lower() == \
+                                    congregacoes.ALAMEDA:
+                                listaEnsaioAlameda.append(_index)
+                            elif str(_index).split('|')[1].lower() == \
+                                    congregacoes.JARDIMCOPACABANA1:
+                                listaEnsaioJardimCopa1.append(_index)
+                            elif str(_index).split('|')[1].lower() == \
+                                    congregacoes.JARDIMCOPACABANA2:
+                                listaEnsaioJardimCopa2.append(_index)
+                            elif str(_index).split('|')[1].lower() == \
+                                    congregacoes.NOVADIVINEIA1:
+                                listaEnsaioNovaDivineia1.append(_index)
+                            elif str(_index).split('|')[1].lower() == \
+                                    congregacoes.NOVADIVINEIA2:
+                                listaEnsaioNovaDivineia2.append(_index)
+                            elif str(_index).split('|')[1].lower() == \
+                                    congregacoes.PIEDADE:
+                                listaEnsaioPiedade.append(_index)
+                            elif str(_index).split('|')[1].lower() == \
+                                    congregacoes.VENEZA4:
+                                listaEnsaioVeneza4.append(_index)
 
         # Colocar os dados adquiridos na tabela correta
         jsonMontado = json_montado(
@@ -447,6 +246,13 @@ def config(_id):
             lista_dinamica=listaDinamica,
             lista_niver_casamento=listaNiverCasamento,
             lista_ensaio=listaEnsaio,
+            lista_ensaio_alameda=listaEnsaioAlameda,
+            lista_ensaio_jardim_copa_1=listaEnsaioJardimCopa1,
+            lista_ensaio_jardim_copa_2=listaEnsaioJardimCopa2,
+            lista_ensaio_nova_divineia_1=listaEnsaioNovaDivineia1,
+            lista_ensaio_nova_divineia_2=listaEnsaioNovaDivineia2,
+            lista_ensaio_piedade=listaEnsaioPiedade,
+            lista_ensaio_veneza_4=listaEnsaioVeneza4,
             mes_sorteio=mes,
             nome_sorteado_anterior=[''],
             nome_sorteado=[''],
@@ -460,19 +266,21 @@ def config(_id):
     if request.method == 'POST' and 'dinamica' in request.form:
         # Realizar chamada para o banco da API
         bolasDoBingoJson = bolas[0].bolasDoBingoJson
-        congregacao = request.form['dinamica'].split('|')[0]
-        NumCartao = request.form['dinamica'].split('|')[1]
         listaGeral = bolasDoBingoJson.ListaGeral
         listaDinamica = set(bolasDoBingoJson.ListaDinamica)
         ultimoItem = ''
-        for item in listaGeral:
-            if item.split('|')[1] == congregacao and \
-                    item.split('|')[2] == NumCartao:
-                listaDinamica.add(item)
-                ultimoItem = item
 
-        if len(listaDinamica) % 2 != 0:
-            listaDinamica.remove(ultimoItem)
+        for cartao in request.form['dinamica'].split(','):
+            congregacao = cartao.split('|')[0]
+            NumCartao = cartao.split('|')[1]
+            for item in listaGeral:
+                if item.split('|')[1] == congregacao and \
+                        item.split('|')[2] == NumCartao:
+                    listaDinamica.add(item)
+                    ultimoItem = item
+
+            if len(listaDinamica) % 2 != 0:
+                listaDinamica.remove(ultimoItem)
 
         # Colocar os dados adquiridos na tabela correta
         jsonMontado = json_montado(
@@ -488,18 +296,20 @@ def config(_id):
     if request.method == 'POST' and 'menor_solteiro' in request.form:
         # Realizar chamada para o banco da API
         bolasDoBingoJson = bolas[0].bolasDoBingoJson
-        congregacao = request.form['menor_solteiro'].split('|')[0]
-        NumCartao = request.form['menor_solteiro'].split('|')[1]
         listaGeral = bolasDoBingoJson.ListaGeral
         listaMenor = bolasDoBingoJson.ListaMenor
         ultimoItem = ''
-        for item in listaMenor:
-            if item.split('|')[1] == congregacao and \
-                    item.split('|')[2] == NumCartao:
-                listaGeral.append(item)
-                ultimoItem = item
 
-        listaMenor.remove(ultimoItem)
+        for cartao in request.form['menor_solteiro'].split(','):
+            congregacao = cartao.split('|')[0]
+            NumCartao = cartao.split('|')[1]
+            for item in listaMenor:
+                if item.split('|')[1] == congregacao and \
+                        item.split('|')[2] == NumCartao:
+                    listaGeral.append(item)
+                    ultimoItem = item
+
+            listaMenor.remove(ultimoItem)
 
         # Colocar os dados adquiridos na tabela correta
         jsonMontado = json_montado(
@@ -533,7 +343,8 @@ def config(_id):
         else:
             caminho = caminho + '/'
 
-        def pdf_writer(_writer=caminho + 'report.xlsx'):
+        def pdf_writer(_writer: pd.ExcelWriter =
+                       caminho + 'report.xlsx'):
             pd.DataFrame(dados).to_excel(_writer,
                                          sheet_name="Dados_usuarios")
             mes_maximo = list()
@@ -541,10 +352,16 @@ def config(_id):
             for indice in meses.DICT_NUM_MES:
                 if indice <= datetime.now().month and indice not in [1, 12]:
                     mes_maximo.append(meses.DICT_NUM_MES[indice])
-
+                    mes_maximo.append(f'ensaio_{meses.DICT_NUM_MES[indice]}')
+            # print('mes_maximo:', mes_maximo, '\n')
+            # print('dados_presenca - chaves: \n', dados_presenca.keys())
+            # print('dados_presenca: \n', dados_presenca)
             for _mes in dados_presenca:
                 if _mes in mes_maximo:
+                    # print('mes teste: ', _mes)
                     presenca_transp = pd.DataFrame(presenca[_mes]).transpose()
+                    # print('chaves da presenca do mês em teste: ', presenca_transp.keys())
+                    # print('presenca do mês em teste: \n', presenca_transp)
                     presenca_transp['congregacao'] = \
                         presenca_transp['idNumero'].apply(
                             lambda x: x.split('/')[0])
@@ -561,40 +378,41 @@ def config(_id):
                                                                 '_left',
                                                                 '_right')
                                                             )
-                    for index, value in pd.DataFrame(presenca_transp).iterrows():
-                        presenca_transp.loc[index, ['estadoCivil']] = \
+                    for index_, value in \
+                            pd.DataFrame(presenca_transp).iterrows():
+                        presenca_transp.loc[index_, ['estadoCivil']] = \
                             value['estadoCivil_right']
-                        presenca_transp.loc[index, ['dataCasamento']] = \
+                        presenca_transp.loc[index_, ['dataCasamento']] = \
                             value['dataCasamento_right']
-                        presenca_transp.loc[index, ['nomeTitular']] = \
+                        presenca_transp.loc[index_, ['nomeTitular']] = \
                             value['nomeTitular_left']
-                        presenca_transp.loc[index, ['nomeConjuge']] = \
+                        presenca_transp.loc[index_, ['nomeConjuge']] = \
                             value['nomeConjuge_left']
                         if str(value['nomeTitular_left']).lower() != 'nan':
-                            presenca_transp.loc[index,
+                            presenca_transp.loc[index_,
                                                 ['nascimentoTitular']] = \
                                 value['nascimentoTitular_right']
-                            presenca_transp.loc[index,
+                            presenca_transp.loc[index_,
                                                 ['sexoTitular']] = \
                                 value['sexoTitular']
                         else:
                             presenca_transp.loc[
-                                index, ['nascimentoTitular']] = \
+                                index_, ['nascimentoTitular']] = \
                                 value['nascimentoTitular_left']
                             presenca_transp.loc[
-                                index, ['sexoTitular']] = ''
+                                index_, ['sexoTitular']] = ''
                         if str(value['nomeConjuge_left']).lower() != 'nan':
-                            presenca_transp.loc[index,
+                            presenca_transp.loc[index_,
                                                 ['nascimentoConjuge']] = \
                                 value['nascimentoConjuge_right']
-                            presenca_transp.loc[index,
+                            presenca_transp.loc[index_,
                                                 ['sexoConjuge']] = \
                                 value['sexoConjuge']
                         else:
                             presenca_transp.loc[
-                                index, ['nascimentoConjuge']] = \
+                                index_, ['nascimentoConjuge']] = \
                                 value['nascimentoConjuge_left']
-                            presenca_transp.loc[index,
+                            presenca_transp.loc[index_,
                                                 ['sexoConjuge']] = ''
                         # if index == 161:
                         #     print(presenca_transp.loc[index])
@@ -644,13 +462,30 @@ def config(_id):
         jsonMontado = json_montado(
             bolas_do_bingo_json=bolasDoBingoJson,
             habilitar_ensaio=['true' if
-                              request.form['habilitarEnsaio'] ==
-                              'Habilitar' else '']
+                              request.form['habilitarEnsaio'].__contains__(
+                                  'Habilitar') else '']
         )
         update_db(g, jsonMontado)
         return redirect(url_for('bingo.config', _id=_id))
 
-    print(bolas[0])
+    if request.method == 'POST' and 'desabilitar_congregacao' in request.form:
+        lista_desabilitar = list()
+        for item in request.form:
+            if item.__contains__('des_'):
+                lista_desabilitar.append(request.form[item])
+        print(print(request.form))
+        print(lista_desabilitar)
+        remove_congregacao(g, bolas, lista_desabilitar)
+        # jsonMontado = json_montado(
+        #     bolas_do_bingo_json=bolasDoBingoJson,
+        #     # habilitar_ensaio=['true' if
+        #     #                   request.form['habilitarEnsaio'].__contains__(
+        #     #                       'Habilitar') else '']
+        # )
+        # update_db(g, jsonMontado)
+        return redirect(url_for('bingo.config', _id=_id))
+
+    print_class(bolas[0])
     return render_template('bingo/configuracao.html', bolas=bolas[0])
 
 

@@ -1,6 +1,6 @@
 import json
 from flask import redirect, url_for
-from flaskr.classes.db_classes import BolasDoBingoJson
+from classes.db_classes import BolasDoBingoJson
 
 
 def converter_str_json(bolas_do_bingo_json) -> BolasDoBingoJson or redirect:

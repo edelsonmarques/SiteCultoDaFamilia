@@ -82,15 +82,62 @@
             <form method="post">
                     <p> Dia de ensaio?
                         {% if bolas['bolasDoBingoJson']['HabilitarEnsaio'][0] == 'true' %}
-                            <input type="submit" name="habilitarEnsaio" value="Desabilitar">
+                            <input type="submit" name="habilitarEnsaio" value="Desabilitar Modo Ensaio">
                         {% else %}
-                            <input type="submit" name="habilitarEnsaio" value="Habilitar">
+                            <input type="submit" name="habilitarEnsaio" value="Habilitar Modo Ensaio">
                         {% endif %}
                     </p>
             </form>
             <form method="post">
                     {% if bolas['bolasDoBingoJson']['HabilitarEnsaio'][0] == 'true' %}
                         <label>Quantidade de cartões cadastrados: {{ bolas['bolasDoBingoJson']['ListaEnsaio'].__len__() }}</label>
+                        <p>
+                            <br><br>
+                            Desabilitar Congregação:
+                            <br><br>
+                            {% if bolas['bolasDoBingoJson']['HabilitarListaAlameda'][0] == 'true' %}
+                                <input type="checkbox" name="des_alameda" value="alameda"> Alamedas
+                            {% else %}
+                                <input type="checkbox" name="des_alameda" value="alameda" checked> Alamedas
+                            {% endif %}
+
+                            {% if bolas['bolasDoBingoJson']['HabilitarListaJardimCopa1'][0] == 'true' %}
+                                <input type="checkbox" name="des_jdcopacabana1" value="jdcopacabana1"> Jardim Copacabana
+                            {% else %}
+                                <input type="checkbox" name="des_jdcopacabana1" value="jdcopacabana1" checked> Jardim Copacabana
+                            {% endif %}
+
+                            {% if bolas['bolasDoBingoJson']['HabilitarListaJardimCopa2'][0] == 'true' %}
+                                <input type="checkbox" name="des_jdcopacabana2" value="jdcopacabana2"> Jardim Copacabana 2
+                            {% else %}
+                                <input type="checkbox" name="des_jdcopacabana2" value="jdcopacabana2" checked> Jardim Copacabana 2
+                            {% endif %}
+
+                            {% if bolas['bolasDoBingoJson']['HabilitarListaNovaDivineia1'][0] == 'true' %}
+                                <input type="checkbox" name="des_novadivineia1" value="novadivineia"> Nova Divinéia
+                            {% else %}
+                                <input type="checkbox" name="des_novadivineia1" value="novadivineia" checked> Nova Divinéia
+                            {% endif %}
+
+                            {% if bolas['bolasDoBingoJson']['HabilitarListaNovaDivineia2'][0] == 'true' %}
+                                <input type="checkbox" name="des_novadivineia2" value="novadivineia2"> Nova Divinéia 2
+                            {% else %}
+                                <input type="checkbox" name="des_novadivineia2" value="novadivineia2" checked> Nova Divinéia 2
+                            {% endif %}
+
+                            {% if bolas['bolasDoBingoJson']['HabilitarListaPiedade'][0] == 'true' %}
+                                <input type="checkbox" name="des_piedade" value="piedade"> Piedade
+                            {% else %}
+                                <input type="checkbox" name="des_piedade" value="piedade" checked> Piedade
+                            {% endif %}
+
+                            {% if bolas['bolasDoBingoJson']['HabilitarListaVeneza4'][0] == 'true' %}
+                                <input type="checkbox" name="des_veneza4" value="veneza4"> Veneza 4
+                            {% else %}
+                                <input type="checkbox" name="des_veneza4" value="veneza4" checked> Veneza 4
+                            {% endif %}
+                        </p>
+                        <input type="submit" name="desabilitar_congregacao" value="Desabilitar">
                     {% endif %}
             </form>
         </div>

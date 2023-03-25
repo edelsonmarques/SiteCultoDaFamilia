@@ -134,6 +134,10 @@
     background-color: #d5011d;
 }
 
+.tela_botoes .btn-disable{
+    background-color: red;
+}
+
 .tela_botoes input:active {
   transform: scale(1);
   background-position: 500px;
