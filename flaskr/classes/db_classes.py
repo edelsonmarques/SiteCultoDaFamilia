@@ -28,8 +28,6 @@ class BolasDoBingoJson(BaseModel):
     ListaMesSorteio: List[str]
     NomeSorteadoAnterior: List[str]
     NomeSorteado: List[str]
-    Opcao: List[str]
-    Proximo: List[str]
     Ensaio: List[str]
     HabilitarEnsaio: List[str]
 

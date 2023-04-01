@@ -21,202 +21,203 @@ def remove_people(g, bolas, option, _print=False):
     listaMenor = bolasDoBingoJson.ListaMenor
     listaVisitante = bolasDoBingoJson.ListaVisitante
     nomeSorteado = bolasDoBingoJson.NomeSorteado
-    proximo = bolasDoBingoJson.Proximo
-    opcao = bolasDoBingoJson.Opcao
-    if option != 'sim':
-        if len(listaGeral) != 0 and option == actions.GERAL:
-            nomeSorteado = [random.choice(listaGeral)]
-            proximo = ['True']
-        elif len(listaMenor) != 0 and option == actions.JOVENS:
-            nomeSorteado = [random.choice(listaMenor)]
-            proximo = ['True']
-            # Remove o ganhador
-            listaMenor.remove(nomeSorteado[0])
-        elif len(listaVisitante) != 0 and option == actions.VISITANTES:
-            nomeSorteado = [random.choice(listaVisitante)]
-            proximo = ['True']
-            # Remove o ganhador
-            listaVisitante.remove(nomeSorteado[0])
-        elif len(listaNiverCasamento) != 0 and option == actions.ANIVERSARIO:
-            nomeSorteado = [random.choice(listaNiverCasamento)]
-            proximo = ['True']
-        elif len(listaDinamica) != 0 and option == actions.DINAMICA:
-            nomeSorteado = [random.choice(listaDinamica)]
-            proximo = ['True']
-        elif len(listaEnsaio) != 0 and option == actions.ENSAIO:
-            nomeSorteado = [random.choice(listaEnsaio)]
-            proximo = ['True']
-        elif len(listaEnsaioAlameda) != 0 and option == actions.ALAMEDA:
-            nomeSorteado = [random.choice(listaEnsaioAlameda)]
-            proximo = ['True']
-        elif len(listaEnsaioJardinCopa1) != 0 and option == actions.JDCOPA1:
-            nomeSorteado = [random.choice(listaEnsaioJardinCopa1)]
-            proximo = ['True']
-        elif len(listaEnsaioJardinCopa2) != 0 and option == actions.JDCOPA2:
-            nomeSorteado = [random.choice(listaEnsaioJardinCopa2)]
-            proximo = ['True']
-        elif len(listaEnsaioNovaDivineia1) != 0 and option == actions.ND1:
-            nomeSorteado = [random.choice(listaEnsaioNovaDivineia1)]
-            proximo = ['True']
-        elif len(listaEnsaioNovaDivineia2) != 0 and option == actions.ND2:
-            nomeSorteado = [random.choice(listaEnsaioNovaDivineia2)]
-            proximo = ['True']
-        elif len(listaEnsaioPiedade) != 0 and option == actions.PIEDADE:
-            nomeSorteado = [random.choice(listaEnsaioPiedade)]
-            proximo = ['True']
-        elif len(listaEnsaioVeneza4) != 0 and option == actions.VENEZA4:
-            nomeSorteado = [random.choice(listaEnsaioVeneza4)]
-            proximo = ['True']
+
+    if len(listaGeral) != 0 and option == actions.GERAL:
+        nomeSorteado = [random.choice(listaGeral)]
+
+    elif len(listaMenor) != 0 and option == actions.JOVENS:
+        nomeSorteado = [random.choice(listaMenor)]
+        
+        # Remove o ganhador
+        listaMenor.remove(nomeSorteado[0])
+
+    elif len(listaVisitante) != 0 and option == actions.VISITANTES:
+        nomeSorteado = [random.choice(listaVisitante)]
+        
+        # Remove o ganhador
+        listaVisitante.remove(nomeSorteado[0])
+
+    elif len(listaNiverCasamento) != 0 and option == actions.ANIVERSARIO:
+        nomeSorteado = [random.choice(listaNiverCasamento)]
+        
+    elif len(listaDinamica) != 0 and option == actions.DINAMICA:
+        nomeSorteado = [random.choice(listaDinamica)]
+        
+    elif len(listaEnsaio) != 0 and option == actions.ENSAIO:
+        nomeSorteado = [random.choice(listaEnsaio)]
+        
+    elif len(listaEnsaioAlameda) != 0 and option == actions.ALAMEDA:
+        nomeSorteado = [random.choice(listaEnsaioAlameda)]
+        
+    elif len(listaEnsaioJardinCopa1) != 0 and option == actions.JDCOPA1:
+        nomeSorteado = [random.choice(listaEnsaioJardinCopa1)]
+        
+    elif len(listaEnsaioJardinCopa2) != 0 and option == actions.JDCOPA2:
+        nomeSorteado = [random.choice(listaEnsaioJardinCopa2)]
+        
+    elif len(listaEnsaioNovaDivineia1) != 0 and option == actions.ND1:
+        nomeSorteado = [random.choice(listaEnsaioNovaDivineia1)]
+        
+    elif len(listaEnsaioNovaDivineia2) != 0 and option == actions.ND2:
+        nomeSorteado = [random.choice(listaEnsaioNovaDivineia2)]
+        
+    elif len(listaEnsaioPiedade) != 0 and option == actions.PIEDADE:
+        nomeSorteado = [random.choice(listaEnsaioPiedade)]
+        
+    elif len(listaEnsaioVeneza4) != 0 and option == actions.VENEZA4:
+        nomeSorteado = [random.choice(listaEnsaioVeneza4)]
+        
+
+    try:
+        listaGeral.remove(nomeSorteado[0])
+    except Exception as e:
+        if _print:
+            print('Lista Geral não tem o nome sorteado. Erro: ', e)
+        pass
+    try:
+        listaDinamica.remove(nomeSorteado[0])
+    except Exception as e:
+        if _print:
+            print('Lista Dinâmica não tem o nome sorteado. Erro: ', e)
+        pass
+    try:
+        listaNiverCasamento.remove(nomeSorteado[0])
+    except Exception as e:
+        if _print:
+            print('Lista Aniversário não tem o nome sorteado. Erro: ', e)
+        pass
+    try:
+        listaEnsaio.remove(nomeSorteado[0])
+    except Exception as e:
+        if _print:
+            print('Lista Ensaio não tem o nome sorteado. Erro: ', e)
+        pass
+    try:
+        listaEnsaioAlameda.remove(nomeSorteado[0])
+    except Exception as e:
+        print('Lista Ensaio Alameda '
+              'não tem o nome sorteado. Erro: ', e)
+        pass
+    try:
+        listaEnsaioJardinCopa1.remove(nomeSorteado[0])
+    except Exception as e:
+        print('Lista Ensaio Jardim Copacabana 1 '
+              'não tem o nome sorteado. Erro: ', e)
+        pass
+    try:
+        listaEnsaioJardinCopa2.remove(nomeSorteado[0])
+    except Exception as e:
+        print('Lista Ensaio Jardim Copacabana 2 '
+              'não tem o nome sorteado. Erro: ', e)
+        pass
+    try:
+        listaEnsaioNovaDivineia1.remove(nomeSorteado[0])
+    except Exception as e:
+        print('Lista Ensaio Nova Divinéia 1 '
+              'não tem o nome sorteado. Erro: ', e)
+        pass
+    try:
+        listaEnsaioNovaDivineia2.remove(nomeSorteado[0])
+    except Exception as e:
+        print('Lista Ensaio Nova Divinéia 2 '
+              'não tem o nome sorteado. Erro: ', e)
+        pass
+    try:
+        listaEnsaioPiedade.remove(nomeSorteado[0])
+    except Exception as e:
+        print('Lista Ensaio Piedade '
+              'não tem o nome sorteado. Erro: ', e)
+        pass
+    try:
+        listaEnsaioVeneza4.remove(nomeSorteado[0])
+    except Exception as e:
+        print('Lista Ensaio Veneza 4 '
+              'não tem o nome sorteado. Erro: ', e)
+        pass
+    
+    if option in [actions.GERAL, actions.DINAMICA, actions.ANIVERSARIO,
+                  actions.ENSAIO, actions.ALAMEDA, actions.JDCOPA1,
+                  actions.JDCOPA2, actions.ND1, actions.ND2,
+                  actions.PIEDADE, actions.VENEZA4]:
+        # Remove o ganhador
+        try:
+            congregacao = nomeSorteado[0].split('|')[1]
+            numCartao = nomeSorteado[0].split('|')[2]
+        except IndexError:
+            congregacao = ''
+            numCartao = ''
+
+        def remover_pessoa(lista):
+            for pessoa in lista:
+                if pessoa.split('|')[1] == congregacao and \
+                        pessoa.split('|')[2] == numCartao:
+                    lista.remove(pessoa)
+            return lista
 
         try:
-            listaGeral.remove(nomeSorteado[0])
+            listaEnsaio = remover_pessoa(listaEnsaio)
         except Exception as e:
-            if _print:
-                print('Lista Geral não tem o nome sorteado. Erro: ', e)
+            print('Lista Ensaio não tem o nome sorteado. Erro: ', e)
             pass
         try:
-            listaDinamica.remove(nomeSorteado[0])
+            listaNiverCasamento = remover_pessoa(listaNiverCasamento)
         except Exception as e:
-            if _print:
-                print('Lista Dinâmica não tem o nome sorteado. Erro: ', e)
+            print('Lista Aniversário não tem o nome sorteado. Erro: ', e)
             pass
         try:
-            listaNiverCasamento.remove(nomeSorteado[0])
+            listaGeral = remover_pessoa(listaGeral)
         except Exception as e:
-            if _print:
-                print('Lista Aniversário não tem o nome sorteado. Erro: ', e)
+            print('Lista Geral não tem o nome sorteado. Erro: ', e)
             pass
         try:
-            listaEnsaio.remove(nomeSorteado[0])
+            listaDinamica = remover_pessoa(listaDinamica)
         except Exception as e:
-            if _print:
-                print('Lista Ensaio não tem o nome sorteado. Erro: ', e)
+            print('Lista Dinâmica não tem o nome sorteado. Erro: ', e)
             pass
         try:
-            listaEnsaioAlameda.remove(nomeSorteado[0])
+            listaEnsaioAlameda = remover_pessoa(listaEnsaioAlameda)
         except Exception as e:
             print('Lista Ensaio Alameda '
                   'não tem o nome sorteado. Erro: ', e)
             pass
         try:
-            listaEnsaioJardinCopa1.remove(nomeSorteado[0])
+            listaEnsaioJardinCopa1 = remover_pessoa(listaEnsaioJardinCopa1)
         except Exception as e:
             print('Lista Ensaio Jardim Copacabana 1 '
                   'não tem o nome sorteado. Erro: ', e)
             pass
         try:
-            listaEnsaioJardinCopa2.remove(nomeSorteado[0])
+            listaEnsaioJardinCopa2 = remover_pessoa(listaEnsaioJardinCopa2)
         except Exception as e:
             print('Lista Ensaio Jardim Copacabana 2 '
                   'não tem o nome sorteado. Erro: ', e)
             pass
         try:
-            listaEnsaioNovaDivineia1.remove(nomeSorteado[0])
+            listaEnsaioNovaDivineia1 = remover_pessoa(
+                listaEnsaioNovaDivineia1)
         except Exception as e:
             print('Lista Ensaio Nova Divinéia 1 '
                   'não tem o nome sorteado. Erro: ', e)
             pass
         try:
-            listaEnsaioNovaDivineia2.remove(nomeSorteado[0])
+            listaEnsaioNovaDivineia2 = remover_pessoa(
+                listaEnsaioNovaDivineia2)
         except Exception as e:
             print('Lista Ensaio Nova Divinéia 2 '
                   'não tem o nome sorteado. Erro: ', e)
             pass
         try:
-            listaEnsaioPiedade.remove(nomeSorteado[0])
+            listaEnsaioPiedade = remover_pessoa(listaEnsaioPiedade)
         except Exception as e:
             print('Lista Ensaio Piedade '
                   'não tem o nome sorteado. Erro: ', e)
             pass
         try:
-            listaEnsaioVeneza4.remove(nomeSorteado[0])
+            listaEnsaioVeneza4 = remover_pessoa(listaEnsaioVeneza4)
         except Exception as e:
             print('Lista Ensaio Veneza 4 '
                   'não tem o nome sorteado. Erro: ', e)
             pass
-    else:
-        option = opcao[0]
-        proximo = ['']
-        if option in [actions.GERAL, actions.DINAMICA, actions.ANIVERSARIO,
-                      actions.ENSAIO, actions.ALAMEDA, actions.JDCOPA1,
-                      actions.JDCOPA2, actions.ND1, actions.ND2,
-                      actions.PIEDADE, actions.VENEZA4]:
-            # Remove o ganhador
-
-            congregacao = nomeSorteado[0].split('|')[1]
-            numCartao = nomeSorteado[0].split('|')[2]
-
-            def remover_pessoa(lista):
-                for pessoa in lista:
-                    if pessoa.split('|')[1] == congregacao and \
-                            pessoa.split('|')[2] == numCartao:
-                        lista.remove(pessoa)
-                return lista
-
-            try:
-                listaEnsaio = remover_pessoa(listaEnsaio)
-            except Exception as e:
-                print('Lista Ensaio não tem o nome sorteado. Erro: ', e)
-                pass
-            try:
-                listaNiverCasamento = remover_pessoa(listaNiverCasamento)
-            except Exception as e:
-                print('Lista Aniversário não tem o nome sorteado. Erro: ', e)
-                pass
-            try:
-                listaGeral = remover_pessoa(listaGeral)
-            except Exception as e:
-                print('Lista Geral não tem o nome sorteado. Erro: ', e)
-                pass
-            try:
-                listaDinamica = remover_pessoa(listaDinamica)
-            except Exception as e:
-                print('Lista Dinâmica não tem o nome sorteado. Erro: ', e)
-                pass
-            try:
-                listaEnsaioAlameda = remover_pessoa(listaEnsaioAlameda)
-            except Exception as e:
-                print('Lista Ensaio Alameda '
-                      'não tem o nome sorteado. Erro: ', e)
-                pass
-            try:
-                listaEnsaioJardinCopa1 = remover_pessoa(listaEnsaioJardinCopa1)
-            except Exception as e:
-                print('Lista Ensaio Jardim Copacabana 1 '
-                      'não tem o nome sorteado. Erro: ', e)
-                pass
-            try:
-                listaEnsaioJardinCopa2 = remover_pessoa(listaEnsaioJardinCopa2)
-            except Exception as e:
-                print('Lista Ensaio Jardim Copacabana 2 '
-                      'não tem o nome sorteado. Erro: ', e)
-                pass
-            try:
-                listaEnsaioNovaDivineia1 = remover_pessoa(
-                    listaEnsaioNovaDivineia1)
-            except Exception as e:
-                print('Lista Ensaio Nova Divinéia 1 '
-                      'não tem o nome sorteado. Erro: ', e)
-                pass
-            try:
-                listaEnsaioNovaDivineia2 = remover_pessoa(
-                    listaEnsaioNovaDivineia2)
-            except Exception as e:
-                print('Lista Ensaio Nova Divinéia 2 '
-                      'não tem o nome sorteado. Erro: ', e)
-                pass
-            try:
-                listaEnsaioPiedade = remover_pessoa(listaEnsaioPiedade)
-            except Exception as e:
-                print('Lista Ensaio Piedade '
-                      'não tem o nome sorteado. Erro: ', e)
-                pass
-            try:
-                listaEnsaioVeneza4 = remover_pessoa(listaEnsaioVeneza4)
-            except Exception as e:
-                print('Lista Ensaio Veneza 4 '
-                      'não tem o nome sorteado. Erro: ', e)
-                pass
 
     jsonMontado = json_montado(
         bolas_do_bingo_json=bolasDoBingoJson,
@@ -235,8 +236,6 @@ def remove_people(g, bolas, option, _print=False):
         lista_ensaio_veneza_4=listaEnsaioVeneza4,
         nome_sorteado_anterior=bolasDoBingoJson.NomeSorteado,
         nome_sorteado=nomeSorteado,
-        opcao=[option],
-        proximo=proximo
     )
     update_db(g, jsonMontado)
 

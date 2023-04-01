@@ -51,10 +51,6 @@ def print_class(_class: DadosDict):
           '\n')
     print('NomeSorteado: \n', _class.bolasDoBingoJson.NomeSorteado,
           '\n')
-    print('Opcao: \n', _class.bolasDoBingoJson.Opcao,
-          '\n')
-    print('Proximo: \n', _class.bolasDoBingoJson.Proximo,
-          '\n')
     print('Ensaio: \n', _class.bolasDoBingoJson.Ensaio,
           '\n')
     print('HabilitarEnsaio: \n', _class.bolasDoBingoJson.HabilitarEnsaio,

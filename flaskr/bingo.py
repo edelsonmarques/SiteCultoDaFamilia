@@ -1,5 +1,6 @@
 from flask import (
-    Blueprint, g, redirect, render_template, request, url_for
+    Blueprint, g, redirect, render_template, request, url_for,
+    send_from_directory, send_file
 )
 from auth import login_required
 import pandas as pd
@@ -89,21 +90,6 @@ def index():
 
     if request.method == 'POST' and actions.VENEZA4 in request.form:
         remove_people(g, bolas, actions.VENEZA4)
-        return redirect(url_for('bingo.index'))
-
-    if request.method == 'POST' and 'sim' in request.form:
-        remove_people(g, bolas, 'sim')
-        return redirect(url_for('bingo.index'))
-
-    if request.method == 'POST' and 'nao' in request.form:
-        # print('Bolas do Bingo:', BolasDoBingo)
-        bolasDoBingoJson = bolas[0].bolasDoBingoJson
-        jsonMontado = json_montado(
-            bolas_do_bingo_json=bolasDoBingoJson,
-            proximo=['']
-        )
-
-        update_db(g, jsonMontado)
         return redirect(url_for('bingo.index'))
 
     if request.method == 'POST' and 'reset' in request.form:
@@ -205,9 +191,10 @@ def config(_id):
                     if str(_index).split('|')[1].lower().__contains__(
                             congregacoes.VISITANTE):
                         listaVisitante.append(_index)
-                    elif int(str(_index).split('|')[3]) < 18 or \
-                            (int(str(_index).split('|')[3]) < 35 and
-                             str(_index).split('|')[5].lower() == 'solteiro'):
+                    elif not mes[0].lower().__contains__('ensaio') and \
+                        (str(_index).split('|')[5].lower() not in [
+                            'casado', 'outro(união estável)', 'viúvo'] and
+                            int(str(_index).split('|')[3]) < 35):
                         listaMenor.append(_index)
                     else:
                         listaGeral.append(_index)
@@ -255,9 +242,7 @@ def config(_id):
             lista_ensaio_veneza_4=listaEnsaioVeneza4,
             mes_sorteio=mes,
             nome_sorteado_anterior=[''],
-            nome_sorteado=[''],
-            opcao=[''],
-            proximo=['']
+            nome_sorteado=['']
         )
 
         update_db(g, jsonMontado)
@@ -286,9 +271,7 @@ def config(_id):
         jsonMontado = json_montado(
             bolas_do_bingo_json=bolasDoBingoJson,
             lista_geral=listaGeral,
-            lista_dinamica=list(listaDinamica),
-            opcao=[''],
-            proximo=['']
+            lista_dinamica=list(listaDinamica)
         )
         update_db(g, jsonMontado)
         return redirect(url_for('bingo.config', _id=_id))
@@ -299,6 +282,7 @@ def config(_id):
         listaGeral = bolasDoBingoJson.ListaGeral
         listaMenor = bolasDoBingoJson.ListaMenor
         ultimoItem = ''
+        _print = False
 
         for cartao in request.form['menor_solteiro'].split(','):
             congregacao = cartao.split('|')[0]
@@ -309,22 +293,24 @@ def config(_id):
                     listaGeral.append(item)
                     ultimoItem = item
 
-            listaMenor.remove(ultimoItem)
-
+            try:
+                listaMenor.remove(ultimoItem)
+            except Exception as e:
+                if _print:
+                    print('Lista Jovens não tem o nome indicado. Erro: ', e)
+                pass
         # Colocar os dados adquiridos na tabela correta
         jsonMontado = json_montado(
             bolas_do_bingo_json=bolasDoBingoJson,
             lista_geral=listaGeral,
-            lista_menor=list(listaMenor),
-            opcao=[''],
-            proximo=['']
+            lista_menor=list(listaMenor)
         )
         update_db(g, jsonMontado)
         return redirect(url_for('bingo.config', _id=_id))
 
     if request.method == 'POST' and 'report' in request.form:
         ConfAPI = bolas[0].bolasDoBingoJson.ConfAPI[0]
-        caminho = request.form['report']
+        # caminho = request.form['report']
         ConfAPI = carregar_api(ConfAPI)
         usuarios = ConfAPI['usuarios']
         presenca = ConfAPI['presenca']
@@ -339,9 +325,9 @@ def config(_id):
 
         dados_presenca = pd.DataFrame(presenca)
         if platform.system() == 'Windows':
-            caminho = caminho + '\\'
+            caminho = '.\\report\\'
         else:
-            caminho = caminho + '/'
+            caminho = './report/'
 
         def pdf_writer(_writer: pd.ExcelWriter =
                        caminho + 'report.xlsx'):
@@ -426,17 +412,21 @@ def config(_id):
         except FileNotFoundError:
             with pd.ExcelWriter(caminho + 'report.xlsx') as writer:
                 pdf_writer(writer)
+
             # with pd.ExcelWriter(caminho + 'report.xlsx', mode='a',
             #                     if_sheet_exists="replace") as writer:
             #     pdf_writer(writer)
 
         print()
-        print(f'Arquivo exportado em: {caminho}report.xlsx')
+        # print(f'Arquivo exportado em: {caminho}report.xlsx')
         print()
-        return redirect(url_for('bingo.config', _id=_id))
+        # return redirect(url_for('bingo.config', _id=_id))
+        return send_from_directory(caminho, 'report.xlsx', as_attachment=True)
 
     if request.method == 'POST' and 'confAPI' in request.form:
         confAPI = request.form['confAPI']
+        if confAPI.strip() == '':
+            confAPI = bolasDoBingoJson.ConfAPI[0]
 
         # # carregar chamada das chaves
         listaChaves = carregar_chaves_api(confAPI)

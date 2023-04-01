@@ -53,7 +53,6 @@
                 {% endfor %}
             </article>
             {% set HabilitarEnsaio = bolas.bolasDoBingoJson.HabilitarEnsaio[0]%}
-            {% set Proximo = bolas.bolasDoBingoJson.Proximo[0]%}
             {% set NomeSorteado = bolas.bolasDoBingoJson.NomeSorteado[0]%}
             {% block content %}
                 {% if bolas.bolasDoBingoJson.__len__() != 0 %}
@@ -71,91 +70,74 @@
                         </p>
                     </div>
                     <div class="tela_botoes">
-                        {% if Proximo == ''%}
-                            <form method="post">
-                                {% if HabilitarEnsaio == 'true' %}
-                                    {% if bolas['bolasDoBingoJson']['HabilitarListaAlameda'][0] == 'true' %}
-                                        <input name="alameda" type="submit" value="Alameda" onclick="abc()"/>
-                                    {% else %}
-                                        <input class="btn-disable" name="" type="submit" value="Alameda" onclick="abc()"/>
-                                    {% endif %}
-                                    {% if bolas['bolasDoBingoJson']['HabilitarListaJardimCopa1'][0] == 'true' %}
-                                        <input name="jdcopacabana1" type="submit" value="Jd. Copacabana"/>
-                                    {% else %}
-                                        <input class="btn-disable" name="" type="submit" value="Jd. Copacabana"/>
-                                    {% endif %}
-                                    {% if bolas['bolasDoBingoJson']['HabilitarListaJardimCopa2'][0] == 'true' %}
-                                        <input name="jdcopacabana2" type="submit" value="Jd. Copacabana 2"/>
-                                    {% else %}
-                                        <input class="btn-disable" name="" type="submit" value="Jd. Copacabana 2"/>
-                                    {% endif %}
+                        <form method="post">
+                            {% if HabilitarEnsaio == 'true' %}
+                                {% if bolas['bolasDoBingoJson']['HabilitarListaAlameda'][0] == 'true' %}
+                                    <input name="alameda" type="submit" value="Alameda" onclick="abc()"/>
+                                {% else %}
+                                    <input class="btn-disable" name="" type="submit" value="Alameda" onclick="abc()"/>
                                 {% endif %}
-                            </form>
-                        {% endif %}
+                                {% if bolas['bolasDoBingoJson']['HabilitarListaJardimCopa1'][0] == 'true' %}
+                                    <input name="jdcopacabana1" type="submit" value="Jd. Copacabana"/>
+                                {% else %}
+                                    <input class="btn-disable" name="" type="submit" value="Jd. Copacabana"/>
+                                {% endif %}
+                                {% if bolas['bolasDoBingoJson']['HabilitarListaJardimCopa2'][0] == 'true' %}
+                                    <input name="jdcopacabana2" type="submit" value="Jd. Copacabana 2"/>
+                                {% else %}
+                                    <input class="btn-disable" name="" type="submit" value="Jd. Copacabana 2"/>
+                                {% endif %}
+                            {% endif %}
+                        </form>
                     </div>
                     <div class="tela_botoes">
-                        {% if Proximo == ''%}
-                            <form method="post">
-                                {% if HabilitarEnsaio == '' %}
-                                    <input name="geral" type="submit" value="Toda a Igreja " onclick="abc()"/>
-                                    <input name="jovens" type="submit" value=" Jovens "/>
-                                    <input name="visitantes" type="submit" value="Visitantes"/>
+                        <form method="post">
+                            {% if HabilitarEnsaio == '' %}
+                                <input name="geral" type="submit" value="Toda a Igreja " onclick="abc()"/>
+                                <input name="jovens" type="submit" value=" Jovens "/>
+                                <input name="visitantes" type="submit" value="Visitantes"/>
+                            {% endif %}
+                            {% if HabilitarEnsaio == 'true' %}
+                                {% if bolas['bolasDoBingoJson']['HabilitarListaNovaDivineia1'][0] == 'true' %}
+                                    <input name="novadivineia" type="submit" value="Nova Divinéia" onclick="abc()"/>
+                                {% else %}
+                                    <input class="btn-disable" name="" type="submit" value="Nova Divinéia" onclick="abc()"/>
                                 {% endif %}
-                                {% if HabilitarEnsaio == 'true' %}
-                                    {% if bolas['bolasDoBingoJson']['HabilitarListaNovaDivineia1'][0] == 'true' %}
-                                        <input name="novadivineia" type="submit" value="Nova Divinéia" onclick="abc()"/>
-                                    {% else %}
-                                        <input class="btn-disable" name="" type="submit" value="Nova Divinéia" onclick="abc()"/>
-                                    {% endif %}
-                                    {% if bolas['bolasDoBingoJson']['HabilitarListaNovaDivineia2'][0] == 'true' %}
-                                        <input name="novadivineia2" type="submit" value="Nova Divinéia 2" onclick="abc()"/>
-                                    {% else %}
-                                        <input class="btn-disable" name="" type="submit" value="Nova Divinéia 2" onclick="abc()"/>
-                                    {% endif %}
-                                    {% if bolas['bolasDoBingoJson']['HabilitarListaPiedade'][0] == 'true' %}
-                                        <input name="piedade" type="submit" value="Piedade"/>
-                                    {% else %}
-                                        <input class="btn-disable" name="" type="submit" value="Piedade"/>
-                                    {% endif %}
+                                {% if bolas['bolasDoBingoJson']['HabilitarListaNovaDivineia2'][0] == 'true' %}
+                                    <input name="novadivineia2" type="submit" value="Nova Divinéia 2" onclick="abc()"/>
+                                {% else %}
+                                    <input class="btn-disable" name="" type="submit" value="Nova Divinéia 2" onclick="abc()"/>
                                 {% endif %}
-                            </form>
-                        {% endif %}
-                        {% if Proximo == 'True' %}
-                            <h1>Está presente?</h1>
-                        {% endif %}
+                                {% if bolas['bolasDoBingoJson']['HabilitarListaPiedade'][0] == 'true' %}
+                                    <input name="piedade" type="submit" value="Piedade"/>
+                                {% else %}
+                                    <input class="btn-disable" name="" type="submit" value="Piedade"/>
+                                {% endif %}
+                            {% endif %}
+                        </form>
                     </div>
                     <div class="tela_botoes">
-                        {% if Proximo == '' %}
-                            <form method="post">
-                                {% if HabilitarEnsaio == 'true' %}
-                                    {% if bolas['bolasDoBingoJson']['HabilitarListaVeneza4'][0] == 'true' %}
-                                        <input name="veneza4" type="submit" value="Veneza 4"/>
-                                    {% else %}
-                                        <input class="btn-disable" name="" type="submit" value="Veneza 4"/>
-                                    {% endif %}
-                                    <input name="ensaio" type="submit" value="Ensaio"/>
+                        <form method="post">
+                            {% if HabilitarEnsaio == 'true' %}
+                                {% if bolas['bolasDoBingoJson']['HabilitarListaVeneza4'][0] == 'true' %}
+                                    <input name="veneza4" type="submit" value="Veneza 4"/>
+                                {% else %}
+                                    <input class="btn-disable" name="" type="submit" value="Veneza 4"/>
                                 {% endif %}
-                                {% if HabilitarEnsaio == '' and bolas.bolasDoBingoJson.ListaDinamica.__len__() >= 0 %}
-                                    <input name="dinamica" type="submit" value="Dinâmica"/>
-                                {% endif %}
-                                <input name="aniversario" type="submit" value="Aniversário de Casamento"/>
-                            </form>
-                        {% endif %}
-                        {% if Proximo == 'True' %}
-                            <form method="post">
-                                <input name="sim" type="submit" value="Sim"/>
-                                <input name="nao" type="submit" value="Não"/>
-                            </form>
-                        {% endif %}
+                                <input name="ensaio" type="submit" value="Ensaio"/>
+                            {% endif %}
+                            {% if HabilitarEnsaio == '' and bolas.bolasDoBingoJson.ListaDinamica.__len__() >= 0 %}
+                                <input name="dinamica" type="submit" value="Dinâmica"/>
+                            {% endif %}
+                            <input name="aniversario" type="submit" value="Aniversário de Casamento"/>
+                        </form>
                     </div>
                     <div class="tela_botoes">
-                        {% if Proximo == '' %}
-                            <form method="post">
-                                {% if HabilitarEnsaio == 'true' and bolas.bolasDoBingoJson.ListaDinamica.__len__() >= 0 %}
-                                    <input name="dinamica" type="submit" value="Dinâmica"/>
-                                {% endif %}
-                            </form>
-                        {% endif %}
+                        <form method="post">
+                            {% if HabilitarEnsaio == 'true' and bolas.bolasDoBingoJson.ListaDinamica.__len__() >= 0 %}
+                                <input name="dinamica" type="submit" value="Dinâmica"/>
+                            {% endif %}
+                        </form>
                     </div>
                 {% endif %}
             {% endblock %}

@@ -19,8 +19,8 @@
                 </section>
                 <form method="post">
                     <label for="confAPI">API configurada: {{ bolas.bolasDoBingoJson.ConfAPI[0] }}</label>
-                    <input name="confAPI" id="confAPI" type="text" value="{{ request.form['confAPI'] }}" required>
-                    <input type="submit" value="Save">
+                    <input name="confAPI" id="confAPI" type="text" value="{{ request.form['confAPI'] }}">
+                    <input type="submit" value="Save/Refresh">
                 </form>
             </div>
             <div class= "vertical"></div>
@@ -32,6 +32,7 @@
                 </section>
                 <form method="post">
                     <label for="menor_solteiro">Cartão fidelidade de noivos: [Congregação|N° cartão fidelidade]</label>
+                    <label >Quantidade de cartões cadastrados: {{ bolas.bolasDoBingoJson.ListaMenor.__len__() }}</label>
                     <input name="menor_solteiro" id="menor_solteiro" type="text" value="{{ request.form['menor_solteiro'] }}" required>
                     <input type="submit" value="Inserir">
                 </form>
@@ -46,11 +47,18 @@
                     </header>
                 </section>
                 <form method="post">
-                    <label>Escolha o mês que queira realizar o sorteio: {{ bolas.bolasDoBingoJson.MesSorteio[0] }}</label>
+                    <label>Escolha o mês que queira realizar o sorteio:</label>
+                    <label >Quantidade de cartões cadastrados: {{ bolas.bolasDoBingoJson.ListaGeral.__len__() + bolas.bolasDoBingoJson.ListaVisitante.__len__() + bolas.bolasDoBingoJson.ListaMenor.__len__()}}</label>
+                    <label >Visitantes: {{ bolas.bolasDoBingoJson.ListaVisitante.__len__() }}</label>
+                    <label >Aniversantes de Casamento: {{ bolas.bolasDoBingoJson.ListaNiverCasamento.__len__() }}</label>
                     <br>
                     <select name="carregar">
                         {% for mes in bolas.bolasDoBingoJson.ListaMesSorteio %}
-                            <option>{{mes}}</option>
+                            {% if bolas['bolasDoBingoJson']['MesSorteio'][0] == mes %}
+                                <option selected>{{mes}}</option>
+                            {% else %}
+                                <option>{{mes}}</option>
+                            {% endif %}
                         {% endfor %}
                     </select>
                     <input name="carregar" type="submit" value="Carregar">
@@ -96,46 +104,53 @@
                             Desabilitar Congregação:
                             <br><br>
                             {% if bolas['bolasDoBingoJson']['HabilitarListaAlameda'][0] == 'true' %}
-                                <input type="checkbox" name="des_alameda" value="alameda"> Alamedas
+                                <input type="checkbox" name="des_alameda" value="alameda">
                             {% else %}
-                                <input type="checkbox" name="des_alameda" value="alameda" checked> Alamedas
+                                <input type="checkbox" name="des_alameda" value="alameda" checked>
                             {% endif %}
+                            Alamedas ({{ bolas['bolasDoBingoJson']['ListaEnsaioAlameda'].__len__() }})
 
                             {% if bolas['bolasDoBingoJson']['HabilitarListaJardimCopa1'][0] == 'true' %}
-                                <input type="checkbox" name="des_jdcopacabana1" value="jdcopacabana1"> Jardim Copacabana
+                                <input type="checkbox" name="des_jdcopacabana1" value="jdcopacabana1">
                             {% else %}
-                                <input type="checkbox" name="des_jdcopacabana1" value="jdcopacabana1" checked> Jardim Copacabana
+                                <input type="checkbox" name="des_jdcopacabana1" value="jdcopacabana1" checked>
                             {% endif %}
+                            Jardim Copacabana ({{ bolas['bolasDoBingoJson']['ListaEnsaioJardimCopa1'].__len__() }})
 
                             {% if bolas['bolasDoBingoJson']['HabilitarListaJardimCopa2'][0] == 'true' %}
-                                <input type="checkbox" name="des_jdcopacabana2" value="jdcopacabana2"> Jardim Copacabana 2
+                                <input type="checkbox" name="des_jdcopacabana2" value="jdcopacabana2">
                             {% else %}
-                                <input type="checkbox" name="des_jdcopacabana2" value="jdcopacabana2" checked> Jardim Copacabana 2
+                                <input type="checkbox" name="des_jdcopacabana2" value="jdcopacabana2" checked>
                             {% endif %}
+                            Jardim Copacabana 2 ({{ bolas['bolasDoBingoJson']['ListaEnsaioJardimCopa2'].__len__() }})
 
                             {% if bolas['bolasDoBingoJson']['HabilitarListaNovaDivineia1'][0] == 'true' %}
-                                <input type="checkbox" name="des_novadivineia1" value="novadivineia"> Nova Divinéia
+                                <input type="checkbox" name="des_novadivineia1" value="novadivineia">
                             {% else %}
-                                <input type="checkbox" name="des_novadivineia1" value="novadivineia" checked> Nova Divinéia
+                                <input type="checkbox" name="des_novadivineia1" value="novadivineia" checked>
                             {% endif %}
-
+                            Nova Divinéia ({{ bolas['bolasDoBingoJson']['ListaEnsaioNovaDivineia1'].__len__() }})
+                            <br>
                             {% if bolas['bolasDoBingoJson']['HabilitarListaNovaDivineia2'][0] == 'true' %}
-                                <input type="checkbox" name="des_novadivineia2" value="novadivineia2"> Nova Divinéia 2
+                                <input type="checkbox" name="des_novadivineia2" value="novadivineia2">
                             {% else %}
-                                <input type="checkbox" name="des_novadivineia2" value="novadivineia2" checked> Nova Divinéia 2
+                                <input type="checkbox" name="des_novadivineia2" value="novadivineia2" checked>
                             {% endif %}
+                            Nova Divinéia 2 ({{ bolas['bolasDoBingoJson']['ListaEnsaioNovaDivineia2'].__len__() }})
 
                             {% if bolas['bolasDoBingoJson']['HabilitarListaPiedade'][0] == 'true' %}
-                                <input type="checkbox" name="des_piedade" value="piedade"> Piedade
+                                <input type="checkbox" name="des_piedade" value="piedade">
                             {% else %}
-                                <input type="checkbox" name="des_piedade" value="piedade" checked> Piedade
+                                <input type="checkbox" name="des_piedade" value="piedade" checked>
                             {% endif %}
+                            Piedade ({{ bolas['bolasDoBingoJson']['ListaEnsaioPiedade'].__len__() }})
 
                             {% if bolas['bolasDoBingoJson']['HabilitarListaVeneza4'][0] == 'true' %}
-                                <input type="checkbox" name="des_veneza4" value="veneza4"> Veneza 4
+                                <input type="checkbox" name="des_veneza4" value="veneza4">
                             {% else %}
-                                <input type="checkbox" name="des_veneza4" value="veneza4" checked> Veneza 4
+                                <input type="checkbox" name="des_veneza4" value="veneza4" checked>
                             {% endif %}
+                            Veneza 4 ({{ bolas['bolasDoBingoJson']['ListaEnsaioVeneza4'].__len__() }})
                         </p>
                         <input type="submit" name="desabilitar_congregacao" value="Desabilitar">
                     {% endif %}
@@ -152,13 +167,14 @@
             <section class="content_header_config">
                 <header>
                     <h1>Report</h1>
+                    <form method="post">
+                        <label>Download Report - Usuários e meses:</label>
+                        <input name="report" type="submit" value="Download Report">
+                    </form>
                 </header>
             </section>
-            <form method="post">
-                <label for="report">Local para salvar o Report:</label>
-                <input name="report" id="report" type="text" value="{{ request.form['report'] }}" required>
-                <input type="submit" value="Save">
-            </form>
+        </div>
+        <div class="content_config_1">
         </div>
     {% endblock %}
 </body>
