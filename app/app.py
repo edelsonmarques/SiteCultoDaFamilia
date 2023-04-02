@@ -43,7 +43,7 @@ def create_app(test_config=None):
     app.register_blueprint(bingo.bp)
     app.add_url_rule('/', endpoint='index')
 
-    return app.run(debug=True, port=5100)
+    return app.run(debug=True, port=8080)
 
 
 if __name__ == '__main__':

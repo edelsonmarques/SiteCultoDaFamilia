@@ -1,0 +1,8 @@
+version: '3'
+services:
+  python:
+    container_name: test-python
+    build:
+      context: .
+    ports:
+      - "8080:8080"
