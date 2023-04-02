@@ -516,7 +516,7 @@ if __name__ == '__main__':
     #     file_path = Path(__file__).parts
     #     index = 0
     #     for x in range(len(file_path), 0, -1):
-    #         if file_path[x - 1].lower() == 'flaskr':
+    #         if file_path[x - 1].lower() == 'app':
     #             index = x
     #             break
     #     file_path_final = ''
