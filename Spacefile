@@ -1,0 +1,12 @@
+# Spacefile Docs: https://go.deta.dev/docs/spacefile/v0
+v: 0
+app_name: AppCCasais
+micros:
+  - name: python-app
+    src: ./app
+    engine: python3.9
+    primary: true
+    public: true
+    commands:
+        - python3.9 --version
+        - python3.9 -m pip install --upgrade pip

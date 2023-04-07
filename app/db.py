@@ -1,40 +1,28 @@
-import sqlite3
-import click
-from flask import current_app, g
+from flask import g
+from database import db_sqlite, db_deta
+from enums.env_deta import deta_db
 
 
 def get_db():
     if 'db' not in g:
-        g.db = sqlite3.connect(
-            current_app.config['DATABASE'],
-            detect_types=sqlite3.PARSE_DECLTYPES
-        )
-        g.db.row_factory = sqlite3.Row
-
+        if deta_db:
+            g.db = db_deta.get_db()
+        else:
+            g.db = db_sqlite.get_db()
     return g.db
 
 
-def close_db(e=None):
+def close_db(_=None):
     db = g.pop('db', None)
-
-    if db is not None:
+    if db is not None and type(db) is not db_deta.Deta:
         db.close()
 
 
 def init_db():
-    db = get_db()
-    try:
-        db.execute(
-            # 'SELECT p.id, author_id, bolasDoBingoJson, username'
-            # 'SELECT p.id, title, body, created, author_id, username'
-            # ' FROM post p JOIN user u ON p.author_id = u.id'
-            # ' ORDER BY created DESC'
-            f'SELECT * FROM user'
-        ).fetchall()
-    except sqlite3.OperationalError:
-        with current_app.open_resource('schema.sql') as f:
-            db.executescript(f.read().decode('utf8'))
-        click.echo('Initialized the database.')
+    if deta_db:
+        db_deta.init_db()
+    else:
+        db_sqlite.init_db()
 
 
 # @click.command('init-db')

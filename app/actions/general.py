@@ -67,7 +67,6 @@ def remove_people(g, bolas, option, _print=False):
     elif len(listaEnsaioVeneza4) != 0 and option == actions.VENEZA4:
         nomeSorteado = [random.choice(listaEnsaioVeneza4)]
         
-
     try:
         listaGeral.remove(nomeSorteado[0])
     except Exception as e:
@@ -157,66 +156,77 @@ def remove_people(g, bolas, option, _print=False):
         try:
             listaEnsaio = remover_pessoa(listaEnsaio)
         except Exception as e:
-            print('Lista Ensaio não tem o nome sorteado. Erro: ', e)
+            if _print:
+                print('Lista Ensaio não tem o nome sorteado. Erro: ', e)
             pass
         try:
             listaNiverCasamento = remover_pessoa(listaNiverCasamento)
         except Exception as e:
-            print('Lista Aniversário não tem o nome sorteado. Erro: ', e)
+            if _print:
+                print('Lista Aniversário não tem o nome sorteado. Erro: ', e)
             pass
         try:
             listaGeral = remover_pessoa(listaGeral)
         except Exception as e:
-            print('Lista Geral não tem o nome sorteado. Erro: ', e)
+            if _print:
+                print('Lista Geral não tem o nome sorteado. Erro: ', e)
             pass
         try:
             listaDinamica = remover_pessoa(listaDinamica)
         except Exception as e:
-            print('Lista Dinâmica não tem o nome sorteado. Erro: ', e)
+            if _print:
+                print('Lista Dinâmica não tem o nome sorteado. Erro: ', e)
             pass
         try:
             listaEnsaioAlameda = remover_pessoa(listaEnsaioAlameda)
         except Exception as e:
-            print('Lista Ensaio Alameda '
-                  'não tem o nome sorteado. Erro: ', e)
+            if _print:
+                print('Lista Ensaio Alameda '
+                      'não tem o nome sorteado. Erro: ', e)
             pass
         try:
             listaEnsaioJardinCopa1 = remover_pessoa(listaEnsaioJardinCopa1)
         except Exception as e:
-            print('Lista Ensaio Jardim Copacabana 1 '
-                  'não tem o nome sorteado. Erro: ', e)
+            if _print:
+                print('Lista Ensaio Jardim Copacabana 1 '
+                      'não tem o nome sorteado. Erro: ', e)
             pass
         try:
             listaEnsaioJardinCopa2 = remover_pessoa(listaEnsaioJardinCopa2)
         except Exception as e:
-            print('Lista Ensaio Jardim Copacabana 2 '
-                  'não tem o nome sorteado. Erro: ', e)
+            if _print:
+                print('Lista Ensaio Jardim Copacabana 2 '
+                      'não tem o nome sorteado. Erro: ', e)
             pass
         try:
             listaEnsaioNovaDivineia1 = remover_pessoa(
                 listaEnsaioNovaDivineia1)
         except Exception as e:
-            print('Lista Ensaio Nova Divinéia 1 '
-                  'não tem o nome sorteado. Erro: ', e)
+            if _print:
+                print('Lista Ensaio Nova Divinéia 1 '
+                      'não tem o nome sorteado. Erro: ', e)
             pass
         try:
             listaEnsaioNovaDivineia2 = remover_pessoa(
                 listaEnsaioNovaDivineia2)
         except Exception as e:
-            print('Lista Ensaio Nova Divinéia 2 '
-                  'não tem o nome sorteado. Erro: ', e)
+            if _print:
+                print('Lista Ensaio Nova Divinéia 2 '
+                      'não tem o nome sorteado. Erro: ', e)
             pass
         try:
             listaEnsaioPiedade = remover_pessoa(listaEnsaioPiedade)
         except Exception as e:
-            print('Lista Ensaio Piedade '
-                  'não tem o nome sorteado. Erro: ', e)
+            if _print:
+                print('Lista Ensaio Piedade '
+                      'não tem o nome sorteado. Erro: ', e)
             pass
         try:
             listaEnsaioVeneza4 = remover_pessoa(listaEnsaioVeneza4)
         except Exception as e:
-            print('Lista Ensaio Veneza 4 '
-                  'não tem o nome sorteado. Erro: ', e)
+            if _print:
+                print('Lista Ensaio Veneza 4 '
+                      'não tem o nome sorteado. Erro: ', e)
             pass
 
     jsonMontado = json_montado(

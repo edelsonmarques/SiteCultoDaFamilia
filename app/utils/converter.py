@@ -9,7 +9,9 @@ def converter_str_json(bolas_do_bingo_json) -> BolasDoBingoJson or redirect:
             bolas_do_bingo_json = \
                 json.loads(bolas_do_bingo_json.replace("'", '"'))
     except Exception as e:
-        print('Não conseguiu converter para Json. Erro: ', e)
+        _print = False
+        if _print:
+            print('Não conseguiu converter para Json. Erro: ', e)
         return redirect(url_for('bingo.index'))
     return bolas_do_bingo_json
 
