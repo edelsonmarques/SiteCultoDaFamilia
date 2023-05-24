@@ -21,8 +21,17 @@ def close_db(_=None):
 def init_db():
     if deta_db:
         db_deta.init_db()
+    # elif mysql_db:
+    #     db_sqlite.init_db()
     else:
         db_sqlite.init_db()
+
+
+def init_disk():
+    if deta_db:
+        db_deta.init_disk()
+    # else:
+    #     db_sqlite.init_db()
 
 
 # @click.command('init-db')
@@ -38,3 +47,4 @@ def init_app(app):
     # app.cli.add_command(init_db_command)
     with app.app_context():
         init_db()
+        init_disk()

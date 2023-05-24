@@ -311,3 +311,5 @@ pyrightconfig.json
 */Treinamentos/
 .idea/
 app/instance/*.sqlite
+.space
+*/report/

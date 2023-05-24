@@ -27,6 +27,7 @@ def json_montado(bolas_do_bingo_json: BolasDoBingoJson = None,
                  lista_mes_sorteio: list = None,
                  nome_sorteado_anterior: list = None,
                  nome_sorteado: list = None,
+                 historico_sorteio: list = None,
                  ensaio: list = None,
                  habilitar_ensaio: list = None,
                  ):
@@ -35,6 +36,8 @@ def json_montado(bolas_do_bingo_json: BolasDoBingoJson = None,
             habilitar_ensaio = ['']
         if ensaio is None:
             ensaio = ['']
+        if historico_sorteio is None:
+            historico_sorteio = {}
         if nome_sorteado is None:
             nome_sorteado = ['']
         if nome_sorteado_anterior is None:
@@ -90,6 +93,8 @@ def json_montado(bolas_do_bingo_json: BolasDoBingoJson = None,
             habilitar_ensaio = bolas_do_bingo_json.HabilitarEnsaio
         if ensaio is None:
             ensaio = bolas_do_bingo_json.Ensaio
+        if historico_sorteio is None:
+            historico_sorteio = bolas_do_bingo_json.HistoricoSorteio
         if nome_sorteado is None:
             nome_sorteado = bolas_do_bingo_json.NomeSorteado
         if nome_sorteado_anterior is None:
@@ -175,6 +180,7 @@ def json_montado(bolas_do_bingo_json: BolasDoBingoJson = None,
         'ListaMesSorteio': lista_mes_sorteio,
         'NomeSorteadoAnterior': nome_sorteado_anterior,
         'NomeSorteado': nome_sorteado,
+        'HistoricoSorteio': historico_sorteio,
         'Ensaio': ensaio,
         'HabilitarEnsaio': habilitar_ensaio
     }

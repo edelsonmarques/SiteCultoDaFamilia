@@ -5,6 +5,9 @@ COLUNAS_REPORT = ['congregacao', 'idNumero', 'nomeTitular',
                   'presencaConjuge', 'dataCasamento', 'email', 'endereco',
                   'filhos', 'netos', 'perfil']
 
+COLUNAS_REPORT_HISTORICO = ['congregacao', 'idNumero', 'nomeTitular',
+                            'dataCasamento', 'estadoCivil', 'nomeConjuge']
+
 COLUNAS_MESES_REPORT = ['congregacao', 'idNumero', 'nomeTitular',
                         'nascimentoTitular',
                         'estadoCivil', 'nomeConjuge',

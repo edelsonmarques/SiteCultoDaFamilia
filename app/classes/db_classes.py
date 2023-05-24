@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Dict
 
 
 class BolasDoBingoJson(BaseModel):
@@ -28,6 +28,7 @@ class BolasDoBingoJson(BaseModel):
     ListaMesSorteio: List[str]
     NomeSorteadoAnterior: List[str]
     NomeSorteado: List[str]
+    HistoricoSorteio: Dict
     Ensaio: List[str]
     HabilitarEnsaio: List[str]
 

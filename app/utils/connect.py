@@ -61,3 +61,21 @@ def select_dict(g) -> List[DadosDict]:
     # print('dados_dict antes: ', get_dados_dict().json())
     return get_dados_dict()
     # return dados
+
+
+def insert_file_disk(data, g, name='report.xlsx') -> None:
+    db = get_db()
+    if deta_db:
+        bingo_deta.insert_file_disk(db, data, g, name)
+    # else:
+    #     bingo_sqlite.insert_db_vazio(db, g)
+
+
+def select_file_disk(g, name='report.xlsx'):
+    db = get_db()
+    if deta_db:
+        dados = bingo_deta.select_file_disk(db, g, name)
+    else:
+        dados = bingo_sqlite.select_dict(db, g)
+        pass
+    return dados

@@ -3,8 +3,10 @@ pytest
 Flask
 click
 requests
-pandas
+pandas==1.5.3
 Jinja2
 Werkzeug
 openpyxl
 deta
+xlsxwriter
+pylib-openblas

@@ -8,5 +8,7 @@ micros:
     primary: true
     public: true
     commands:
+        - apt-get -y update
+        - apt-get -y install libopenblas-dev
         - python3.9 --version
-        - python3.9 -m pip install --upgrade pip
+        - python3.9 -m pip install --root-user-action=ignore --upgrade pip

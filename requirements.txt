@@ -8,3 +8,5 @@ Jinja2
 Werkzeug
 openpyxl
 deta
+xlsxwriter
+pylib-openblas

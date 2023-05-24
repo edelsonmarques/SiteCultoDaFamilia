@@ -21,3 +21,14 @@ def init_db():
         # with current_app.open_resource('schema.sql') as f:
         #     db.executescript(f.read().decode('utf8'))
         click.echo('Initialized the database.')
+
+
+def init_disk():
+    db = get_db()
+    try:
+        db.Drive('driveCulto')
+        # print(db.Base('user').fetch().items)
+    except sqlite3.OperationalError:
+        # with current_app.open_resource('schema.sql') as f:
+        #     db.executescript(f.read().decode('utf8'))
+        click.echo('Initialized the database.')

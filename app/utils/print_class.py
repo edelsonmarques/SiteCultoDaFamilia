@@ -51,6 +51,8 @@ def print_class(_class: DadosDict):
           '\n')
     print('NomeSorteado: \n', _class.bolasDoBingoJson.NomeSorteado,
           '\n')
+    print('HistoricoSorteio: \n', _class.bolasDoBingoJson.HistoricoSorteio,
+          '\n')
     print('Ensaio: \n', _class.bolasDoBingoJson.Ensaio,
           '\n')
     print('HabilitarEnsaio: \n', _class.bolasDoBingoJson.HabilitarEnsaio,

@@ -41,3 +41,22 @@ def update_db(db, g, json_mont: json_montado) -> None:
     dados = db.Base('bolasDoBingo')
     key = dados.fetch({"id": g.user["id"]}).items[0]['key']
     dados.update({'bolasDoBingoJson': str(json_mont)}, key=key)
+
+
+def insert_file_disk(db: Deta, data, g, name='report.xlsx') -> None:
+    db_disk = db.Drive('driveCulto')
+    name = f"user_{g.user['id']}_{name}"
+    try:
+        db_disk.put(name, data)
+    except IntegrityError:
+        pass
+    except Exception as e:
+        print('Erro encontrado em: ', e)
+        raise IntegrityError
+
+
+def select_file_disk(db: Deta, g, name='report.xlsx'):
+    dados = db.Drive('driveCulto')
+    name = f"user_{g.user['id']}_{name}"
+    dados = dados.get(name)
+    return dados

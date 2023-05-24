@@ -313,3 +313,4 @@ pyrightconfig.json
 app/instance/*.sqlite
 .space
 APPnodeJS/
+*/report/

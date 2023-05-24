@@ -164,7 +164,36 @@
         </div>
         <hr>
         <div class="content_config_1">
-            <section class="content_header_config">
+            <div class="mes_ensaio">
+                <section class="content_header_config">
+                    <header>
+                        <h1>Histórico de Sorteios</h1>
+                    </header>
+                </section>
+                <form method="post">
+                    <label>Escolha o mês que queira apagar da lista de histórico de sorteio:</label>
+                    {% for mes in bolas.bolasDoBingoJson.HistoricoSorteio %}
+                        <label >Quantidade de cartões sorteados no mes {{ mes }}: {{ bolas.bolasDoBingoJson.HistoricoSorteio[mes].__len__() }}</label>
+                    {% endfor %}
+                    <br>
+                    <select name="removeHistorico">
+                        {% if bolas.bolasDoBingoJson.HistoricoSorteio.__len__() > 0%}
+                            {% for mes in bolas.bolasDoBingoJson.HistoricoSorteio %}
+                                <option>{{mes}}</option>
+                            {% endfor %}
+                            <option>todos</option>
+                        {% endif %}
+                    </select>
+                    <input name="removeHistorico" type="submit" value="Apagar">
+                </form>
+                <form method="post">
+                        <label>Download Report - Histórico de Sorteios:</label>
+                        <input name="reportHistorico" type="submit" value="Download Report">
+                </form>
+            </div>
+            <div class= "vertical"></div>
+            <div>
+                <section class="content_header_config">
                 <header>
                     <h1>Report</h1>
                     <form method="post">
@@ -173,8 +202,9 @@
                     </form>
                 </header>
             </section>
-        </div>
-        <div class="content_config_1">
+            </div>
+
+
         </div>
     {% endblock %}
 </body>

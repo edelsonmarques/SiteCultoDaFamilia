@@ -1,11 +1,10 @@
 from flask import (
-    Blueprint, g, redirect, render_template, request, url_for,
-    send_from_directory
+    Blueprint, g, redirect, render_template, request, url_for, send_file
 )
 from auth import login_required
 import pandas as pd
 import platform
-from actions.general import remove_people, remove_congregacao
+from actions.general import remove_people, remove_congregacao, remove_historico
 from utils.connect import carregar_api, carregar_chaves_api, insert_db_vazio, \
     select_dict, update_db
 from utils.dates import pegar_mes, retornar_idade, niver_casamento
@@ -14,6 +13,7 @@ from utils.converter import converter_str
 from enums import nomes_colunas, meses, congregacoes, actions
 from utils.print_class import print_class
 from datetime import datetime
+import io
 bp = Blueprint('bingo', __name__)
 
 
@@ -313,123 +313,111 @@ def config(_id):
         ConfAPI = bolas[0].bolasDoBingoJson.ConfAPI[0]
         # caminho = request.form['report']
         ConfAPI = carregar_api(ConfAPI)
-        try:
-            usuarios = ConfAPI['usuarios']
-            presenca = ConfAPI['presenca']
-            # print(pd.DataFrame(usuarios))
-            dados = pd.DataFrame(usuarios).transpose()
-            # dados = dados.loc[:, ['idNumero', 'nomeTitular', 'nomeConjuge']]
-            dados['congregacao'] = dados['idNumero'].apply(
-                lambda x: x.split('/')[0])
-            dados['idNumero'] = dados['idNumero'].apply(
-                lambda x: x.split('/')[1])
-            dados = dados.loc[:, nomes_colunas.COLUNAS_REPORT]
+        # try:
+        usuarios = ConfAPI['usuarios']
+        presenca = ConfAPI['presenca']
+        # print(pd.DataFrame(usuarios))
+        dados = pd.DataFrame(usuarios).transpose()
+        # dados = dados.loc[:, ['idNumero', 'nomeTitular', 'nomeConjuge']]
+        dados['congregacao'] = dados['idNumero'].apply(
+            lambda x: x.split('/')[0])
+        dados['idNumero'] = dados['idNumero'].apply(
+            lambda x: x.split('/')[1])
+        dados = dados.loc[:, nomes_colunas.COLUNAS_REPORT]
 
-            dados_presenca = pd.DataFrame(presenca)
-            if platform.system() == 'Windows':
-                caminho = '.\\report\\'
-            else:
-                caminho = './report/'
+        dados_presenca = pd.DataFrame(presenca)
+        if platform.system() == 'Windows':
+            caminho = '.\\report\\'
+        else:
+            caminho = './report/'
 
-            def pdf_writer(_writer: pd.ExcelWriter =
-                           caminho + 'report.xlsx'):
-                pd.DataFrame(dados).to_excel(_writer,
-                                             sheet_name="Dados_usuarios")
-                mes_maximo = list()
+        def pdf_writer(_writer: pd.ExcelWriter =
+                       caminho + 'report.xlsx'):
+            pd.DataFrame(dados).to_excel(_writer,
+                                         sheet_name="Dados_usuarios")
+            mes_maximo = list()
 
-                for indice in meses.DICT_NUM_MES:
-                    if indice <= datetime.now().month and \
-                            indice not in [1, 12]:
-                        mes_maximo.append(meses.DICT_NUM_MES[indice])
-                        mes_maximo.append(
-                            f'ensaio_{meses.DICT_NUM_MES[indice]}')
-                # print('mes_maximo:', mes_maximo, '\n')
-                # print('dados_presenca - chaves: \n', dados_presenca.keys())
-                # print('dados_presenca: \n', dados_presenca)
-                for _mes in dados_presenca:
-                    if _mes in mes_maximo:
-                        # print('mes teste: ', _mes)
-                        presenca_transp = pd.DataFrame(
-                            presenca[_mes]).transpose()
-                        # print('chaves da presenca do mês em teste: ',
-                        # presenca_transp.keys())
-                        # print('presenca do mês em teste: \n',
-                        # presenca_transp)
-                        presenca_transp['congregacao'] = \
-                            presenca_transp['idNumero'].apply(
-                                lambda x: x.split('/')[0])
-                        presenca_transp['idNumero'] = \
-                            presenca_transp['idNumero'].apply(
-                                lambda x: x.split('/')[1])
-                        presenca_transp = presenca_transp.loc[
-                                          :,
-                                          nomes_colunas.COLUNAS_MESES_REPORT]
-                        presenca_transp = presenca_transp.merge(
-                            dados, on=['congregacao', 'idNumero'],
-                            how='left', suffixes=('_left', '_right')
-                                                                )
-                        for index_, value in \
-                                pd.DataFrame(presenca_transp).iterrows():
-                            presenca_transp.loc[index_, ['estadoCivil']] = \
-                                value['estadoCivil_right']
-                            presenca_transp.loc[index_, ['dataCasamento']] = \
-                                value['dataCasamento_right']
-                            presenca_transp.loc[index_, ['nomeTitular']] = \
-                                value['nomeTitular_left']
-                            presenca_transp.loc[index_, ['nomeConjuge']] = \
-                                value['nomeConjuge_left']
-                            if str(value['nomeTitular_left']).lower() != 'nan':
-                                presenca_transp.loc[index_,
-                                                    ['nascimentoTitular']] = \
-                                    value['nascimentoTitular_right']
-                                presenca_transp.loc[index_,
-                                                    ['sexoTitular']] = \
-                                    value['sexoTitular']
-                            else:
-                                presenca_transp.loc[
-                                    index_, ['nascimentoTitular']] = \
-                                    value['nascimentoTitular_left']
-                                presenca_transp.loc[
-                                    index_, ['sexoTitular']] = ''
-                            if str(value['nomeConjuge_left']).lower() != 'nan':
-                                presenca_transp.loc[index_,
-                                                    ['nascimentoConjuge']] = \
-                                    value['nascimentoConjuge_right']
-                                presenca_transp.loc[index_,
-                                                    ['sexoConjuge']] = \
-                                    value['sexoConjuge']
-                            else:
-                                presenca_transp.loc[
-                                    index_, ['nascimentoConjuge']] = \
-                                    value['nascimentoConjuge_left']
-                                presenca_transp.loc[index_,
-                                                    ['sexoConjuge']] = ''
-                            # if index == 161:
-                            #     print(presenca_transp.loc[index])
-                        presenca_transp = presenca_transp.loc[
-                                          :,
-                                          nomes_colunas.COLUNAS_MERGE_REPORT]
-                        presenca_transp.to_excel(_writer, sheet_name=_mes)
-            try:
-                with pd.ExcelWriter(caminho + 'report.xlsx', mode='a',
-                                    if_sheet_exists="replace") as writer:
-                    pdf_writer(writer)
-            except FileNotFoundError:
-                with pd.ExcelWriter(caminho + 'report.xlsx') as writer:
-                    pdf_writer(writer)
+            for indice in meses.DICT_NUM_MES:
+                if indice <= datetime.now().month and \
+                        indice not in [1, 12]:
+                    mes_maximo.append(meses.DICT_NUM_MES[indice])
+                    mes_maximo.append(
+                        f'ensaio_{meses.DICT_NUM_MES[indice]}')
+            # print('mes_maximo:', mes_maximo, '\n')
+            # print('dados_presenca - chaves: \n', dados_presenca.keys())
+            # print('dados_presenca: \n', dados_presenca)
+            for _mes in dados_presenca:
+                if _mes in mes_maximo:
+                    # print('mes teste: ', _mes)
+                    presenca_transp = pd.DataFrame(
+                        presenca[_mes]).transpose()
+                    # print('chaves da presenca do mês em teste: ',
+                    # presenca_transp.keys())
+                    # print('presenca do mês em teste: \n',
+                    # presenca_transp)
+                    presenca_transp['congregacao'] = \
+                        presenca_transp['idNumero'].apply(
+                            lambda x: x.split('/')[0])
+                    presenca_transp['idNumero'] = \
+                        presenca_transp['idNumero'].apply(
+                            lambda x: x.split('/')[1])
+                    presenca_transp = presenca_transp.loc[
+                                      :,
+                                      nomes_colunas.COLUNAS_MESES_REPORT]
+                    presenca_transp = presenca_transp.merge(
+                        dados, on=['congregacao', 'idNumero'],
+                        how='left', suffixes=('_left', '_right')
+                                                            )
+                    for index_, value in \
+                            pd.DataFrame(presenca_transp).iterrows():
+                        presenca_transp.loc[index_, ['estadoCivil']] = \
+                            value['estadoCivil_right']
+                        presenca_transp.loc[index_, ['dataCasamento']] = \
+                            value['dataCasamento_right']
+                        presenca_transp.loc[index_, ['nomeTitular']] = \
+                            value['nomeTitular_left']
+                        presenca_transp.loc[index_, ['nomeConjuge']] = \
+                            value['nomeConjuge_left']
+                        if str(value['nomeTitular_left']).lower() != 'nan':
+                            presenca_transp.loc[index_,
+                                                ['nascimentoTitular']] = \
+                                value['nascimentoTitular_right']
+                            presenca_transp.loc[index_,
+                                                ['sexoTitular']] = \
+                                value['sexoTitular']
+                        else:
+                            presenca_transp.loc[
+                                index_, ['nascimentoTitular']] = \
+                                value['nascimentoTitular_left']
+                            presenca_transp.loc[
+                                index_, ['sexoTitular']] = ''
+                        if str(value['nomeConjuge_left']).lower() != 'nan':
+                            presenca_transp.loc[index_,
+                                                ['nascimentoConjuge']] = \
+                                value['nascimentoConjuge_right']
+                            presenca_transp.loc[index_,
+                                                ['sexoConjuge']] = \
+                                value['sexoConjuge']
+                        else:
+                            presenca_transp.loc[
+                                index_, ['nascimentoConjuge']] = \
+                                value['nascimentoConjuge_left']
+                            presenca_transp.loc[index_,
+                                                ['sexoConjuge']] = ''
+                        # if index == 161:
+                        #     print(presenca_transp.loc[index])
+                    presenca_transp = presenca_transp.loc[
+                                      :,
+                                      nomes_colunas.COLUNAS_MERGE_REPORT]
+                    presenca_transp.to_excel(_writer, sheet_name=_mes)
 
-                # with pd.ExcelWriter(caminho + 'report.xlsx', mode='a',
-                #                     if_sheet_exists="replace") as writer:
-                #     pdf_writer(writer)
-
-            # print()
-            # print(f'Arquivo exportado em: {caminho}report.xlsx')
-            # print()
-            # return redirect(url_for('bingo.config', _id=_id))
-            return send_from_directory(caminho, 'report.xlsx',
-                                       as_attachment=True)
-        except TypeError:
-            pass
+        out = io.BytesIO()
+        writer = pd.ExcelWriter(out, engine='openpyxl')
+        pdf_writer(writer)
+        writer.save()
+        out.seek(0)
+        add = send_file(out, download_name='output.xlsx', as_attachment=True)
+        return add
 
     if request.method == 'POST' and 'confAPI' in request.form:
         confAPI = request.form['confAPI']
@@ -454,6 +442,70 @@ def config(_id):
 
         update_db(g, jsonMontado)
         return redirect(url_for('bingo.index'))
+
+    if request.method == 'POST' and 'removeHistorico' in request.form:
+        mesEscolhido = f"{request.form['removeHistorico'].lower()}"
+        remove_historico(g, bolas, mesEscolhido)
+        return redirect(url_for('bingo.config', _id=_id))
+
+    if request.method == 'POST' and 'reportHistorico' in request.form:
+        historico = bolas[0].bolasDoBingoJson.HistoricoSorteio
+        dados = dict()
+        for mes in historico:
+            if mes not in dados:
+                dados[mes] = []
+            temp = {'congregacao': [],
+                    'idNumero': [],
+                    'nomeTitular': [],
+                    'dataCasamento': [],
+                    'estadoCivil': [],
+                    'nomeConjuge': []}
+            for pessoa in historico[mes]:
+                pessoa = pessoa.split('|')
+                temp['congregacao'] = pessoa[1]
+                temp['idNumero'] = pessoa[2]
+                temp['nomeTitular'] = pessoa[0]
+                temp['dataCasamento'] = pessoa[4]
+                temp['estadoCivil'] = pessoa[5]
+                temp['nomeConjuge'] = pessoa[6]
+                dados[mes].append(temp.copy())
+        # print('dados:')
+        # for mes in dados:
+        #     print(f'{mes}:')
+        #     for pessoa in dados[mes]:
+        #         print(pessoa)
+        if platform.system() == 'Windows':
+            caminho = '.\\report\\'
+        else:
+            caminho = './report/'
+
+        def pdf_writer(_writer: pd.ExcelWriter =
+                       caminho + 'report_historico.xlsx'):
+            mes_maximo = list()
+
+            for indice in meses.DICT_NUM_MES:
+                if indice <= datetime.now().month and \
+                        indice not in [1, 12]:
+                    mes_maximo.append(meses.DICT_NUM_MES[indice])
+                    mes_maximo.append(
+                        f'ensaio_{meses.DICT_NUM_MES[indice]}')
+            for _mes in dados:
+                if _mes in mes_maximo:
+                    # print('mes teste: ', _mes)
+                    dados_temp = pd.DataFrame(dados[_mes])
+                    # print('chaves da presenca do mês em teste: ',
+                    # presenca_transp.keys())
+                    # print('presenca do mês em teste: \n',
+                    # presenca_transp)
+                    dados_temp.to_excel(_writer, sheet_name=_mes)
+
+        out = io.BytesIO()
+        writer = pd.ExcelWriter(out, engine='openpyxl')
+        pdf_writer(writer)
+        writer.save()
+        out.seek(0)
+        add = send_file(out, download_name='output.xlsx', as_attachment=True)
+        return add
 
     if request.method == 'POST' and 'habilitarEnsaio' in request.form:
         bolasDoBingoJson = bolas[0].bolasDoBingoJson
