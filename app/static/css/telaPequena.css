@@ -96,6 +96,7 @@ select{
     border-left: 1px solid gray;
     height: 200px;
     margin-right: 10px;
+    margin-left: 10px;
 }
 
 .content_config_1 label, .content_config_2 label, .content_config_3 label, .content_config_3 p{

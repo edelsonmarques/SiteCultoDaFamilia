@@ -4,13 +4,14 @@ from flask import (
 from auth import login_required
 import pandas as pd
 import platform
-from actions.general import remove_people, remove_congregacao, remove_historico
+from actions.general import remove_people, remove_congregacao, \
+    remove_historico, remove_lista
 from utils.connect import carregar_api, carregar_chaves_api, insert_db_vazio, \
     select_dict, update_db
 from utils.dates import pegar_mes, retornar_idade, niver_casamento
 from utils.json_db import json_montado
 from utils.converter import converter_str
-from enums import nomes_colunas, meses, congregacoes, actions
+from enums import nomes_colunas, meses, congregacoes, actions, events
 from utils.print_class import print_class
 from datetime import datetime
 import io
@@ -59,7 +60,19 @@ def index():
         return redirect(url_for('bingo.index'))
 
     if request.method == 'POST' and actions.DINAMICA in request.form:
-        remove_people(g, bolas, actions.DINAMICA)
+        if request.form[actions.DINAMICA] == 'Dinâmica':
+            remove_people(g, bolas, actions.DINAMICA)
+        elif request.form[actions.DINAMICA] == \
+                f'Dinâmica - {events.evento()[0]["plural"]}':
+            remove_people(g, bolas, actions.DINAMICA_MAE_PAI)
+        elif request.form[actions.DINAMICA] == \
+                f'Dinâmica - {events.evento("Pais")[0]["plural"]}':
+            remove_people(g, bolas, actions.DINAMICA_MAE_PAI)
+        elif request.form[actions.DINAMICA] == \
+                f'Dinâmica - {events.evento()[1]["plural"]}' or \
+                request.form[actions.DINAMICA] == \
+                f'Dinâmica - {events.evento("Avós")[1]["plural"]}':
+            remove_people(g, bolas, actions.DINAMICA_FILHOS_PAIS)
         return redirect(url_for('bingo.index'))
 
     if request.method == 'POST' and actions.ENSAIO in request.form:
@@ -96,7 +109,9 @@ def index():
 
     if request.method == 'POST' and 'reset' in request.form:
         confAPI = bolas[0].bolasDoBingoJson.ConfAPI
-        jsonMontado = json_montado(conf_api=confAPI)
+        historicoSorteio = bolas[0].bolasDoBingoJson.HistoricoSorteio
+        jsonMontado = json_montado(conf_api=confAPI,
+                                   historico_sorteio=historicoSorteio)
         update_db(g, jsonMontado)
         return redirect(url_for('bingo.index'))
 
@@ -171,7 +186,6 @@ def config(_id):
         dados = dados.drop(columns=colunas)
         dados = dados.transpose()
         listaGeral = list()
-        listaDinamica = list()
         listaVisitante = list()
         listaMenor = list()
         listaNiverCasamento = list()
@@ -231,7 +245,12 @@ def config(_id):
             lista_geral=listaGeral,
             lista_visitante=listaVisitante,
             lista_menor=listaMenor,
-            lista_dinamica=listaDinamica,
+            lista_dinamica=list(),
+            lista_dinamica_mae_pai=list(),
+            selecao_lista_mae_pai=dict(),
+            lista_dinamica_filhos_pais=dict(),
+            selecao_lista_filhos_pais=dict(),
+            selecao_evento_especial=list(),
             lista_niver_casamento=listaNiverCasamento,
             lista_ensaio=listaEnsaio,
             lista_ensaio_alameda=listaEnsaioAlameda,
@@ -241,9 +260,24 @@ def config(_id):
             lista_ensaio_nova_divineia_2=listaEnsaioNovaDivineia2,
             lista_ensaio_piedade=listaEnsaioPiedade,
             lista_ensaio_veneza_4=listaEnsaioVeneza4,
+            habilitar_filhos_para_pais=[''],
             mes_sorteio=mes,
             nome_sorteado_anterior=[''],
             nome_sorteado=['']
+        )
+
+        update_db(g, jsonMontado)
+        return redirect(url_for('bingo.config', _id=_id))
+
+    if request.method == 'POST' and 'carregar_evento' in request.form:
+        # Realizar chamada para o banco da API
+        bolasDoBingoJson = bolas[0].bolasDoBingoJson
+
+        selecao = events.evento(request.form['carregar_evento'])
+        # Colocar os dados adquiridos na tabela correta
+        jsonMontado = json_montado(
+            bolas_do_bingo_json=bolasDoBingoJson,
+            selecao_evento_especial=selecao,
         )
 
         update_db(g, jsonMontado)
@@ -257,22 +291,125 @@ def config(_id):
         ultimoItem = ''
 
         for cartao in request.form['dinamica'].split(','):
-            congregacao = cartao.split('|')[0]
-            NumCartao = cartao.split('|')[1]
-            for item in listaGeral:
-                if item.split('|')[1] == congregacao and \
-                        item.split('|')[2] == NumCartao:
-                    listaDinamica.add(item)
-                    ultimoItem = item
+            if cartao.__contains__('|'):
+                congregacao = cartao.split('|')[0]
+                NumCartao = cartao.split('|')[1]
+                for item in listaGeral:
+                    if item.split('|')[1] == congregacao and \
+                            item.split('|')[2] == NumCartao:
+                        listaDinamica.add(item)
+                        ultimoItem = item
 
-            if len(listaDinamica) % 2 != 0:
-                listaDinamica.remove(ultimoItem)
+                if len(listaDinamica) % 2 != 0:
+                    listaDinamica = remove_lista(listaDinamica, ultimoItem,
+                                                 'Lista Dinâmica')
 
         # Colocar os dados adquiridos na tabela correta
         jsonMontado = json_montado(
             bolas_do_bingo_json=bolasDoBingoJson,
             lista_geral=listaGeral,
             lista_dinamica=list(listaDinamica)
+        )
+        update_db(g, jsonMontado)
+        return redirect(url_for('bingo.config', _id=_id))
+
+    if request.method == 'POST' and 'dinamica_mae_pai' in request.form:
+        # Realizar chamada para o banco da API
+        bolasDoBingoJson = bolas[0].bolasDoBingoJson
+        listaGeral = bolasDoBingoJson.ListaGeral
+        selecaoListaMaePai = bolasDoBingoJson.SelecaoListaMaePai
+
+        for cartao in request.form['dinamica_mae_pai'].split(','):
+            if cartao.__contains__('|'):
+                congregacao = cartao.split('|')[0]
+                NumCartao = cartao.split('|')[1]
+                lista = list()
+                for item in listaGeral:
+                    if item.split('|')[1] == congregacao and \
+                            item.split('|')[2] == NumCartao:
+                        lista.append(item)
+                if len(lista) > 0:
+                    selecaoListaMaePai[cartao] = lista
+
+        # Colocar os dados adquiridos na tabela correta
+        jsonMontado = json_montado(
+            bolas_do_bingo_json=bolasDoBingoJson,
+            selecao_lista_mae_pai=selecaoListaMaePai
+        )
+        update_db(g, jsonMontado)
+        return redirect(url_for('bingo.config', _id=_id))
+
+    if request.method == 'POST' and 'dinamica_filho' in request.form:
+        # Realizar chamada para o banco da API
+        bolasDoBingoJson = bolas[0].bolasDoBingoJson
+        listaGeral = bolasDoBingoJson.ListaGeral
+        listaMenor = bolasDoBingoJson.ListaMenor
+        selecaoListaFilhosPais = bolasDoBingoJson.SelecaoListaFilhosPais
+        for cartao in request.form['dinamica_mae'].split(','):
+            if cartao.__contains__('|'):
+                congregacao = cartao.split('|')[0]
+                NumCartao = cartao.split('|')[1]
+                lista = list()
+                for item in listaGeral:
+                    if item.split('|')[1] == congregacao and \
+                            item.split('|')[2] == NumCartao:
+                        lista.append(item)
+                if len(lista) > 0:
+                    if cartao not in selecaoListaFilhosPais:
+                        selecaoListaFilhosPais[cartao] = dict()
+                        selecaoListaFilhosPais[cartao]['pais'] = set()
+                        selecaoListaFilhosPais[cartao]['filhos'] = set()
+                    else:
+                        if type(selecaoListaFilhosPais[cartao]['pais']) != \
+                                set():
+                            selecaoListaFilhosPais[cartao]['pais'] = \
+                                set(selecaoListaFilhosPais[cartao]['pais'])
+                        if type(selecaoListaFilhosPais[cartao]['filhos']) != \
+                                set():
+                            selecaoListaFilhosPais[cartao]['filhos'] = \
+                                set(selecaoListaFilhosPais[cartao]['filhos'])
+                    selecaoListaFilhosPais[cartao]['pais'] = \
+                        selecaoListaFilhosPais[cartao]['pais'].union(lista)
+
+        for cartao in request.form['dinamica_filho'].split(','):
+            lista = list()
+            if cartao.__contains__('|'):
+                congregacao = cartao.split('|')[0]
+                NumCartao = cartao.split('|')[1]
+                for item in listaGeral:
+                    if item.split('|')[1] == congregacao and \
+                            item.split('|')[2] == NumCartao:
+                        lista.append(item)
+                for item in listaMenor:
+                    if item.split('|')[1] == congregacao and \
+                            item.split('|')[2] == NumCartao:
+                        lista.append(item)
+            else:
+                if cartao.strip() != '':
+                    lista.append(cartao)
+            if len(lista) > 0:
+                for cartao_pais in request.form['dinamica_mae'].split(','):
+                    if cartao_pais.__contains__('|') and \
+                            cartao_pais in selecaoListaFilhosPais:
+                        selecaoListaFilhosPais[cartao_pais][
+                            'filhos'] = \
+                            selecaoListaFilhosPais[cartao_pais][
+                                'filhos'].union(lista)
+
+        for cartao in request.form['dinamica_mae'].split(','):
+            if cartao in selecaoListaFilhosPais and \
+                    len(selecaoListaFilhosPais[cartao]['filhos']) == 0:
+                selecaoListaFilhosPais.pop(cartao)
+
+        for cartao in selecaoListaFilhosPais:
+            for parente in selecaoListaFilhosPais[cartao]:
+                temp = selecaoListaFilhosPais[cartao][parente]
+                selecaoListaFilhosPais[cartao][parente] = list(temp)
+
+        # Colocar os dados adquiridos na tabela correta
+        jsonMontado = json_montado(
+            bolas_do_bingo_json=bolasDoBingoJson,
+            selecao_lista_filhos_pais=selecaoListaFilhosPais
         )
         update_db(g, jsonMontado)
         return redirect(url_for('bingo.config', _id=_id))
@@ -286,20 +423,18 @@ def config(_id):
         _print = False
 
         for cartao in request.form['menor_solteiro'].split(','):
-            congregacao = cartao.split('|')[0]
-            NumCartao = cartao.split('|')[1]
-            for item in listaMenor:
-                if item.split('|')[1] == congregacao and \
-                        item.split('|')[2] == NumCartao:
-                    listaGeral.append(item)
-                    ultimoItem = item
+            if cartao.__contains__('|'):
+                congregacao = cartao.split('|')[0]
+                NumCartao = cartao.split('|')[1]
+                for item in listaMenor:
+                    if item.split('|')[1] == congregacao and \
+                            item.split('|')[2] == NumCartao:
+                        listaGeral.append(item)
+                        ultimoItem = item
 
-            try:
-                listaMenor.remove(ultimoItem)
-            except Exception as e:
-                if _print:
-                    print('Lista Jovens não tem o nome indicado. Erro: ', e)
-                pass
+                listaMenor = \
+                    remove_lista(listaMenor, ultimoItem, 'Lista Jovens')
+
         # Colocar os dados adquiridos na tabela correta
         jsonMontado = json_montado(
             bolas_do_bingo_json=bolasDoBingoJson,
@@ -518,6 +653,22 @@ def config(_id):
         update_db(g, jsonMontado)
         return redirect(url_for('bingo.config', _id=_id))
 
+    if request.method == 'POST' and 'habilitarFilhosParaPais' in request.form:
+        bolasDoBingoJson = bolas[0].bolasDoBingoJson
+        selecaoEventoEspecial = bolasDoBingoJson.SelecaoEventoEspecial
+        jsonMontado = json_montado(
+            bolas_do_bingo_json=bolasDoBingoJson,
+            habilitar_filhos_para_pais=['true' if
+                                        request.form[
+                                            'habilitarFilhosParaPais'].
+                                        __contains__('Habilitar') else ''],
+            selecao_evento_especial=list() if request.form[
+                'habilitarFilhosParaPais'].__contains__('Desabilitar') else
+            selecaoEventoEspecial
+        )
+        update_db(g, jsonMontado)
+        return redirect(url_for('bingo.config', _id=_id))
+
     if request.method == 'POST' and 'desabilitar_congregacao' in request.form:
         lista_desabilitar = list()
         for item in request.form:
@@ -531,6 +682,114 @@ def config(_id):
         #     #                       'Habilitar') else '']
         # )
         # update_db(g, jsonMontado)
+        return redirect(url_for('bingo.config', _id=_id))
+
+    if request.method == 'POST' and 'salvar_mae_pai' in request.form:
+        bolasDoBingoJson = bolas[0].bolasDoBingoJson
+        listaDinamicaMaePai = set(bolasDoBingoJson.ListaDinamicaMaePai)
+        selecaoListaMaePai = bolasDoBingoJson.SelecaoListaMaePai
+        lista_habilitar = dict()
+        lista_selecao = set()
+
+        for item in request.form:
+            if not item.__contains__('salvar'):
+                if item[:-2] in lista_habilitar:
+                    lista_habilitar[item[:-2]].append(request.form[item])
+                else:
+                    lista_habilitar[item[:-2]] = [request.form[item]]
+
+        for item in lista_habilitar:
+            for numero in lista_habilitar[item]:
+                try:
+                    pessoa = selecaoListaMaePai[item][int(numero)]
+                    listaDinamicaMaePai.add(pessoa)
+                    lista_selecao.add(item)
+                except IndexError:
+                    lista_selecao.add(item)
+
+        for item in lista_selecao:
+            try:
+                selecaoListaMaePai.pop(item)
+            except KeyError:
+                pass
+        jsonMontado = json_montado(
+            bolas_do_bingo_json=bolasDoBingoJson,
+            selecao_lista_mae_pai=selecaoListaMaePai,
+            lista_dinamica_mae_pai=list(listaDinamicaMaePai)
+        )
+        update_db(g, jsonMontado)
+        return redirect(url_for('bingo.config', _id=_id))
+
+    if request.method == 'POST' and \
+            'salvar_filhos_pais' in request.form:
+        bolasDoBingoJson = bolas[0].bolasDoBingoJson
+        listaDinamicaFilhosPais = bolasDoBingoJson.ListaDinamicaFilhosPais
+        selecaoListaFilhosPais = bolasDoBingoJson.SelecaoListaFilhosPais
+        selecaoEventoEspecial = bolasDoBingoJson.SelecaoEventoEspecial
+        lista_habilitar = dict()
+        lista_selecao = set()
+
+        for item in request.form:
+            if not item.__contains__('salvar'):
+                quebra = item.split('|-|')
+                cartao = quebra[0]
+                parente = quebra[1].split('|')[0]
+                if cartao in lista_habilitar:
+                    if parente in lista_habilitar[cartao]:
+                        lista_habilitar[cartao][parente].append(
+                            request.form[item])
+                    else:
+                        lista_habilitar[cartao][parente] = [request.form[item]]
+                else:
+                    lista_habilitar[cartao] = dict()
+                    lista_habilitar[cartao][parente] = [request.form[item]]
+
+        for cartao in lista_habilitar:
+            if 'pais' in lista_habilitar[cartao] and \
+                    'filhos' in lista_habilitar[cartao]:
+                for num_pais in lista_habilitar[cartao]['pais']:
+                    pai = selecaoListaFilhosPais[cartao]['pais'][
+                        int(num_pais)]
+                    listaDinamicaFilhosPais[pai] = set()
+                    for num_filho in lista_habilitar[cartao]['filhos']:
+                        try:
+                            quebra_pai = pai.split('|')[0:-1]
+                            filho = selecaoListaFilhosPais[cartao]['filhos'][
+                                int(num_filho)].split('|')[0]
+                            juntar = ''
+                            PREFIXO_EVENTO = selecaoEventoEspecial
+                            for num_item in range(len(quebra_pai) - 1, -1, -1):
+                                if num_item == 0:
+                                    juntar = \
+                                        juntar + \
+                                        f'|{PREFIXO_EVENTO[0]["singular"]}: ' \
+                                        + quebra_pai[num_item]
+                                else:
+                                    juntar = '|' + quebra_pai[num_item] + \
+                                             juntar
+                            filho = \
+                                f'{PREFIXO_EVENTO[1]["singular"]}: {filho}' + \
+                                juntar
+                            if pai not in listaDinamicaFilhosPais:
+                                listaDinamicaFilhosPais[pai] = {filho}
+                            else:
+                                listaDinamicaFilhosPais[pai].add(filho)
+                            lista_selecao.add(cartao)
+                        except IndexError:
+                            lista_selecao.add(cartao)
+        for item in lista_selecao:
+            try:
+                selecaoListaFilhosPais.pop(item)
+            except KeyError:
+                pass
+        for pais in listaDinamicaFilhosPais:
+            listaDinamicaFilhosPais[pais] = list(listaDinamicaFilhosPais[pais])
+        jsonMontado = json_montado(
+            bolas_do_bingo_json=bolasDoBingoJson,
+            selecao_lista_filhos_pais=selecaoListaFilhosPais,
+            lista_dinamica_filhos_pais=listaDinamicaFilhosPais
+        )
+        update_db(g, jsonMontado)
         return redirect(url_for('bingo.config', _id=_id))
 
     # print_class(bolas[0])

@@ -8,6 +8,11 @@ class BolasDoBingoJson(BaseModel):
     ListaVisitante: List[str]
     ListaMenor: List[str]
     ListaDinamica: List[str]
+    ListaDinamicaMaePai: List[str]
+    SelecaoListaMaePai: Dict
+    ListaDinamicaFilhosPais: Dict
+    SelecaoListaFilhosPais: Dict
+    SelecaoEventoEspecial: List[Dict]
     ListaNiverCasamento: List[str]
     ListaEnsaio: List[str]
     ListaEnsaioAlameda: List[str]
@@ -31,6 +36,7 @@ class BolasDoBingoJson(BaseModel):
     HistoricoSorteio: Dict
     Ensaio: List[str]
     HabilitarEnsaio: List[str]
+    HabilitarFilhosParaPais: List[str]
 
     def __len__(self):
         return self.dict().keys().__len__()

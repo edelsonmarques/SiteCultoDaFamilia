@@ -125,7 +125,12 @@
                                 <input name="ensaio" type="submit" value="Ensaio"/>
                             {% endif %}
                             {% if HabilitarEnsaio == '' and bolas.bolasDoBingoJson.ListaDinamica.__len__() >= 0 %}
-                                <input name="dinamica" type="submit" value="Dinâmica"/>
+                                {% if bolas['bolasDoBingoJson']['HabilitarFilhosParaPais'][0] == 'true' %}
+                                    <input name="dinamica" type="submit" value="Dinâmica - {{bolas['bolasDoBingoJson']['SelecaoEventoEspecial'][0]['plural']}}"/>
+                                    <input name="dinamica" type="submit" value="Dinâmica - {{bolas['bolasDoBingoJson']['SelecaoEventoEspecial'][1]['plural']}}"/>
+                                {% else %}
+                                    <input name="dinamica" type="submit" value="Dinâmica"/>
+                                {% endif %}
                             {% endif %}
                             <input name="aniversario" type="submit" value="Aniversário de Casamento"/>
                         </form>
@@ -133,7 +138,11 @@
                     <div class="tela_botoes">
                         <form method="post">
                             {% if HabilitarEnsaio == 'true' and bolas.bolasDoBingoJson.ListaDinamica.__len__() >= 0 %}
-                                <input name="dinamica" type="submit" value="Dinâmica"/>
+                                {% if bolas['bolasDoBingoJson']['HabilitarFilhosParaPais'][0] == 'true' %}
+                                    <input name="dinamica" type="submit" value="Dinâmica - Mãe"/>
+                                {% else %}
+                                    <input name="dinamica" type="submit" value="Dinâmica"/>
+                                {% endif %}
                             {% endif %}
                         </form>
                     </div>
