@@ -311,7 +311,22 @@
                     <h1>Report</h1>
                     <form method="post">
                         <label>Download Report - Usuários e meses:</label>
-                        <input name="report" type="submit" value="Download Report">
+                        <select name="report">
+                            {% if bolas.bolasDoBingoJson.ListaMesSorteio is defined %}
+                                {% if bolas.bolasDoBingoJson.ListaMesSorteio.__len__() != 0 %}
+                                    {% for mes in bolas.bolasDoBingoJson.ListaMesSorteio %}
+                                        {% if bolas['bolasDoBingoJson']['MesSorteio'][0] == mes %}
+                                            <option>{{mes}}</option>
+                                        {% else %}
+                                            <option>{{mes}}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <option selected>todos</option>
+                                    <option>usuarios</option>
+                                {% endif %}
+                            {% endif %}
+                        </select>
+                        <input type="submit" value="Download Report">
                     </form>
                 </header>
             </section>
