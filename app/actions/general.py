@@ -218,8 +218,8 @@ def remove(bingo_json, people, _print=False):
                                             'Lista Dinâmica')
     bingo_json.ListaEnsaio = remove_lista(bingo_json.ListaEnsaio, people,
                                           'Lista Ensaio')
-    bingo_json.listaDinamicaMaePai = remove_lista(
-        bingo_json.listaDinamicaMaePai, people, 'Lista Dinâmica Mãe/Pai')
+    bingo_json.ListaDinamicaMaePai = remove_lista(
+        bingo_json.ListaDinamicaMaePai, people, 'Lista Dinâmica Mãe/Pai')
     return bingo_json
 
 
