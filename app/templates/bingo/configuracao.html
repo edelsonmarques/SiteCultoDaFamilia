@@ -66,7 +66,7 @@
             </div>
             <div class= "vertical"></div>
             {% if bolas['bolasDoBingoJson']['HabilitarFilhosParaPais'][0] == 'true' %}
-                {% if bolas['bolasDoBingoJson']['SelecaoEventoEspecial'][0].__str__() != '' %}
+                {% if bolas['bolasDoBingoJson']['SelecaoEventoEspecial'][0].__str__() not in events.EVENTOSEMINARIOBLANK %}
                     <div>
                         <section class="content_header_config">
                             <header>
@@ -150,6 +150,44 @@
                             </form>
                         {% endif %}
                     </div>
+                {% elif bolas['bolasDoBingoJson']['SelecaoEventoEspecial'][0].__str__() in events.EVENTOSEMINARIO %}
+                    <div>
+                        <section class="content_header_config">
+                            <header>
+                                <form method="post">
+                                    <h1>
+                                        {% if bolas['bolasDoBingoJson']['SelecaoEventoEspecial'][0].__str__().__contains__('Seminário') %}
+                                            Dinâmica de Casais no {{ bolas['bolasDoBingoJson']['SelecaoEventoEspecial'][0] }}
+                                        {% else %}
+                                            Dinâmica de Casais no mês de Outubro
+                                        {% endif %}
+                                        <input type="submit" name="carregar_seminario" value="Carregar presenças">
+                                        <input type="submit" name="habilitarFilhosParaPais" value="Desabilitar Modo Eventos">
+                                    </h1>
+                                </form>
+                            </header>
+                        </section>
+                        <form method="post">
+                            {% if bolas['bolasDoBingoJson']['ListaDeOutNov'].__len__() > 0  %}
+                                <label >Quantidade de cartões / qtd sorteios por presenças:</label>
+                                {% for i in bolas.bolasDoBingoJson.ListaDeOutNov.jovens %}
+                                    <label > Jovens com {{ i }} presenças: {{ bolas.bolasDoBingoJson.ListaDeOutNov.jovens[i].__len__() }}
+                                        <input class= "set" name="set_jovens_{{i}}" type="text" value="{{bolas.bolasDoBingoJson.ListaSet.jovens[i]}}" required>
+                                        ||  Geral com {{ i }} presenças: {{ bolas.bolasDoBingoJson.ListaDeOutNov['adultos/casados'][i].__len__() }}
+                                        <input class= "set" name="set_adultos/casados_{{i}}" type="text" value="{{bolas.bolasDoBingoJson.ListaSet['adultos/casados'][i]}}" required>
+                                    </label>
+                                {% endfor %}
+                                <input name="setar" type="submit" value="Setar Sorteios">
+                            {% endif %}
+                        </form>
+                        <form method="post">
+                            <label >Quantidade de cartões cadastrados: {{ bolas.bolasDoBingoJson.ListaDinamica.__len__() }}</label>
+                            <label for="dinamica_seminario">Cartão fidelidade para a dinâmica do grupo: [Congregação|N° cartão fidelidade]</label>
+                            <label >Quantidade de cartões cadastrados: {{ bolas.bolasDoBingoJson.ListaDinamica.__len__() }}</label>
+                            <input name="dinamica_seminario" id="dinamica_seminario" type="text" value="{{ request.form['dinamica_seminario'] }}" required>
+                            <input type="submit" value="Inserir">
+                        </form>
+                    </div>
                 {% else %}
                     <div>
                         <section class="content_header_config">
@@ -167,8 +205,14 @@
                                 <option>Dia das Mães</option>
                                 <option>Dia dos Pais</option>
                                 <option>Dia dos Avós</option>
+                                {% for evento in events.EVENTOSEMINARIO %}
+                                    <option>{{ evento }}</option>
+                                {% endfor %}
                             </select>
-                            <input type="submit" value="Carregar">
+                            <h2>
+                                <input type="submit" value="Carregar">
+                                <input type="submit" name="voltar" value="Voltar">
+                            </h2>
                         </form>
                     </div>
                 {% endif %}
@@ -178,7 +222,7 @@
                         <header>
                             <form method="post">
                                 <h1>Dinâmica de Casais
-                                    <input type="submit" name="habilitarFilhosParaPais" value="Habilitar Modo Filhos">
+                                    <input type="submit" name="habilitarFilhosParaPais" value="Habilitar Modo Eventos">
                                 </h1>
                             </form>
                         </header>

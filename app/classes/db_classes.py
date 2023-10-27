@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List, Dict
+from typing import List, Dict, Union
 
 
 class BolasDoBingoJson(BaseModel):
@@ -12,7 +12,7 @@ class BolasDoBingoJson(BaseModel):
     SelecaoListaMaePai: Dict
     ListaDinamicaFilhosPais: Dict
     SelecaoListaFilhosPais: Dict
-    SelecaoEventoEspecial: List[Dict]
+    SelecaoEventoEspecial: Union[List[Dict], List[str]]
     ListaNiverCasamento: List[str]
     ListaEnsaio: List[str]
     ListaEnsaioAlameda: List[str]
@@ -22,6 +22,8 @@ class BolasDoBingoJson(BaseModel):
     ListaEnsaioNovaDivineia2: List[str]
     ListaEnsaioPiedade: List[str]
     ListaEnsaioVeneza4: List[str]
+    ListaDeOutNov: Dict
+    ListaSet: Dict
     HabilitarListaAlameda: List[str]
     HabilitarListaJardimCopa1: List[str]
     HabilitarListaJardimCopa2: List[str]

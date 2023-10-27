@@ -12,9 +12,13 @@ h1 {
     font-size: 1.17em;
 }
 
+.set{
+    margin-bottom: 0em;
+    width: 40px;
+}
+
 input{
     margin-bottom: 1em;
-
 }
 
 .pass label, .user label{

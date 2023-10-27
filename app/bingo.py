@@ -13,6 +13,7 @@ from utils.json_db import json_montado
 from utils.converter import converter_str
 from enums import nomes_colunas, meses, congregacoes, actions, events
 from utils.print_class import print_class
+from utils import contar_presenca, inserir_presenca
 from datetime import datetime
 import io
 bp = Blueprint('bingo', __name__)
@@ -44,11 +45,31 @@ def index():
     #     print()
 
     if request.method == 'POST' and 'geral' in request.form:
-        remove_people(g, bolas, actions.GERAL)
+        if bolas[0].bolasDoBingoJson.SelecaoEventoEspecial[0] in \
+                events.EVENTOSEMINARIO:
+            for num in actions.SEMINARIO:
+                if len(bolas[0].bolasDoBingoJson.ListaSet) > 0 and \
+                        bolas[0].bolasDoBingoJson.ListaSet[
+                                actions.GERAL][num] > 0:
+                    print(num)
+                    remove_people(g, bolas, num, actions.GERAL)
+                    break
+        else:
+            remove_people(g, bolas, actions.GERAL)
         return redirect(url_for('bingo.index'))
 
     if request.method == 'POST' and actions.JOVENS in request.form:
-        remove_people(g, bolas, actions.JOVENS)
+        if bolas[0].bolasDoBingoJson.SelecaoEventoEspecial[0] in \
+                events.EVENTOSEMINARIO:
+            for num in actions.SEMINARIO:
+                if len(bolas[0].bolasDoBingoJson.ListaSet) > 0 and \
+                        bolas[0].bolasDoBingoJson.ListaSet[
+                                actions.JOVENS][num] > 0:
+                    print(num)
+                    remove_people(g, bolas, num, actions.JOVENS)
+                    break
+        else:
+            remove_people(g, bolas, actions.JOVENS)
         return redirect(url_for('bingo.index'))
 
     if request.method == 'POST' and actions.VISITANTES in request.form:
@@ -119,8 +140,8 @@ def index():
         _id = (bolas[0].id if 'id' in bolas[0] else g.user['id'])
         return redirect(url_for(f'bingo.config', _id=_id))
 
-    # print_class(bolas[0])
-    return render_template('bingo/index.html', bolas=bolas[0])
+    print_class(bolas[0])
+    return render_template('bingo/index.html', bolas=bolas[0], events=events)
 
 
 @bp.route('/<int:_id>/configuracao', methods=('GET', 'POST'))
@@ -132,6 +153,15 @@ def config(_id):
     if not bolasDoBingoJson.ListaMesSorteio:
         listaChaves = carregar_chaves_api(bolasDoBingoJson.ConfAPI[0])
         bolasDoBingoJson.ListaMesSorteio = sorted(listaChaves)
+
+    if request.method == 'POST' and 'voltar' in request.form:
+        jsonMontado = json_montado(
+            bolas_do_bingo_json=bolasDoBingoJson,
+            habilitar_filhos_para_pais=['']
+        )
+
+        update_db(g, jsonMontado)
+        return redirect(url_for('bingo.config', _id=_id))
 
     if request.method == 'POST' and 'carregar' in request.form:
 
@@ -157,6 +187,8 @@ def config(_id):
         # print('keys: ', dados.keys())
         for column in dados:
             dados = converter_str(dados, column)
+        # Juntar o titular com o conjuge em 1 linha
+
         # print(dados)
         dados['numCartao'] = dados['idNumero'].apply(
             lambda x: x.split('/')[1])
@@ -197,6 +229,8 @@ def config(_id):
         listaEnsaioNovaDivineia2 = list()
         listaEnsaioPiedade = list()
         listaEnsaioVeneza4 = list()
+
+        # Ajuste nas listas
         for column in dados:
             for _index in dados[column]:
                 _index = str(_index).removesuffix('nan')
@@ -260,10 +294,118 @@ def config(_id):
             lista_ensaio_nova_divineia_2=listaEnsaioNovaDivineia2,
             lista_ensaio_piedade=listaEnsaioPiedade,
             lista_ensaio_veneza_4=listaEnsaioVeneza4,
+            lista_de_out_nov={},
             habilitar_filhos_para_pais=[''],
             mes_sorteio=mes,
             nome_sorteado_anterior=[''],
             nome_sorteado=['']
+        )
+
+        update_db(g, jsonMontado)
+        return redirect(url_for('bingo.config', _id=_id))
+
+    if request.method == 'POST' and 'carregar_seminario' in request.form:
+
+        # Separa as listas de ajustes de presenças
+        listaGeral = bolasDoBingoJson.ListaGeral
+        listaMenor = bolasDoBingoJson.ListaMenor
+        historico = bolasDoBingoJson.HistoricoSorteio
+        selecaoEventoEspecial = bolasDoBingoJson.SelecaoEventoEspecial[0]
+        listaGeral_temp = ['|'.join(x.split('|', 3)[:3]) for x in listaGeral]
+        listaMenor_temp = ['|'.join(x.split('|', 3)[:3]) for x in listaMenor]
+
+        # Carregar a lista de presenças do seminário
+        # (Falta isso para finalizar o seminário)
+        if selecaoEventoEspecial.__contains__('Seminário'):
+            pass
+
+        # Realizar chamada para o banco da API
+        ConfAPI = bolasDoBingoJson.ConfAPI[0]
+        ConfAPI = carregar_api(ConfAPI)
+
+        # Pega a aba de usuários
+        if ConfAPI is None:
+            return redirect(url_for('bingo.config', _id=_id))
+        usuarios = ConfAPI['usuarios']
+
+        # Transforma em uma tabela
+        dados = pd.DataFrame(usuarios).transpose()
+
+        # Separa congregação e id de cada usuário
+        dados['congregacao'] = dados['idNumero'].apply(
+            lambda x: x.split('/')[0])
+        dados['numCartao'] = dados['idNumero'].apply(
+            lambda x: x.split('/')[1])
+        dados['idNumero'] = dados['idNumero'].apply(
+            lambda x: x.replace('/', '|'))
+
+        # Ajusta os dados de presença e diminui a tabela
+        dados['qtdPresencaTitular'] = dados['presencaTitular'].apply(
+            lambda x: contar_presenca(x))
+        dados['qtdPresencaConjuge'] = dados['presencaConjuge'].apply(
+            lambda x: contar_presenca(x))
+        colunas = ['congregacao', 'idNumero', 'nomeTitular',
+                   'qtdPresencaTitular', 'nomeConjuge', 'qtdPresencaConjuge',
+                   'numCartao']
+        dados = dados.loc[:, colunas]
+        dados['baseTitular'] = dados['nomeTitular'] + '|' + dados['idNumero']
+        dados['baseConjuge'] = dados['nomeConjuge'] + '|' + dados['idNumero']
+
+        # Info pessoa:
+        # 'nomeConjuge|congregacao|numCartao|nascimentoConjuge|dataCasamento|
+        # estadoCivil|nomeTitular'
+
+        listaDeOutNov = {
+            actions.JOVENS: {
+                '8': [],
+                '7': [],
+                '6': [],
+                '5': [],
+                '4': []
+            },
+            actions.GERAL: {
+                '8': [],
+                '7': [],
+                '6': [],
+                '5': [],
+                '4': []
+            }
+        }
+        listaSet = {
+            actions.JOVENS: {
+                '8': 0,
+                '7': 0,
+                '6': 0,
+                '5': 0,
+                '4': 0
+            },
+            actions.GERAL: {
+                '8': 0,
+                '7': 0,
+                '6': 0,
+                '5': 0,
+                '4': 0
+            }
+        }
+
+        for i, v in dados.transpose().items():
+            for qtd in [['qtdPresencaTitular', 'baseTitular'],
+                        ['qtdPresencaConjuge', 'baseConjuge']]:
+                if v[qtd[0]] >= 4:
+                    listaDeOutNov, tem_pessoa = inserir_presenca(
+                        listaGeral, listaGeral_temp, v, listaDeOutNov,
+                        qtd[1], qtd[0], historico, event=selecaoEventoEspecial)
+                    if tem_pessoa == -1:
+                        listaDeOutNov, _ = inserir_presenca(
+                            listaMenor, listaMenor_temp, v, listaDeOutNov,
+                            qtd[1], qtd[0], historico, actions.JOVENS,
+                            event=selecaoEventoEspecial)
+
+        # Colocar os dados adquiridos na tabela correta
+        jsonMontado = json_montado(
+            bolas_do_bingo_json=bolasDoBingoJson,
+            lista_de_out_nov=listaDeOutNov,
+            lista_set=listaSet
         )
 
         update_db(g, jsonMontado)
@@ -274,6 +416,7 @@ def config(_id):
         bolasDoBingoJson = bolas[0].bolasDoBingoJson
 
         selecao = events.evento(request.form['carregar_evento'])
+        print('selecao:', selecao)
         # Colocar os dados adquiridos na tabela correta
         jsonMontado = json_montado(
             bolas_do_bingo_json=bolasDoBingoJson,
@@ -283,7 +426,8 @@ def config(_id):
         update_db(g, jsonMontado)
         return redirect(url_for('bingo.config', _id=_id))
 
-    if request.method == 'POST' and 'dinamica' in request.form:
+    if request.method == 'POST' and ('dinamica' in request.form or
+                                     'dinamica_seminario' in request.form):
         # Realizar chamada para o banco da API
         bolasDoBingoJson = bolas[0].bolasDoBingoJson
         listaGeral = bolasDoBingoJson.ListaGeral
@@ -587,6 +731,30 @@ def config(_id):
         update_db(g, jsonMontado)
         return redirect(url_for('bingo.index'))
 
+    if request.method == 'POST' and 'setar' in request.form:
+        bolasDoBingoJson = bolas[0].bolasDoBingoJson
+        listaDeOutNov = bolasDoBingoJson.ListaDeOutNov
+        listaSet = bolasDoBingoJson.ListaSet
+
+        for num in actions.SEMINARIO:
+            for gj in listaDeOutNov:
+                value = request.form[f"set_{gj}_{num}"].split(',')[0]
+                value = value.split('.')[0]
+                if int(value) > \
+                        len(listaDeOutNov[gj][num]):
+                    listaSet[gj][num] = len(listaDeOutNov[gj][num])
+                else:
+                    listaSet[gj][num] = int(value)
+
+        # listaSet = bolas[0].bolasDoBingoJson.ListaSet[actions.GERAL][num]
+        jsonMontado = json_montado(
+            bolas_do_bingo_json=bolasDoBingoJson,
+            lista_set=listaSet
+        )
+
+        update_db(g, jsonMontado)
+        return render_template('bingo/configuracao.html', bolas=bolas[0])
+
     if request.method == 'POST' and 'removeHistorico' in request.form:
         mesEscolhido = f"{request.form['removeHistorico'].lower()}"
         remove_historico(g, bolas, mesEscolhido)
@@ -802,7 +970,8 @@ def config(_id):
         return redirect(url_for('bingo.config', _id=_id))
 
     # print_class(bolas[0])
-    return render_template('bingo/configuracao.html', bolas=bolas[0])
+    return render_template('bingo/configuracao.html', bolas=bolas[0],
+                           events=events)
 
 
 if __name__ == '__main__':

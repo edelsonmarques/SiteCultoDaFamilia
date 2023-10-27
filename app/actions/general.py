@@ -1,10 +1,10 @@
 from utils.connect import update_db
 from utils.json_db import json_montado
-from enums import actions
+from enums import actions, events
 import random
 
 
-def remove_people(g, bolas, option, _print=False):
+def remove_people(g, bolas, option, gj='', _print=False):
     # print('Bolas do Bingo:', BolasDoBingo)
     bolasDoBingoJson = bolas[0].bolasDoBingoJson
     listaGeral = bolasDoBingoJson.ListaGeral
@@ -20,8 +20,11 @@ def remove_people(g, bolas, option, _print=False):
     listaEnsaioNovaDivineia2 = bolasDoBingoJson.ListaEnsaioNovaDivineia2
     listaEnsaioPiedade = bolasDoBingoJson.ListaEnsaioPiedade
     listaEnsaioVeneza4 = bolasDoBingoJson.ListaEnsaioVeneza4
+    listaDeOutNov = bolasDoBingoJson.ListaDeOutNov
+    listaSet = bolasDoBingoJson.ListaSet
     listaMenor = bolasDoBingoJson.ListaMenor
     listaVisitante = bolasDoBingoJson.ListaVisitante
+    selecaoEventoEspecial = bolasDoBingoJson.SelecaoEventoEspecial[0]
     nomeSorteado = bolasDoBingoJson.NomeSorteado
     historicoSorteio = bolasDoBingoJson.HistoricoSorteio
     mesSorteio = bolasDoBingoJson.MesSorteio
@@ -81,6 +84,11 @@ def remove_people(g, bolas, option, _print=False):
     elif len(listaEnsaioVeneza4) != 0 and option == actions.VENEZA4:
         nomeSorteado = [random.choice(listaEnsaioVeneza4)]
 
+    else:
+        if option in actions.SEMINARIO:
+            nomeSorteado = [random.choice(listaDeOutNov[gj][option])]
+            listaSet[gj][option] = listaSet[gj][option] - 1
+
     if nomeSorteado != ['']:
         if mesSorteio[0] in historicoSorteio:
             if nomeSorteado[0] not in historicoSorteio[mesSorteio[0]]:
@@ -118,61 +126,81 @@ def remove_people(g, bolas, option, _print=False):
                                       'Lista Ensaio Piedade')
     listaEnsaioVeneza4 = remove_lista(listaEnsaioVeneza4, nomeSorteado[0],
                                       'Lista Ensaio Veneza 4')
+    if option in actions.SEMINARIO:
+        listaDeOutNov[gj][option] = \
+                remove_lista(listaDeOutNov[gj][option], nomeSorteado[0],
+                             'Lista Seminario')
+    else:
+        if selecaoEventoEspecial in events.EVENTOSEMINARIO:
+            for presencas in listaDeOutNov[actions.GERAL]:
+                listaDeOutNov[actions.GERAL][presencas] = \
+                    remove_lista(listaDeOutNov[actions.GERAL][presencas],
+                                 nomeSorteado[0], 'Lista Seminario')
+
+    # Remove o conjuge do ganhador
+    try:
+        congregacao = nomeSorteado[0].split('|')[1]
+        numCartao = nomeSorteado[0].split('|')[2]
+    except IndexError:
+        congregacao = ''
+        numCartao = ''
 
     if option in [actions.GERAL, actions.DINAMICA, actions.DINAMICA_MAE_PAI,
                   actions.DINAMICA_FILHOS_PAIS, actions.ANIVERSARIO,
                   actions.ENSAIO, actions.ALAMEDA, actions.JDCOPA1,
                   actions.JDCOPA2, actions.ND1, actions.ND2, actions.PIEDADE,
                   actions.VENEZA4]:
-        # Remove o ganhador
-        try:
-            congregacao = nomeSorteado[0].split('|')[1]
-            numCartao = nomeSorteado[0].split('|')[2]
-        except IndexError:
-            congregacao = ''
-            numCartao = ''
 
-        def remover_pessoa(lista, descricao):
-            try:
-                for pessoa in lista:
-                    if pessoa.split('|')[1] == congregacao and \
-                            pessoa.split('|')[2] == numCartao:
-                        if type(lista) == dict:
-                            lista.pop(pessoa)
-                        else:
-                            lista.remove(pessoa)
-            except Exception as e:
-                if _print:
-                    print(f'{descricao} não tem o nome sorteado. Erro: ', e)
-            return lista
-
-        listaGeral = remover_pessoa(listaGeral, 'Lista Geral')
-        listaDinamica = remover_pessoa(listaDinamica, 'Lista Dinâmica')
+        listaGeral = remover_pessoa(listaGeral, 'Lista Geral',
+                                    congregacao, numCartao)
+        listaDinamica = remover_pessoa(listaDinamica, 'Lista Dinâmica',
+                                       congregacao, numCartao)
         listaDinamicaMaePai = remover_pessoa(listaDinamicaMaePai,
-                                             'Lista Dinâmica Mãe/Pai')
+                                             'Lista Dinâmica Mãe/Pai',
+                                             congregacao, numCartao)
         listaDinamicaFilhosPais = remover_pessoa(listaDinamicaFilhosPais,
-                                                 'Lista Dinâmica Filhos/Pais')
+                                                 'Lista Dinâmica Filhos/Pais',
+                                                 congregacao, numCartao)
         listaNiverCasamento = remover_pessoa(listaNiverCasamento,
-                                             'Lista Aniversário')
-        listaEnsaio = remover_pessoa(listaEnsaio, 'Lista Ensaio')
+                                             'Lista Aniversário',
+                                             congregacao, numCartao)
+        listaEnsaio = remover_pessoa(listaEnsaio, 'Lista Ensaio',
+                                     congregacao, numCartao)
         listaEnsaioAlameda = remover_pessoa(listaEnsaioAlameda,
-                                            'Lista Ensaio Alameda')
+                                            'Lista Ensaio Alameda',
+                                            congregacao, numCartao)
         listaEnsaioJardinCopa1 = remover_pessoa(listaEnsaioJardinCopa1,
                                                 'Lista Ensaio Jardim '
-                                                'Copacabana 1')
+                                                'Copacabana 1',
+                                                congregacao, numCartao)
         listaEnsaioJardinCopa2 = remover_pessoa(listaEnsaioJardinCopa2,
                                                 'Lista Ensaio Jardim '
-                                                'Copacabana 2')
+                                                'Copacabana 2',
+                                                congregacao, numCartao)
         listaEnsaioNovaDivineia1 = remover_pessoa(listaEnsaioNovaDivineia1,
                                                   'Lista Ensaio Nova '
-                                                  'Divinéia 1')
+                                                  'Divinéia 1',
+                                                  congregacao, numCartao)
         listaEnsaioNovaDivineia2 = remover_pessoa(listaEnsaioNovaDivineia2,
                                                   'Lista Ensaio Nova '
-                                                  'Divinéia 2')
+                                                  'Divinéia 2',
+                                                  congregacao, numCartao)
         listaEnsaioPiedade = remover_pessoa(listaEnsaioPiedade,
-                                            'Lista Ensaio Piedade')
+                                            'Lista Ensaio Piedade',
+                                            congregacao, numCartao)
         listaEnsaioVeneza4 = remover_pessoa(listaEnsaioVeneza4,
-                                            'Lista Ensaio Veneza 4')
+                                            'Lista Ensaio Veneza 4',
+                                            congregacao, numCartao)
+    elif option in actions.SEMINARIO:
+        for presencas in listaDeOutNov[gj]:
+            listaDeOutNov[gj][presencas] = \
+                remover_pessoa(listaDeOutNov[gj][presencas],
+                               'Lista Seminario', congregacao, numCartao)
+        listaDinamica = remover_pessoa(listaDinamica, 'Lista Dinâmica',
+                                       congregacao, numCartao)
+        listaNiverCasamento = remover_pessoa(listaNiverCasamento,
+                                             'Lista Aniversário',
+                                             congregacao, numCartao)
 
     jsonMontado = json_montado(
         bolas_do_bingo_json=bolasDoBingoJson,
@@ -191,6 +219,8 @@ def remove_people(g, bolas, option, _print=False):
         lista_ensaio_nova_divineia_2=listaEnsaioNovaDivineia2,
         lista_ensaio_piedade=listaEnsaioPiedade,
         lista_ensaio_veneza_4=listaEnsaioVeneza4,
+        lista_de_out_nov=listaDeOutNov,
+        lista_set=listaSet,
         nome_sorteado_anterior=bolasDoBingoJson.NomeSorteado,
         nome_sorteado=nomeSorteado if
         nomeSorteado_temp == '' else nomeSorteado_temp,
@@ -205,6 +235,23 @@ def remove_lista(lista, pessoa, descricao, _print=False):
             lista.pop(pessoa)
         else:
             lista.remove(pessoa)
+    except Exception as e:
+        if _print:
+            print(f'{descricao} não tem o nome sorteado. Erro: ', e)
+    return lista
+
+
+def remover_pessoa(lista, descricao, congregacao, num_cartao,
+                   _print: bool = False):
+    try:
+        for pessoa in lista:
+            if pessoa.split('|')[1] == congregacao and \
+                    pessoa.split('|')[2] == num_cartao:
+                if type(lista) == dict:
+                    lista.pop(pessoa)
+                else:
+                    lista.remove(pessoa)
+
     except Exception as e:
         if _print:
             print(f'{descricao} não tem o nome sorteado. Erro: ', e)

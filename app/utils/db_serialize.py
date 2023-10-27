@@ -6,7 +6,8 @@ dados_dict: DadosDict
 
 def armazenar_enums(dados) -> None:
     global dados_dict
-    dados[0]['bolasDoBingoJson'] = converter_str_json(dados[0]['bolasDoBingoJson'])
+    dados[0]['bolasDoBingoJson'] = \
+        converter_str_json(dados[0]['bolasDoBingoJson'])
     dados_dict = DadosDict(**dados[0])
 
 

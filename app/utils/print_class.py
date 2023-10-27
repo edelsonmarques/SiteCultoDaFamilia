@@ -8,8 +8,8 @@ def print_class(_class: DadosDict):
     print('ListaVisitante: \n', _class.bolasDoBingoJson.ListaVisitante, '\n')
     print('ListaMenor: \n', _class.bolasDoBingoJson.ListaMenor, '\n')
     print('ListaDinamica: \n', _class.bolasDoBingoJson.ListaDinamica, '\n')
-    print('ListaNiverCasamento: \n', _class.bolasDoBingoJson.ListaNiverCasamento,
-          '\n')
+    print('ListaNiverCasamento: \n',
+          _class.bolasDoBingoJson.ListaNiverCasamento, '\n')
     print('ListaEnsaio: \n', _class.bolasDoBingoJson.ListaEnsaio,
           '\n')
     print('ListaEnsaioAlameda: \n', _class.bolasDoBingoJson.ListaEnsaioAlameda,
@@ -25,6 +25,8 @@ def print_class(_class: DadosDict):
     print('ListaEnsaioPiedade: \n', _class.bolasDoBingoJson.ListaEnsaioPiedade,
           '\n')
     print('ListaEnsaioVeneza4: \n', _class.bolasDoBingoJson.ListaEnsaioVeneza4,
+          '\n')
+    print('ListaDeOutNov: \n', _class.bolasDoBingoJson.ListaDeOutNov,
           '\n')
     print('HabilitarListaAlameda: \n',
           _class.bolasDoBingoJson.HabilitarListaAlameda,
@@ -47,8 +49,8 @@ def print_class(_class: DadosDict):
           '\n')
     print('ListaMesSorteio: \n', _class.bolasDoBingoJson.ListaMesSorteio,
           '\n')
-    print('NomeSorteadoAnterior: \n', _class.bolasDoBingoJson.NomeSorteadoAnterior,
-          '\n')
+    print('NomeSorteadoAnterior: \n',
+          _class.bolasDoBingoJson.NomeSorteadoAnterior, '\n')
     print('NomeSorteado: \n', _class.bolasDoBingoJson.NomeSorteado,
           '\n')
     print('HistoricoSorteio: \n', _class.bolasDoBingoJson.HistoricoSorteio,
@@ -57,3 +59,15 @@ def print_class(_class: DadosDict):
           '\n')
     print('HabilitarEnsaio: \n', _class.bolasDoBingoJson.HabilitarEnsaio,
           '\n')
+    print('ListaDinamicaMaePai: \n',
+          _class.bolasDoBingoJson.ListaDinamicaMaePai, '\n')
+    print('SelecaoListaMaePai: \n',
+          _class.bolasDoBingoJson.SelecaoListaMaePai, '\n')
+    print('ListaDinamicaFilhosPais: \n',
+          _class.bolasDoBingoJson.ListaDinamicaFilhosPais, '\n')
+    print('SelecaoListaFilhosPais: \n',
+          _class.bolasDoBingoJson.SelecaoListaFilhosPais, '\n')
+    print('SelecaoEventoEspecial: \n',
+          _class.bolasDoBingoJson.SelecaoEventoEspecial, '\n')
+    print('HabilitarFilhosParaPais: \n',
+          _class.bolasDoBingoJson.HabilitarFilhosParaPais, '\n')

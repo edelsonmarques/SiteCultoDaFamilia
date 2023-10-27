@@ -63,7 +63,7 @@
                         </p>
                         <p class="congregacao">
                             {% if bolas.bolasDoBingoJson.NomeSorteado != [''] %}
-                                Congregação:  {{ NomeSorteado.split('|')[1] }}
+                                Congregação:  {{ NomeSorteado.split('|')[1] }} - Cartão: {{ NomeSorteado.split('|')[2] }}
                             {% endif %}
                         </p>
                     </div>
@@ -125,7 +125,7 @@
                                 <input name="ensaio" type="submit" value="Ensaio"/>
                             {% endif %}
                             {% if HabilitarEnsaio == '' and bolas.bolasDoBingoJson.ListaDinamica.__len__() >= 0 %}
-                                {% if bolas['bolasDoBingoJson']['HabilitarFilhosParaPais'][0] == 'true' %}
+                                {% if bolas['bolasDoBingoJson']['HabilitarFilhosParaPais'][0] == 'true' and bolas['bolasDoBingoJson']['SelecaoEventoEspecial'].__len__() != 0 and bolas['bolasDoBingoJson']['SelecaoEventoEspecial'][0] not in events.EVENTOSEMINARIO %}
                                     <input name="dinamica" type="submit" value="Dinâmica - {{bolas['bolasDoBingoJson']['SelecaoEventoEspecial'][0]['plural']}}"/>
                                     <input name="dinamica" type="submit" value="Dinâmica - {{bolas['bolasDoBingoJson']['SelecaoEventoEspecial'][1]['plural']}}"/>
                                 {% else %}
@@ -138,8 +138,8 @@
                     <div class="tela_botoes">
                         <form method="post">
                             {% if HabilitarEnsaio == 'true' and bolas.bolasDoBingoJson.ListaDinamica.__len__() >= 0 %}
-                                {% if bolas['bolasDoBingoJson']['HabilitarFilhosParaPais'][0] == 'true' %}
-                                    <input name="dinamica" type="submit" value="Dinâmica - Mãe"/>
+                                {% if bolas['bolasDoBingoJson']['HabilitarFilhosParaPais'][0] == 'true' and bolas['bolasDoBingoJson']['SelecaoEventoEspecial'].__len__() != 0 and bolas['bolasDoBingoJson']['SelecaoEventoEspecial'][0] not in events.EVENTOSEMINARIO %}
+                                    <input name="dinamica" type="submit" value="Dinâmica - {{bolas['bolasDoBingoJson']['SelecaoEventoEspecial'][0]['singular']}}"/>
                                 {% else %}
                                     <input name="dinamica" type="submit" value="Dinâmica"/>
                                 {% endif %}

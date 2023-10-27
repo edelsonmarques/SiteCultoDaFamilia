@@ -21,6 +21,8 @@ def json_montado(bolas_do_bingo_json: BolasDoBingoJson = None,
                  lista_ensaio_nova_divineia_2: list = None,
                  lista_ensaio_piedade: list = None,
                  lista_ensaio_veneza_4: list = None,
+                 lista_de_out_nov: dict = None,
+                 lista_set: dict = None,
                  habilitar_lista_alameda: list = None,
                  habilitar_lista_jardim_copa_1: list = None,
                  habilitar_lista_jardim_copa_2: list = None,
@@ -68,6 +70,10 @@ def json_montado(bolas_do_bingo_json: BolasDoBingoJson = None,
             habilitar_lista_jardim_copa_1 = ['true']
         if habilitar_lista_alameda is None:
             habilitar_lista_alameda = ['true']
+        if lista_de_out_nov is None:
+            lista_de_out_nov = {}
+        if lista_set is None:
+            lista_set = {}
         if lista_ensaio_veneza_4 is None:
             lista_ensaio_veneza_4 = []
         if lista_ensaio_piedade is None:
@@ -143,6 +149,10 @@ def json_montado(bolas_do_bingo_json: BolasDoBingoJson = None,
                 bolas_do_bingo_json.HabilitarListaJardimCopa1
         if habilitar_lista_alameda is None:
             habilitar_lista_alameda = bolas_do_bingo_json.HabilitarListaAlameda
+        if lista_de_out_nov is None:
+            lista_de_out_nov = bolas_do_bingo_json.ListaDeOutNov
+        if lista_set is None:
+            lista_set = bolas_do_bingo_json.ListaSet
         if lista_ensaio_veneza_4 is None:
             lista_ensaio_veneza_4 = bolas_do_bingo_json.ListaEnsaioVeneza4
         if lista_ensaio_piedade is None:
@@ -208,6 +218,8 @@ def json_montado(bolas_do_bingo_json: BolasDoBingoJson = None,
         'ListaEnsaioNovaDivineia2': lista_ensaio_nova_divineia_2,
         'ListaEnsaioPiedade': lista_ensaio_piedade,
         'ListaEnsaioVeneza4': lista_ensaio_veneza_4,
+        'ListaDeOutNov': lista_de_out_nov,
+        'ListaSet': lista_set,
         'HabilitarListaAlameda': habilitar_lista_alameda,
         'HabilitarListaJardimCopa1': habilitar_lista_jardim_copa_1,
         'HabilitarListaJardimCopa2': habilitar_lista_jardim_copa_2,
