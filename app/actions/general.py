@@ -24,7 +24,10 @@ def remove_people(g, bolas, option, gj='', _print=False):
     listaSet = bolasDoBingoJson.ListaSet
     listaMenor = bolasDoBingoJson.ListaMenor
     listaVisitante = bolasDoBingoJson.ListaVisitante
-    selecaoEventoEspecial = bolasDoBingoJson.SelecaoEventoEspecial[0]
+    if len(bolas[0].bolasDoBingoJson.SelecaoEventoEspecial) > 0:
+        selecaoEventoEspecial = bolasDoBingoJson.SelecaoEventoEspecial[0]
+    else:
+        selecaoEventoEspecial = ''
     nomeSorteado = bolasDoBingoJson.NomeSorteado
     historicoSorteio = bolasDoBingoJson.HistoricoSorteio
     mesSorteio = bolasDoBingoJson.MesSorteio
@@ -145,7 +148,8 @@ def remove_people(g, bolas, option, gj='', _print=False):
         congregacao = ''
         numCartao = ''
 
-    if option in [actions.GERAL, actions.DINAMICA, actions.DINAMICA_MAE_PAI,
+    if option in [actions.GERAL, actions.VISITANTES,
+                  actions.DINAMICA, actions.DINAMICA_MAE_PAI,
                   actions.DINAMICA_FILHOS_PAIS, actions.ANIVERSARIO,
                   actions.ENSAIO, actions.ALAMEDA, actions.JDCOPA1,
                   actions.JDCOPA2, actions.ND1, actions.ND2, actions.PIEDADE,
@@ -153,6 +157,8 @@ def remove_people(g, bolas, option, gj='', _print=False):
 
         listaGeral = remover_pessoa(listaGeral, 'Lista Geral',
                                     congregacao, numCartao)
+        listaVisitante = remover_pessoa(listaVisitante, 'Lista Visitante',
+                                        congregacao, numCartao)
         listaDinamica = remover_pessoa(listaDinamica, 'Lista Dinâmica',
                                        congregacao, numCartao)
         listaDinamicaMaePai = remover_pessoa(listaDinamicaMaePai,

@@ -45,7 +45,8 @@ def index():
     #     print()
 
     if request.method == 'POST' and 'geral' in request.form:
-        if bolas[0].bolasDoBingoJson.SelecaoEventoEspecial[0] in \
+        if len(bolas[0].bolasDoBingoJson.SelecaoEventoEspecial) > 0 and \
+            bolas[0].bolasDoBingoJson.SelecaoEventoEspecial[0] in \
                 events.EVENTOSEMINARIO:
             for num in actions.SEMINARIO:
                 if len(bolas[0].bolasDoBingoJson.ListaSet) > 0 and \
@@ -59,7 +60,8 @@ def index():
         return redirect(url_for('bingo.index'))
 
     if request.method == 'POST' and actions.JOVENS in request.form:
-        if bolas[0].bolasDoBingoJson.SelecaoEventoEspecial[0] in \
+        if len(bolas[0].bolasDoBingoJson.SelecaoEventoEspecial) > 0 and \
+            bolas[0].bolasDoBingoJson.SelecaoEventoEspecial[0] in \
                 events.EVENTOSEMINARIO:
             for num in actions.SEMINARIO:
                 if len(bolas[0].bolasDoBingoJson.ListaSet) > 0 and \
@@ -433,8 +435,12 @@ def config(_id):
         listaGeral = bolasDoBingoJson.ListaGeral
         listaDinamica = set(bolasDoBingoJson.ListaDinamica)
         ultimoItem = ''
+        if 'dinamica_seminario' in request.form:
+            dinamica = request.form['dinamica_seminario']
+        else:
+            dinamica = request.form['dinamica']
 
-        for cartao in request.form['dinamica'].split(','):
+        for cartao in dinamica.split(','):
             if cartao.__contains__('|'):
                 congregacao = cartao.split('|')[0]
                 NumCartao = cartao.split('|')[1]
@@ -753,7 +759,7 @@ def config(_id):
         )
 
         update_db(g, jsonMontado)
-        return render_template('bingo/configuracao.html', bolas=bolas[0])
+        return redirect(url_for('bingo.config', _id=_id))
 
     if request.method == 'POST' and 'removeHistorico' in request.form:
         mesEscolhido = f"{request.form['removeHistorico'].lower()}"
