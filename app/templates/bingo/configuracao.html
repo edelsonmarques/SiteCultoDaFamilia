@@ -60,6 +60,17 @@
                                 <option>{{mes}}</option>
                             {% endif %}
                         {% endfor %}
+                        {% if 'outubro' in bolas.bolasDoBingoJson.ListaMesSorteio %}
+                            {% for mes in ['novembro_1', 'novembro_2', 'novembro_3'] %}
+                                {% if mes not in bolas.bolasDoBingoJson.ListaMesSorteio %}
+                                    {% if bolas['bolasDoBingoJson']['MesSorteio'][0] == mes %}
+                                        <option selected>{{mes}}</option>
+                                    {% else %}
+                                        <option>{{mes}}</option>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
                     </select>
                     <input type="submit" value="Carregar">
                 </form>

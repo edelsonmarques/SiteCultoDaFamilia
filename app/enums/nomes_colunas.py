@@ -20,3 +20,15 @@ COLUNAS_MERGE_REPORT = ['congregacao', 'idNumero', 'nomeTitular',
                         'nomeConjuge', 'nascimentoConjuge', 'sexoConjuge',
                         'dataCasamento'
                         ]
+
+COLUNAS_LOAD = ['idNumero', 'nomeTitular', 'nomeConjuge', 'congregacao',
+                'numCartao', 'nascimentoConjuge', 'nascimentoTitular',
+                'dataCasamento', 'estadoCivil']
+
+COLUNAS_LOAD_SEMINARIO = ['idNumero', 'nomeTitular', 'nomeConjuge',
+                          'congregacao', 'numCartao', 'nascimentoConjuge',
+                          'nascimentoTitular', 'dataCasamento', 'estadoCivil',
+                          'email', 'endereco', 'filhos', 'id', 'netos',
+                          'perfil', 'presencaConjuge', 'presencaTitular',
+                          'sexoConjuge', 'sexoTitular', 'telefoneConjuge',
+                          'telefoneTitular']

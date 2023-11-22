@@ -9,6 +9,9 @@ AGOSTO = 'agosto'
 SETEMBRO = 'setembro'
 OUTUBRO = 'outubro'
 NOVEMBRO = 'novembro'
+NOVEMBRO_1 = 'novembro_1'
+NOVEMBRO_2 = 'novembro_2'
+NOVEMBRO_3 = 'novembro_3'
 DEZEMBRO = 'dezembro'
 
 NUM_JANEIRO = 1

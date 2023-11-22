@@ -99,45 +99,63 @@ def remove_people(g, bolas, option, gj='', _print=False):
         else:
             historicoSorteio[mesSorteio[0]] = nomeSorteado
 
-    listaGeral = remove_lista(listaGeral, nomeSorteado[0], 'Lista Geral')
-    listaDinamica = remove_lista(listaDinamica, nomeSorteado[0],
-                                 'Lista Dinâmica')
-    listaDinamicaMaePai = remove_lista(listaDinamicaMaePai, nomeSorteado[0],
-                                       'Lista Dinâmica Mãe/Pai')
-    listaDinamicaFilhosPais = remove_lista(listaDinamicaFilhosPais,
+    if option in [actions.GERAL, actions.VISITANTES,
+                  actions.DINAMICA, actions.DINAMICA_MAE_PAI,
+                  actions.DINAMICA_FILHOS_PAIS, actions.ANIVERSARIO,
+                  actions.ENSAIO, actions.ALAMEDA, actions.JDCOPA1,
+                  actions.JDCOPA2, actions.ND1, actions.ND2, actions.PIEDADE,
+                  actions.VENEZA4, actions.SEMINARIO]:
+        listaGeral = remove_lista(listaGeral, nomeSorteado[0], 'Lista Geral')
+
+        listaDinamica = remove_lista(listaDinamica, nomeSorteado[0],
+                                     'Lista Dinâmica')
+        listaDinamicaMaePai = remove_lista(listaDinamicaMaePai,
                                            nomeSorteado[0],
-                                           'Lista Dinâmica Filhos/Pais')
-    listaNiverCasamento = remove_lista(listaNiverCasamento, nomeSorteado[0],
-                                       'Lista Aniversário')
-    listaEnsaio = remove_lista(listaEnsaio, nomeSorteado[0], 'Lista Ensaio')
-    listaEnsaioAlameda = remove_lista(listaEnsaioAlameda, nomeSorteado[0],
-                                      'Lista Ensaio Alameda')
-    listaEnsaioJardinCopa1 = remove_lista(listaEnsaioJardinCopa1,
+                                           'Lista Dinâmica Mãe/Pai')
+        listaDinamicaFilhosPais = remove_lista(listaDinamicaFilhosPais,
+                                               nomeSorteado[0],
+                                               'Lista Dinâmica Filhos/Pais')
+        listaNiverCasamento = remove_lista(listaNiverCasamento,
+                                           nomeSorteado[0],
+                                           'Lista Aniversário')
+        listaEnsaio = remove_lista(listaEnsaio, nomeSorteado[0],
+                                   'Lista Ensaio')
+        listaEnsaioAlameda = remove_lista(listaEnsaioAlameda, nomeSorteado[0],
+                                          'Lista Ensaio Alameda')
+        listaEnsaioJardinCopa1 = remove_lista(listaEnsaioJardinCopa1,
+                                              nomeSorteado[0],
+                                              'Lista Ensaio '
+                                              'Jardim Copacabana 1')
+        listaEnsaioJardinCopa2 = remove_lista(listaEnsaioJardinCopa2,
+                                              nomeSorteado[0],
+                                              'Lista Ensaio '
+                                              'Jardim Copacabana 2')
+        listaEnsaioNovaDivineia1 = remove_lista(listaEnsaioNovaDivineia1,
+                                                nomeSorteado[0],
+                                                'Lista Ensaio Nova Divinéia 1')
+        listaEnsaioNovaDivineia2 = remove_lista(listaEnsaioNovaDivineia2,
+                                                nomeSorteado[0],
+                                                'Lista Ensaio Nova Divinéia 2')
+        listaEnsaioPiedade = remove_lista(listaEnsaioPiedade,
                                           nomeSorteado[0],
-                                          'Lista Ensaio Jardim Copacabana 1')
-    listaEnsaioJardinCopa2 = remove_lista(listaEnsaioJardinCopa2,
-                                          nomeSorteado[0],
-                                          'Lista Ensaio Jardim Copacabana 2')
-    listaEnsaioNovaDivineia1 = remove_lista(listaEnsaioNovaDivineia1,
-                                            nomeSorteado[0],
-                                            'Lista Ensaio Nova Divinéia 1')
-    listaEnsaioNovaDivineia2 = remove_lista(listaEnsaioNovaDivineia2,
-                                            nomeSorteado[0],
-                                            'Lista Ensaio Nova Divinéia 2')
-    listaEnsaioPiedade = remove_lista(listaEnsaioPiedade,
-                                      nomeSorteado[0],
-                                      'Lista Ensaio Piedade')
-    listaEnsaioVeneza4 = remove_lista(listaEnsaioVeneza4, nomeSorteado[0],
-                                      'Lista Ensaio Veneza 4')
-    if option in actions.SEMINARIO:
-        listaDeOutNov[gj][option] = \
-                remove_lista(listaDeOutNov[gj][option], nomeSorteado[0],
-                             'Lista Seminario')
+                                          'Lista Ensaio Piedade')
+        listaEnsaioVeneza4 = remove_lista(listaEnsaioVeneza4, nomeSorteado[0],
+                                          'Lista Ensaio Veneza 4')
+        if option in actions.SEMINARIO:
+            listaDeOutNov[gj][option] = \
+                    remove_lista(listaDeOutNov[gj][option], nomeSorteado[0],
+                                 'Lista Seminario')
+        else:
+            if selecaoEventoEspecial in events.EVENTOSEMINARIO:
+                for presencas in listaDeOutNov[actions.GERAL]:
+                    listaDeOutNov[actions.GERAL][presencas] = \
+                        remove_lista(listaDeOutNov[actions.GERAL][presencas],
+                                     nomeSorteado[0], 'Lista Seminario')
     else:
         if selecaoEventoEspecial in events.EVENTOSEMINARIO:
-            for presencas in listaDeOutNov[actions.GERAL]:
-                listaDeOutNov[actions.GERAL][presencas] = \
-                    remove_lista(listaDeOutNov[actions.GERAL][presencas],
+            for presencas in listaDeOutNov[actions.JOVENS]:
+                listaDeOutNov[actions.JOVENS][presencas] = \
+                    remove_lista(listaDeOutNov[actions.JOVENS][presencas],
                                  nomeSorteado[0], 'Lista Seminario')
 
     # Remove o conjuge do ganhador
@@ -197,6 +215,11 @@ def remove_people(g, bolas, option, gj='', _print=False):
         listaEnsaioVeneza4 = remover_pessoa(listaEnsaioVeneza4,
                                             'Lista Ensaio Veneza 4',
                                             congregacao, numCartao)
+        if selecaoEventoEspecial in events.EVENTOSEMINARIO:
+            for presencas in listaDeOutNov[actions.GERAL]:
+                listaDeOutNov[actions.GERAL][presencas] = \
+                    remover_pessoa(listaDeOutNov[actions.GERAL][presencas],
+                                   'Lista Seminario', congregacao, numCartao)
     elif option in actions.SEMINARIO:
         for presencas in listaDeOutNov[gj]:
             listaDeOutNov[gj][presencas] = \

@@ -14,7 +14,10 @@ def inserir_presenca(lista_princ, lista_temp, dados, lista_return, base,
         n = lista_temp.index(dados[base])
         pessoa = lista_princ[n]
         tem_hist = -1
-        columns = [meses.OUTUBRO, 'novembro_1']  # Verificar sorteio
+
+        # Verificar sorteios anteriores
+        columns = [meses.OUTUBRO, meses.NOVEMBRO_1]
+
         for mes in columns:
             if mes in hist and event != events.SEMINARIO_3:
                 histMes = hist[mes]

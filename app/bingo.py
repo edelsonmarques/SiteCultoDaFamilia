@@ -142,7 +142,7 @@ def index():
         _id = (bolas[0].id if 'id' in bolas[0] else g.user['id'])
         return redirect(url_for(f'bingo.config', _id=_id))
 
-    print_class(bolas[0])
+    # print_class(bolas[0])
     return render_template('bingo/index.html', bolas=bolas[0], events=events)
 
 
@@ -171,19 +171,36 @@ def config(_id):
         mes = [f"{pegar_mes(request.form['carregar'].lower())}"]
         ConfAPI = bolasDoBingoJson.ConfAPI[0]
         ConfAPI = carregar_api(ConfAPI)
+        print(mes)
         try:
             dados = pd.DataFrame(ConfAPI['presenca'][mes[0]])
         except (KeyError, TypeError):
-            return redirect(url_for('bingo.config', _id=_id))
+            if mes[0].__contains__(meses.NOVEMBRO):
+                dados = pd.DataFrame()
+            else:
+                return redirect(url_for('bingo.config', _id=_id))
 
-        # print('dados: ', dados)
-        # print('keys: ', dados.keys())
-        # print('dados.transpose: ', dados.transpose())
-        dados = dados.transpose()
-        colunas = ['idNumero', 'nomeTitular', 'nomeConjuge', 'congregacao',
-                   'numCartao', 'nascimentoConjuge', 'nascimentoTitular',
-                   'dataCasamento', 'estadoCivil']
-        for column in colunas:
+        if mes[0].__contains__(meses.NOVEMBRO):
+            usuarios_temp = pd.DataFrame(ConfAPI['usuarios'])
+            usuarios_temp = usuarios_temp.transpose()
+            usuarios_temp['cong_temp'] = usuarios_temp['idNumero'].apply(
+                lambda x: x.split('/')[0])
+            usuarios_temp = usuarios_temp.loc[
+                usuarios_temp.cong_temp != congregacoes.SO_VISITANTE].drop(
+                columns='cong_temp')
+            dados = dados.transpose()
+            # print(dados)
+            # print(usuarios_temp)
+            dados = pd.concat([dados, usuarios_temp]).drop_duplicates(
+                subset='idNumero', keep='last')
+            print(dados.loc[dados.idNumero == 'Nova Divinéia/31'])
+        else:
+            # print('dados: ', dados)
+            # print('keys: ', dados.keys())
+            # print('dados.transpose: ', dados.transpose())
+            dados = dados.transpose()
+
+        for column in nomes_colunas.COLUNAS_LOAD:
             if column not in dados:
                 dados[column] = ''
         # print('keys: ', dados.keys())
@@ -217,7 +234,11 @@ def config(_id):
                                   dados['nomeConjuge'])
         dados['juntosTitular'] = dados['juntosTitular'].apply(
             lambda x: f'nan{x}' if x.split('|')[0] == '' else x)
-        dados = dados.drop(columns=colunas)
+        if mes[0].__contains__(meses.NOVEMBRO):
+            dados = dados.drop(columns=nomes_colunas.COLUNAS_LOAD_SEMINARIO)
+            print(dados.keys())
+        else:
+            dados = dados.drop(columns=nomes_colunas.COLUNAS_LOAD)
         dados = dados.transpose()
         listaGeral = list()
         listaVisitante = list()
@@ -316,11 +337,6 @@ def config(_id):
         listaGeral_temp = ['|'.join(x.split('|', 3)[:3]) for x in listaGeral]
         listaMenor_temp = ['|'.join(x.split('|', 3)[:3]) for x in listaMenor]
 
-        # Carregar a lista de presenças do seminário
-        # (Falta isso para finalizar o seminário)
-        if selecaoEventoEspecial.__contains__('Seminário'):
-            pass
-
         # Realizar chamada para o banco da API
         ConfAPI = bolasDoBingoJson.ConfAPI[0]
         ConfAPI = carregar_api(ConfAPI)
@@ -414,8 +430,6 @@ def config(_id):
         return redirect(url_for('bingo.config', _id=_id))
 
     if request.method == 'POST' and 'carregar_evento' in request.form:
-        # Realizar chamada para o banco da API
-        bolasDoBingoJson = bolas[0].bolasDoBingoJson
 
         selecao = events.evento(request.form['carregar_evento'])
         print('selecao:', selecao)
@@ -431,7 +445,6 @@ def config(_id):
     if request.method == 'POST' and ('dinamica' in request.form or
                                      'dinamica_seminario' in request.form):
         # Realizar chamada para o banco da API
-        bolasDoBingoJson = bolas[0].bolasDoBingoJson
         listaGeral = bolasDoBingoJson.ListaGeral
         listaDinamica = set(bolasDoBingoJson.ListaDinamica)
         ultimoItem = ''
@@ -465,7 +478,6 @@ def config(_id):
 
     if request.method == 'POST' and 'dinamica_mae_pai' in request.form:
         # Realizar chamada para o banco da API
-        bolasDoBingoJson = bolas[0].bolasDoBingoJson
         listaGeral = bolasDoBingoJson.ListaGeral
         selecaoListaMaePai = bolasDoBingoJson.SelecaoListaMaePai
 
@@ -491,7 +503,6 @@ def config(_id):
 
     if request.method == 'POST' and 'dinamica_filho' in request.form:
         # Realizar chamada para o banco da API
-        bolasDoBingoJson = bolas[0].bolasDoBingoJson
         listaGeral = bolasDoBingoJson.ListaGeral
         listaMenor = bolasDoBingoJson.ListaMenor
         selecaoListaFilhosPais = bolasDoBingoJson.SelecaoListaFilhosPais
@@ -566,7 +577,6 @@ def config(_id):
 
     if request.method == 'POST' and 'menor_solteiro' in request.form:
         # Realizar chamada para o banco da API
-        bolasDoBingoJson = bolas[0].bolasDoBingoJson
         listaGeral = bolasDoBingoJson.ListaGeral
         listaMenor = bolasDoBingoJson.ListaMenor
         ultimoItem = ''
@@ -729,7 +739,6 @@ def config(_id):
         return redirect(url_for('bingo.config', _id=_id))
 
     if request.method == 'POST' and 'cancel' in request.form:
-        bolasDoBingoJson = bolas[0].bolasDoBingoJson
         jsonMontado = json_montado(
             bolas_do_bingo_json=bolasDoBingoJson
         )
@@ -738,7 +747,6 @@ def config(_id):
         return redirect(url_for('bingo.index'))
 
     if request.method == 'POST' and 'setar' in request.form:
-        bolasDoBingoJson = bolas[0].bolasDoBingoJson
         listaDeOutNov = bolasDoBingoJson.ListaDeOutNov
         listaSet = bolasDoBingoJson.ListaSet
 
@@ -826,7 +834,6 @@ def config(_id):
         return add
 
     if request.method == 'POST' and 'habilitarEnsaio' in request.form:
-        bolasDoBingoJson = bolas[0].bolasDoBingoJson
         jsonMontado = json_montado(
             bolas_do_bingo_json=bolasDoBingoJson,
             habilitar_ensaio=['true' if
@@ -837,7 +844,6 @@ def config(_id):
         return redirect(url_for('bingo.config', _id=_id))
 
     if request.method == 'POST' and 'habilitarFilhosParaPais' in request.form:
-        bolasDoBingoJson = bolas[0].bolasDoBingoJson
         selecaoEventoEspecial = bolasDoBingoJson.SelecaoEventoEspecial
         jsonMontado = json_montado(
             bolas_do_bingo_json=bolasDoBingoJson,
@@ -868,7 +874,6 @@ def config(_id):
         return redirect(url_for('bingo.config', _id=_id))
 
     if request.method == 'POST' and 'salvar_mae_pai' in request.form:
-        bolasDoBingoJson = bolas[0].bolasDoBingoJson
         listaDinamicaMaePai = set(bolasDoBingoJson.ListaDinamicaMaePai)
         selecaoListaMaePai = bolasDoBingoJson.SelecaoListaMaePai
         lista_habilitar = dict()
@@ -905,7 +910,6 @@ def config(_id):
 
     if request.method == 'POST' and \
             'salvar_filhos_pais' in request.form:
-        bolasDoBingoJson = bolas[0].bolasDoBingoJson
         listaDinamicaFilhosPais = bolasDoBingoJson.ListaDinamicaFilhosPais
         selecaoListaFilhosPais = bolasDoBingoJson.SelecaoListaFilhosPais
         selecaoEventoEspecial = bolasDoBingoJson.SelecaoEventoEspecial
