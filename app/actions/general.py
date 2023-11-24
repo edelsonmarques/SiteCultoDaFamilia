@@ -145,8 +145,16 @@ def remove_people(g, bolas, option, gj='', _print=False):
             listaDeOutNov[gj][option] = \
                     remove_lista(listaDeOutNov[gj][option], nomeSorteado[0],
                                  'Lista Seminario')
+            for presencas in listaDeOutNov[actions.GERAL]:
+                listaDeOutNov[actions.GERAL][presencas] = \
+                    remove_lista(listaDeOutNov[actions.GERAL][presencas],
+                                 nomeSorteado[0], 'Lista Seminario')
         else:
             if selecaoEventoEspecial in events.EVENTOSEMINARIO:
+                for presencas in listaDeOutNov[actions.GERAL]:
+                    listaDeOutNov[actions.GERAL][presencas] = \
+                        remove_lista(listaDeOutNov[actions.GERAL][presencas],
+                                     nomeSorteado[0], 'Lista Seminario')
                 for presencas in listaDeOutNov[actions.GERAL]:
                     listaDeOutNov[actions.GERAL][presencas] = \
                         remove_lista(listaDeOutNov[actions.GERAL][presencas],
@@ -171,7 +179,7 @@ def remove_people(g, bolas, option, gj='', _print=False):
                   actions.DINAMICA_FILHOS_PAIS, actions.ANIVERSARIO,
                   actions.ENSAIO, actions.ALAMEDA, actions.JDCOPA1,
                   actions.JDCOPA2, actions.ND1, actions.ND2, actions.PIEDADE,
-                  actions.VENEZA4]:
+                  actions.VENEZA4, actions.SEMINARIO]:
 
         listaGeral = remover_pessoa(listaGeral, 'Lista Geral',
                                     congregacao, numCartao)
@@ -220,7 +228,15 @@ def remove_people(g, bolas, option, gj='', _print=False):
                 listaDeOutNov[actions.GERAL][presencas] = \
                     remover_pessoa(listaDeOutNov[actions.GERAL][presencas],
                                    'Lista Seminario', congregacao, numCartao)
+            for presencas in listaDeOutNov[actions.GERAL]:
+                listaDeOutNov[actions.GERAL][presencas] = \
+                    remover_pessoa(listaDeOutNov[actions.GERAL][presencas],
+                                   'Lista Seminario', congregacao, numCartao)
     elif option in actions.SEMINARIO:
+        for presencas in listaDeOutNov[gj]:
+            listaDeOutNov[gj][presencas] = \
+                remover_pessoa(listaDeOutNov[gj][presencas],
+                               'Lista Seminario', congregacao, numCartao)
         for presencas in listaDeOutNov[gj]:
             listaDeOutNov[gj][presencas] = \
                 remover_pessoa(listaDeOutNov[gj][presencas],
