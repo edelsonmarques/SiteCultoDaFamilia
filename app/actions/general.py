@@ -89,8 +89,14 @@ def remove_people(g, bolas, option, gj='', _print=False):
 
     else:
         if option in actions.SEMINARIO:
-            nomeSorteado = [random.choice(listaDeOutNov[gj][option])]
-            listaSet[gj][option] = listaSet[gj][option] - 1
+            if selecaoEventoEspecial not in [events.SEMINARIO_3]:
+                nomeSorteado = [random.choice(listaDeOutNov[gj][option])]
+                listaSet[gj][option] = listaSet[gj][option] - 1
+            else:
+                lista_678 = listaDeOutNov[gj]['8'].copy()
+                lista_678.extend(listaDeOutNov[gj]['7'].copy())
+                lista_678.extend(listaDeOutNov[gj]['6'].copy())
+                nomeSorteado = [random.choice(lista_678)]
 
     if nomeSorteado != ['']:
         if mesSorteio[0] in historicoSorteio:
@@ -99,12 +105,16 @@ def remove_people(g, bolas, option, gj='', _print=False):
         else:
             historicoSorteio[mesSorteio[0]] = nomeSorteado
 
-    if option in [actions.GERAL, actions.VISITANTES,
-                  actions.DINAMICA, actions.DINAMICA_MAE_PAI,
-                  actions.DINAMICA_FILHOS_PAIS, actions.ANIVERSARIO,
-                  actions.ENSAIO, actions.ALAMEDA, actions.JDCOPA1,
-                  actions.JDCOPA2, actions.ND1, actions.ND2, actions.PIEDADE,
-                  actions.VENEZA4, actions.SEMINARIO]:
+    actions_escolha = [actions.GERAL, actions.VISITANTES,
+                       actions.DINAMICA, actions.DINAMICA_MAE_PAI,
+                       actions.DINAMICA_FILHOS_PAIS, actions.ANIVERSARIO,
+                       actions.ENSAIO, actions.ALAMEDA, actions.JDCOPA1,
+                       actions.JDCOPA2, actions.ND1, actions.ND2,
+                       actions.PIEDADE, actions.VENEZA4]
+    if option in actions_escolha or (
+            option in actions.SEMINARIO and
+            gj == actions.GERAL
+    ):
         listaGeral = remove_lista(listaGeral, nomeSorteado[0], 'Lista Geral')
 
         listaDinamica = remove_lista(listaDinamica, nomeSorteado[0],
@@ -142,9 +152,16 @@ def remove_people(g, bolas, option, gj='', _print=False):
         listaEnsaioVeneza4 = remove_lista(listaEnsaioVeneza4, nomeSorteado[0],
                                           'Lista Ensaio Veneza 4')
         if option in actions.SEMINARIO:
-            listaDeOutNov[gj][option] = \
-                    remove_lista(listaDeOutNov[gj][option], nomeSorteado[0],
-                                 'Lista Seminario')
+            if selecaoEventoEspecial not in [events.SEMINARIO_3]:
+                listaDeOutNov[gj][option] = \
+                        remove_lista(listaDeOutNov[gj][option],
+                                     nomeSorteado[0],
+                                     'Lista Seminario')
+            else:
+                for presencas in listaDeOutNov[actions.GERAL]:
+                    listaDeOutNov[actions.GERAL][presencas] = \
+                        remove_lista(listaDeOutNov[actions.GERAL][presencas],
+                                     nomeSorteado[0], 'Lista Seminario')
             for presencas in listaDeOutNov[actions.GERAL]:
                 listaDeOutNov[actions.GERAL][presencas] = \
                     remove_lista(listaDeOutNov[actions.GERAL][presencas],
@@ -174,12 +191,10 @@ def remove_people(g, bolas, option, gj='', _print=False):
         congregacao = ''
         numCartao = ''
 
-    if option in [actions.GERAL, actions.VISITANTES,
-                  actions.DINAMICA, actions.DINAMICA_MAE_PAI,
-                  actions.DINAMICA_FILHOS_PAIS, actions.ANIVERSARIO,
-                  actions.ENSAIO, actions.ALAMEDA, actions.JDCOPA1,
-                  actions.JDCOPA2, actions.ND1, actions.ND2, actions.PIEDADE,
-                  actions.VENEZA4, actions.SEMINARIO]:
+    if option in actions_escolha or (
+            option in actions.SEMINARIO and
+            gj == actions.GERAL
+    ):
 
         listaGeral = remover_pessoa(listaGeral, 'Lista Geral',
                                     congregacao, numCartao)

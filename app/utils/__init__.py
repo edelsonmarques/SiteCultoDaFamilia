@@ -16,10 +16,15 @@ def inserir_presenca(lista_princ, lista_temp, dados, lista_return, base,
         tem_hist = -1
 
         # Verificar sorteios anteriores
-        columns = [meses.OUTUBRO, meses.NOVEMBRO_1]
+        if event in [events.SEMINARIO_3, events.OUTUBRO]:
+            columns = []
+        elif event in [events.SEMINARIO_1]:
+            columns = [meses.OUTUBRO]
+        else:
+            columns = [meses.OUTUBRO, meses.NOVEMBRO_1]
 
         for mes in columns:
-            if mes in hist and event != events.SEMINARIO_3:
+            if mes in hist:
                 histMes = hist[mes]
                 histMes = list(
                     {'|'.join(x.split('|', 3)[1:3]) for x in histMes})

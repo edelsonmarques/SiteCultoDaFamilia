@@ -810,8 +810,12 @@ def config(_id):
             mes_maximo = list()
 
             for indice in meses.DICT_NUM_MES:
-                if indice <= datetime.now().month and \
-                        indice not in [1, 12]:
+                if indice in [11.1, 11.2, 11.3]:
+                    indice_ = 11
+                else:
+                    indice_ = indice
+                if indice_ <= datetime.now().month and \
+                        indice_ not in [1, 12]:
                     mes_maximo.append(meses.DICT_NUM_MES[indice])
                     mes_maximo.append(
                         f'ensaio_{meses.DICT_NUM_MES[indice]}')
