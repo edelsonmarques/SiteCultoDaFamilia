@@ -6,104 +6,85 @@ import random
 
 def remove_people(g, bolas, option, gj='', _print=False):
     # print('Bolas do Bingo:', BolasDoBingo)
-    bolasDoBingoJson = bolas[0].bolasDoBingoJson
-    listaGeral = bolasDoBingoJson.ListaGeral
-    listaDinamica = bolasDoBingoJson.ListaDinamica
-    listaDinamicaMaePai = bolasDoBingoJson.ListaDinamicaMaePai
-    listaDinamicaFilhosPais = bolasDoBingoJson.ListaDinamicaFilhosPais
-    listaNiverCasamento = bolasDoBingoJson.ListaNiverCasamento
-    listaEnsaio = bolasDoBingoJson.ListaEnsaio
-    listaEnsaioAlameda = bolasDoBingoJson.ListaEnsaioAlameda
-    listaEnsaioJardinCopa1 = bolasDoBingoJson.ListaEnsaioJardimCopa1
-    listaEnsaioJardinCopa2 = bolasDoBingoJson.ListaEnsaioJardimCopa2
-    listaEnsaioNovaDivineia1 = bolasDoBingoJson.ListaEnsaioNovaDivineia1
-    listaEnsaioNovaDivineia2 = bolasDoBingoJson.ListaEnsaioNovaDivineia2
-    listaEnsaioPiedade = bolasDoBingoJson.ListaEnsaioPiedade
-    listaEnsaioVeneza4 = bolasDoBingoJson.ListaEnsaioVeneza4
-    listaDeOutNov = bolasDoBingoJson.ListaDeOutNov
-    listaSet = bolasDoBingoJson.ListaSet
-    listaMenor = bolasDoBingoJson.ListaMenor
-    listaVisitante = bolasDoBingoJson.ListaVisitante
+    bolas_do_bingo_json = bolas[0].bolasDoBingoJson
+    lista_geral = bolas_do_bingo_json.ListaGeral
+    lista_dinamica = bolas_do_bingo_json.ListaDinamica
+    lista_dinamica_mae_pai = bolas_do_bingo_json.ListaDinamicaMaePai
+    lista_dinamica_filhos_pais = bolas_do_bingo_json.ListaDinamicaFilhosPais
+    lista_niver_casamento = bolas_do_bingo_json.ListaNiverCasamento
+    lista_ensaio = bolas_do_bingo_json.ListaEnsaio
+    lista_ensaio_alameda = bolas_do_bingo_json.ListaEnsaioAlameda
+    lista_ensaio_jardim_copa1 = bolas_do_bingo_json.ListaEnsaioJardimCopa1
+    lista_ensaio_jardim_copa2 = bolas_do_bingo_json.ListaEnsaioJardimCopa2
+    lista_ensaio_nova_divineia1 = bolas_do_bingo_json.ListaEnsaioNovaDivineia1
+    lista_ensaio_nova_divineia2 = bolas_do_bingo_json.ListaEnsaioNovaDivineia2
+    lista_ensaio_piedade = bolas_do_bingo_json.ListaEnsaioPiedade
+    lista_ensaio_veneza4 = bolas_do_bingo_json.ListaEnsaioVeneza4
+    lista_de_out_nov = bolas_do_bingo_json.ListaDeOutNov
+    lista_set = bolas_do_bingo_json.ListaSet
+    lista_menor = bolas_do_bingo_json.ListaMenor
+    lista_visitante = bolas_do_bingo_json.ListaVisitante
     if len(bolas[0].bolasDoBingoJson.SelecaoEventoEspecial) > 0:
-        selecaoEventoEspecial = bolasDoBingoJson.SelecaoEventoEspecial[0]
+        selecao_evento_especial = bolas_do_bingo_json.SelecaoEventoEspecial[0]
     else:
-        selecaoEventoEspecial = ''
-    nomeSorteado = bolasDoBingoJson.NomeSorteado
-    historicoSorteio = bolasDoBingoJson.HistoricoSorteio
-    mesSorteio = bolasDoBingoJson.MesSorteio
-    nomeSorteado_temp = ''
+        selecao_evento_especial = ''
+    nome_sorteado = bolas_do_bingo_json.NomeSorteado
+    historico_sorteio = bolas_do_bingo_json.HistoricoSorteio
+    mes_sorteio = bolas_do_bingo_json.MesSorteio
+    nome_sorteado_temp = ''
 
-    if len(listaGeral) != 0 and option == actions.GERAL:
-        nomeSorteado = [random.choice(listaGeral)]
+    def remove_name(_list, action):
+        if len(_list) != 0 and option == action:
+            name = [random.choice(list(_list))]
 
-    elif len(listaMenor) != 0 and option == actions.JOVENS:
-        nomeSorteado = [random.choice(listaMenor)]
-        
-        # Remove o ganhador
-        listaMenor.remove(nomeSorteado[0])
-
-    elif len(listaVisitante) != 0 and option == actions.VISITANTES:
-        nomeSorteado = [random.choice(listaVisitante)]
-        
-        # Remove o ganhador
-        listaVisitante.remove(nomeSorteado[0])
-
-    elif len(listaNiverCasamento) != 0 and option == actions.ANIVERSARIO:
-        nomeSorteado = [random.choice(listaNiverCasamento)]
-        
-    elif len(listaDinamica) != 0 and option == actions.DINAMICA:
-        nomeSorteado = [random.choice(listaDinamica)]
-
-    elif len(listaDinamicaMaePai) != 0 and option == actions.DINAMICA_MAE_PAI:
-        nomeSorteado = [random.choice(listaDinamicaMaePai)]
-
-    elif len(listaDinamicaFilhosPais) != 0 and \
-            option == actions.DINAMICA_FILHOS_PAIS:
-        nomeSorteado = [random.choice(list(listaDinamicaFilhosPais))]
-        nomeSorteado_temp = [
-            random.choice(listaDinamicaFilhosPais[nomeSorteado[0]])]
-
-    elif len(listaEnsaio) != 0 and option == actions.ENSAIO:
-        nomeSorteado = [random.choice(listaEnsaio)]
-        
-    elif len(listaEnsaioAlameda) != 0 and option == actions.ALAMEDA:
-        nomeSorteado = [random.choice(listaEnsaioAlameda)]
-        
-    elif len(listaEnsaioJardinCopa1) != 0 and option == actions.JDCOPA1:
-        nomeSorteado = [random.choice(listaEnsaioJardinCopa1)]
-        
-    elif len(listaEnsaioJardinCopa2) != 0 and option == actions.JDCOPA2:
-        nomeSorteado = [random.choice(listaEnsaioJardinCopa2)]
-        
-    elif len(listaEnsaioNovaDivineia1) != 0 and option == actions.ND1:
-        nomeSorteado = [random.choice(listaEnsaioNovaDivineia1)]
-        
-    elif len(listaEnsaioNovaDivineia2) != 0 and option == actions.ND2:
-        nomeSorteado = [random.choice(listaEnsaioNovaDivineia2)]
-        
-    elif len(listaEnsaioPiedade) != 0 and option == actions.PIEDADE:
-        nomeSorteado = [random.choice(listaEnsaioPiedade)]
-        
-    elif len(listaEnsaioVeneza4) != 0 and option == actions.VENEZA4:
-        nomeSorteado = [random.choice(listaEnsaioVeneza4)]
-
-    else:
-        if option in actions.SEMINARIO:
-            if selecaoEventoEspecial not in [events.SEMINARIO_3]:
-                nomeSorteado = [random.choice(listaDeOutNov[gj][option])]
-                listaSet[gj][option] = listaSet[gj][option] - 1
-            else:
-                lista_678 = listaDeOutNov[gj]['8'].copy()
-                lista_678.extend(listaDeOutNov[gj]['7'].copy())
-                lista_678.extend(listaDeOutNov[gj]['6'].copy())
-                nomeSorteado = [random.choice(lista_678)]
-
-    if nomeSorteado != ['']:
-        if mesSorteio[0] in historicoSorteio:
-            if nomeSorteado[0] not in historicoSorteio[mesSorteio[0]]:
-                historicoSorteio[mesSorteio[0]].append(nomeSorteado[0])
+            # Remove o ganhador em listas específicas
+            if option in [actions.JOVENS, actions.VISITANTES]:
+                _list.remove(name[0])
+                return name, _list
+            elif option in [actions.DINAMICA_FILHOS_PAIS]:
+                name_temp = [random.choice(_list[name[0]])]
+                return name, name_temp
+            return name
         else:
-            historicoSorteio[mesSorteio[0]] = nomeSorteado
+            if option in action:
+                if selecao_evento_especial not in [events.SEMINARIO_3]:
+                    name = [
+                        random.choice(_list[gj][option])]
+                    lista_set[gj][option] = lista_set[gj][option] - 1
+                else:
+                    lista_678 = _list[gj]['8'].copy()
+                    lista_678.extend(_list[gj]['7'].copy())
+                    lista_678.extend(_list[gj]['6'].copy())
+                    name = [random.choice(lista_678)]
+                return name
+        return nome_sorteado
+
+    nome_sorteado = remove_name(lista_geral, actions.GERAL)
+    nome_sorteado, lista_menor = remove_name(lista_menor, actions.JOVENS)
+    nome_sorteado, lista_visitante = remove_name(lista_visitante,
+                                                 actions.VISITANTES)
+    nome_sorteado = remove_name(lista_niver_casamento, actions.ANIVERSARIO)
+    nome_sorteado = remove_name(lista_dinamica, actions.DINAMICA)
+    nome_sorteado = remove_name(lista_dinamica_mae_pai,
+                                actions.DINAMICA_MAE_PAI)
+    nome_sorteado, nome_sorteado_temp = remove_name(
+        lista_dinamica_filhos_pais, actions.DINAMICA_FILHOS_PAIS)
+    nome_sorteado = remove_name(lista_ensaio, actions.ENSAIO)
+    nome_sorteado = remove_name(lista_ensaio_alameda, actions.ALAMEDA)
+    nome_sorteado = remove_name(lista_ensaio_jardim_copa1, actions.JDCOPA1)
+    nome_sorteado = remove_name(lista_ensaio_jardim_copa2, actions.JDCOPA2)
+    nome_sorteado = remove_name(lista_ensaio_nova_divineia1, actions.ND1)
+    nome_sorteado = remove_name(lista_ensaio_nova_divineia2, actions.ND2)
+    nome_sorteado = remove_name(lista_ensaio_piedade, actions.PIEDADE)
+    nome_sorteado = remove_name(lista_ensaio_veneza4, actions.VENEZA4)
+    nome_sorteado = remove_name(actions.SEMINARIO, actions.SEMINARIO)
+
+    if nome_sorteado != ['']:
+        if mes_sorteio[0] in historico_sorteio:
+            if nome_sorteado[0] not in historico_sorteio[mes_sorteio[0]]:
+                historico_sorteio[mes_sorteio[0]].append(nome_sorteado[0])
+        else:
+            historico_sorteio[mes_sorteio[0]] = nome_sorteado
 
     actions_escolha = [actions.GERAL, actions.VISITANTES,
                        actions.DINAMICA, actions.DINAMICA_MAE_PAI,
@@ -115,183 +96,187 @@ def remove_people(g, bolas, option, gj='', _print=False):
             option in actions.SEMINARIO and
             gj == actions.GERAL
     ):
-        listaGeral = remove_lista(listaGeral, nomeSorteado[0], 'Lista Geral')
+        lista_geral = remove_lista(lista_geral, nome_sorteado[0],
+                                   'Lista Geral')
 
-        listaDinamica = remove_lista(listaDinamica, nomeSorteado[0],
-                                     'Lista Dinâmica')
-        listaDinamicaMaePai = remove_lista(listaDinamicaMaePai,
-                                           nomeSorteado[0],
-                                           'Lista Dinâmica Mãe/Pai')
-        listaDinamicaFilhosPais = remove_lista(listaDinamicaFilhosPais,
-                                               nomeSorteado[0],
-                                               'Lista Dinâmica Filhos/Pais')
-        listaNiverCasamento = remove_lista(listaNiverCasamento,
-                                           nomeSorteado[0],
-                                           'Lista Aniversário')
-        listaEnsaio = remove_lista(listaEnsaio, nomeSorteado[0],
-                                   'Lista Ensaio')
-        listaEnsaioAlameda = remove_lista(listaEnsaioAlameda, nomeSorteado[0],
-                                          'Lista Ensaio Alameda')
-        listaEnsaioJardinCopa1 = remove_lista(listaEnsaioJardinCopa1,
-                                              nomeSorteado[0],
-                                              'Lista Ensaio '
-                                              'Jardim Copacabana 1')
-        listaEnsaioJardinCopa2 = remove_lista(listaEnsaioJardinCopa2,
-                                              nomeSorteado[0],
-                                              'Lista Ensaio '
-                                              'Jardim Copacabana 2')
-        listaEnsaioNovaDivineia1 = remove_lista(listaEnsaioNovaDivineia1,
-                                                nomeSorteado[0],
-                                                'Lista Ensaio Nova Divinéia 1')
-        listaEnsaioNovaDivineia2 = remove_lista(listaEnsaioNovaDivineia2,
-                                                nomeSorteado[0],
-                                                'Lista Ensaio Nova Divinéia 2')
-        listaEnsaioPiedade = remove_lista(listaEnsaioPiedade,
-                                          nomeSorteado[0],
-                                          'Lista Ensaio Piedade')
-        listaEnsaioVeneza4 = remove_lista(listaEnsaioVeneza4, nomeSorteado[0],
-                                          'Lista Ensaio Veneza 4')
+        lista_dinamica = remove_lista(lista_dinamica, nome_sorteado[0],
+                                      'Lista Dinâmica')
+        lista_dinamica_mae_pai = remove_lista(lista_dinamica_mae_pai,
+                                              nome_sorteado[0],
+                                              'Lista Dinâmica Mãe/Pai')
+        lista_dinamica_filhos_pais = remove_lista(lista_dinamica_filhos_pais,
+                                                  nome_sorteado[0],
+                                                  'Lista Dinâmica Filhos/Pais')
+        lista_niver_casamento = remove_lista(lista_niver_casamento,
+                                             nome_sorteado[0],
+                                             'Lista Aniversário')
+        lista_ensaio = remove_lista(lista_ensaio, nome_sorteado[0],
+                                    'Lista Ensaio')
+        lista_ensaio_alameda = remove_lista(lista_ensaio_alameda,
+                                            nome_sorteado[0],
+                                            'Lista Ensaio Alameda')
+        lista_ensaio_jardim_copa1 = remove_lista(lista_ensaio_jardim_copa1,
+                                                 nome_sorteado[0],
+                                                 'Lista Ensaio '
+                                                 'Jardim Copacabana 1')
+        lista_ensaio_jardim_copa2 = remove_lista(lista_ensaio_jardim_copa2,
+                                                 nome_sorteado[0],
+                                                 'Lista Ensaio '
+                                                 'Jardim Copacabana 2')
+        lista_ensaio_nova_divineia1 = remove_lista(
+            lista_ensaio_nova_divineia1, nome_sorteado[0],
+            'Lista Ensaio Nova Divinéia 1')
+        lista_ensaio_nova_divineia2 = remove_lista(
+            lista_ensaio_nova_divineia2, nome_sorteado[0],
+            'Lista Ensaio Nova Divinéia 2')
+        lista_ensaio_piedade = remove_lista(lista_ensaio_piedade,
+                                            nome_sorteado[0],
+                                            'Lista Ensaio Piedade')
+        lista_ensaio_veneza4 = remove_lista(lista_ensaio_veneza4,
+                                            nome_sorteado[0],
+                                            'Lista Ensaio Veneza 4')
         if option in actions.SEMINARIO:
-            if selecaoEventoEspecial not in [events.SEMINARIO_3]:
-                listaDeOutNov[gj][option] = \
-                        remove_lista(listaDeOutNov[gj][option],
-                                     nomeSorteado[0],
-                                     'Lista Seminario')
+            if selecao_evento_especial not in [events.SEMINARIO_3]:
+                lista_de_out_nov[gj][option] = \
+                    remove_lista(lista_de_out_nov[gj][option],
+                                 nome_sorteado[0],
+                                 'Lista Seminario')
             else:
-                for presencas in listaDeOutNov[actions.GERAL]:
-                    listaDeOutNov[actions.GERAL][presencas] = \
-                        remove_lista(listaDeOutNov[actions.GERAL][presencas],
-                                     nomeSorteado[0], 'Lista Seminario')
-            for presencas in listaDeOutNov[actions.GERAL]:
-                listaDeOutNov[actions.GERAL][presencas] = \
-                    remove_lista(listaDeOutNov[actions.GERAL][presencas],
-                                 nomeSorteado[0], 'Lista Seminario')
+                for presencas in lista_de_out_nov[actions.GERAL]:
+                    lista_de_out_nov[actions.GERAL][presencas] = \
+                        remove_lista(
+                            lista_de_out_nov[actions.GERAL][presencas],
+                            nome_sorteado[0], 'Lista Seminario')
+            for presencas in lista_de_out_nov[actions.GERAL]:
+                lista_de_out_nov[actions.GERAL][presencas] = \
+                    remove_lista(lista_de_out_nov[actions.GERAL][presencas],
+                                 nome_sorteado[0], 'Lista Seminario')
         else:
-            if selecaoEventoEspecial in events.EVENTOSEMINARIO:
-                for presencas in listaDeOutNov[actions.GERAL]:
-                    listaDeOutNov[actions.GERAL][presencas] = \
-                        remove_lista(listaDeOutNov[actions.GERAL][presencas],
-                                     nomeSorteado[0], 'Lista Seminario')
-                for presencas in listaDeOutNov[actions.GERAL]:
-                    listaDeOutNov[actions.GERAL][presencas] = \
-                        remove_lista(listaDeOutNov[actions.GERAL][presencas],
-                                     nomeSorteado[0], 'Lista Seminario')
+            if selecao_evento_especial in events.EVENTOSEMINARIO:
+                for presencas in lista_de_out_nov[actions.GERAL]:
+                    lista_de_out_nov[actions.GERAL][presencas] = \
+                        remove_lista(
+                            lista_de_out_nov[actions.GERAL][presencas],
+                            nome_sorteado[0], 'Lista Seminario')
+                for presencas in lista_de_out_nov[actions.GERAL]:
+                    lista_de_out_nov[actions.GERAL][presencas] = \
+                        remove_lista(
+                            lista_de_out_nov[actions.GERAL][presencas],
+                            nome_sorteado[0], 'Lista Seminario')
     else:
-        if selecaoEventoEspecial in events.EVENTOSEMINARIO:
-            for presencas in listaDeOutNov[actions.JOVENS]:
-                listaDeOutNov[actions.JOVENS][presencas] = \
-                    remove_lista(listaDeOutNov[actions.JOVENS][presencas],
-                                 nomeSorteado[0], 'Lista Seminario')
+        if selecao_evento_especial in events.EVENTOSEMINARIO:
+            for presencas in lista_de_out_nov[actions.JOVENS]:
+                lista_de_out_nov[actions.JOVENS][presencas] = \
+                    remove_lista(lista_de_out_nov[actions.JOVENS][presencas],
+                                 nome_sorteado[0], 'Lista Seminario')
 
     # Remove o conjuge do ganhador
     try:
-        congregacao = nomeSorteado[0].split('|')[1]
-        numCartao = nomeSorteado[0].split('|')[2]
+        congregacao = nome_sorteado[0].split('|')[1]
+        num_cartao = nome_sorteado[0].split('|')[2]
     except IndexError:
         congregacao = ''
-        numCartao = ''
+        num_cartao = ''
 
     if option in actions_escolha or (
             option in actions.SEMINARIO and
             gj == actions.GERAL
     ):
 
-        listaGeral = remover_pessoa(listaGeral, 'Lista Geral',
-                                    congregacao, numCartao)
-        listaVisitante = remover_pessoa(listaVisitante, 'Lista Visitante',
-                                        congregacao, numCartao)
-        listaDinamica = remover_pessoa(listaDinamica, 'Lista Dinâmica',
-                                       congregacao, numCartao)
-        listaDinamicaMaePai = remover_pessoa(listaDinamicaMaePai,
-                                             'Lista Dinâmica Mãe/Pai',
-                                             congregacao, numCartao)
-        listaDinamicaFilhosPais = remover_pessoa(listaDinamicaFilhosPais,
-                                                 'Lista Dinâmica Filhos/Pais',
-                                                 congregacao, numCartao)
-        listaNiverCasamento = remover_pessoa(listaNiverCasamento,
-                                             'Lista Aniversário',
-                                             congregacao, numCartao)
-        listaEnsaio = remover_pessoa(listaEnsaio, 'Lista Ensaio',
-                                     congregacao, numCartao)
-        listaEnsaioAlameda = remover_pessoa(listaEnsaioAlameda,
-                                            'Lista Ensaio Alameda',
-                                            congregacao, numCartao)
-        listaEnsaioJardinCopa1 = remover_pessoa(listaEnsaioJardinCopa1,
-                                                'Lista Ensaio Jardim '
-                                                'Copacabana 1',
-                                                congregacao, numCartao)
-        listaEnsaioJardinCopa2 = remover_pessoa(listaEnsaioJardinCopa2,
-                                                'Lista Ensaio Jardim '
-                                                'Copacabana 2',
-                                                congregacao, numCartao)
-        listaEnsaioNovaDivineia1 = remover_pessoa(listaEnsaioNovaDivineia1,
-                                                  'Lista Ensaio Nova '
-                                                  'Divinéia 1',
-                                                  congregacao, numCartao)
-        listaEnsaioNovaDivineia2 = remover_pessoa(listaEnsaioNovaDivineia2,
-                                                  'Lista Ensaio Nova '
-                                                  'Divinéia 2',
-                                                  congregacao, numCartao)
-        listaEnsaioPiedade = remover_pessoa(listaEnsaioPiedade,
-                                            'Lista Ensaio Piedade',
-                                            congregacao, numCartao)
-        listaEnsaioVeneza4 = remover_pessoa(listaEnsaioVeneza4,
-                                            'Lista Ensaio Veneza 4',
-                                            congregacao, numCartao)
-        if selecaoEventoEspecial in events.EVENTOSEMINARIO:
-            for presencas in listaDeOutNov[actions.GERAL]:
-                listaDeOutNov[actions.GERAL][presencas] = \
-                    remover_pessoa(listaDeOutNov[actions.GERAL][presencas],
-                                   'Lista Seminario', congregacao, numCartao)
-            for presencas in listaDeOutNov[actions.GERAL]:
-                listaDeOutNov[actions.GERAL][presencas] = \
-                    remover_pessoa(listaDeOutNov[actions.GERAL][presencas],
-                                   'Lista Seminario', congregacao, numCartao)
+        lista_geral = remover_pessoa(lista_geral, 'Lista Geral',
+                                     congregacao, num_cartao)
+        lista_visitante = remover_pessoa(lista_visitante, 'Lista Visitante',
+                                         congregacao, num_cartao)
+        lista_dinamica = remover_pessoa(lista_dinamica, 'Lista Dinâmica',
+                                        congregacao, num_cartao)
+        lista_dinamica_mae_pai = remover_pessoa(lista_dinamica_mae_pai,
+                                                'Lista Dinâmica Mãe/Pai',
+                                                congregacao, num_cartao)
+        lista_dinamica_filhos_pais = remover_pessoa(
+            lista_dinamica_filhos_pais, 'Lista Dinâmica Filhos/Pais',
+            congregacao, num_cartao)
+        lista_niver_casamento = remover_pessoa(lista_niver_casamento,
+                                               'Lista Aniversário',
+                                               congregacao, num_cartao)
+        lista_ensaio = remover_pessoa(lista_ensaio, 'Lista Ensaio',
+                                      congregacao, num_cartao)
+        lista_ensaio_alameda = remover_pessoa(lista_ensaio_alameda,
+                                              'Lista Ensaio Alameda',
+                                              congregacao, num_cartao)
+        lista_ensaio_jardim_copa1 = remover_pessoa(lista_ensaio_jardim_copa1,
+                                                   'Lista Ensaio Jardim '
+                                                   'Copacabana 1',
+                                                   congregacao, num_cartao)
+        lista_ensaio_jardim_copa2 = remover_pessoa(lista_ensaio_jardim_copa2,
+                                                   'Lista Ensaio Jardim '
+                                                   'Copacabana 2',
+                                                   congregacao, num_cartao)
+        lista_ensaio_nova_divineia1 = remover_pessoa(
+            lista_ensaio_nova_divineia1, 'Lista Ensaio Nova Divinéia 1',
+            congregacao, num_cartao)
+        lista_ensaio_nova_divineia2 = remover_pessoa(
+            lista_ensaio_nova_divineia2, 'Lista Ensaio Nova Divinéia 2',
+            congregacao, num_cartao)
+        lista_ensaio_piedade = remover_pessoa(lista_ensaio_piedade,
+                                              'Lista Ensaio Piedade',
+                                              congregacao, num_cartao)
+        lista_ensaio_veneza4 = remover_pessoa(lista_ensaio_veneza4,
+                                              'Lista Ensaio Veneza 4',
+                                              congregacao, num_cartao)
+        if selecao_evento_especial in events.EVENTOSEMINARIO:
+            for presencas in lista_de_out_nov[actions.GERAL]:
+                lista_de_out_nov[actions.GERAL][presencas] = \
+                    remover_pessoa(lista_de_out_nov[actions.GERAL][presencas],
+                                   'Lista Seminario', congregacao, num_cartao)
+            for presencas in lista_de_out_nov[actions.GERAL]:
+                lista_de_out_nov[actions.GERAL][presencas] = \
+                    remover_pessoa(lista_de_out_nov[actions.GERAL][presencas],
+                                   'Lista Seminario', congregacao, num_cartao)
     elif option in actions.SEMINARIO:
-        for presencas in listaDeOutNov[gj]:
-            listaDeOutNov[gj][presencas] = \
-                remover_pessoa(listaDeOutNov[gj][presencas],
-                               'Lista Seminario', congregacao, numCartao)
-        for presencas in listaDeOutNov[gj]:
-            listaDeOutNov[gj][presencas] = \
-                remover_pessoa(listaDeOutNov[gj][presencas],
-                               'Lista Seminario', congregacao, numCartao)
-        listaDinamica = remover_pessoa(listaDinamica, 'Lista Dinâmica',
-                                       congregacao, numCartao)
-        listaNiverCasamento = remover_pessoa(listaNiverCasamento,
-                                             'Lista Aniversário',
-                                             congregacao, numCartao)
+        for presencas in lista_de_out_nov[gj]:
+            lista_de_out_nov[gj][presencas] = \
+                remover_pessoa(lista_de_out_nov[gj][presencas],
+                               'Lista Seminario', congregacao, num_cartao)
+        for presencas in lista_de_out_nov[gj]:
+            lista_de_out_nov[gj][presencas] = \
+                remover_pessoa(lista_de_out_nov[gj][presencas],
+                               'Lista Seminario', congregacao, num_cartao)
+        lista_dinamica = remover_pessoa(lista_dinamica, 'Lista Dinâmica',
+                                        congregacao, num_cartao)
+        lista_niver_casamento = remover_pessoa(lista_niver_casamento,
+                                               'Lista Aniversário',
+                                               congregacao, num_cartao)
 
-    jsonMontado = json_montado(
-        bolas_do_bingo_json=bolasDoBingoJson,
-        lista_geral=listaGeral,
-        lista_dinamica=listaDinamica,
-        lista_dinamica_mae_pai=listaDinamicaMaePai,
-        lista_dinamica_filhos_pais=listaDinamicaFilhosPais,
-        lista_niver_casamento=listaNiverCasamento,
-        lista_menor=listaMenor,
-        lista_visitante=listaVisitante,
-        lista_ensaio=listaEnsaio,
-        lista_ensaio_alameda=listaEnsaioAlameda,
-        lista_ensaio_jardim_copa_1=listaEnsaioJardinCopa1,
-        lista_ensaio_jardim_copa_2=listaEnsaioJardinCopa2,
-        lista_ensaio_nova_divineia_1=listaEnsaioNovaDivineia1,
-        lista_ensaio_nova_divineia_2=listaEnsaioNovaDivineia2,
-        lista_ensaio_piedade=listaEnsaioPiedade,
-        lista_ensaio_veneza_4=listaEnsaioVeneza4,
-        lista_de_out_nov=listaDeOutNov,
-        lista_set=listaSet,
-        nome_sorteado_anterior=bolasDoBingoJson.NomeSorteado,
-        nome_sorteado=nomeSorteado if
-        nomeSorteado_temp == '' else nomeSorteado_temp,
-        historico_sorteio=historicoSorteio
+    _json_montado = json_montado(
+        bolas_do_bingo_json=bolas_do_bingo_json,
+        lista_geral=lista_geral,
+        lista_dinamica=lista_dinamica,
+        lista_dinamica_mae_pai=lista_dinamica_mae_pai,
+        lista_dinamica_filhos_pais=lista_dinamica_filhos_pais,
+        lista_niver_casamento=lista_niver_casamento,
+        lista_menor=lista_menor,
+        lista_visitante=lista_visitante,
+        lista_ensaio=lista_ensaio,
+        lista_ensaio_alameda=lista_ensaio_alameda,
+        lista_ensaio_jardim_copa_1=lista_ensaio_jardim_copa1,
+        lista_ensaio_jardim_copa_2=lista_ensaio_jardim_copa2,
+        lista_ensaio_nova_divineia_1=lista_ensaio_nova_divineia1,
+        lista_ensaio_nova_divineia_2=lista_ensaio_nova_divineia2,
+        lista_ensaio_piedade=lista_ensaio_piedade,
+        lista_ensaio_veneza_4=lista_ensaio_veneza4,
+        lista_de_out_nov=lista_de_out_nov,
+        lista_set=lista_set,
+        nome_sorteado_anterior=bolas_do_bingo_json.NomeSorteado,
+        nome_sorteado=nome_sorteado if
+        nome_sorteado_temp == '' else nome_sorteado_temp,
+        historico_sorteio=historico_sorteio
     )
-    update_db(g, jsonMontado)
+    update_db(g, _json_montado)
 
 
 def remove_lista(lista, pessoa, descricao, _print=False):
     try:
-        if type(lista) == dict:
+        if lista is dict:
             lista.pop(pessoa)
         else:
             lista.remove(pessoa)
@@ -307,7 +292,7 @@ def remover_pessoa(lista, descricao, congregacao, num_cartao,
         for pessoa in lista:
             if pessoa.split('|')[1] == congregacao and \
                     pessoa.split('|')[2] == num_cartao:
-                if type(lista) == dict:
+                if lista is dict:
                     lista.pop(pessoa)
                 else:
                     lista.remove(pessoa)
@@ -340,107 +325,107 @@ def add(bingo_json, people, _print=False):
 
 def remove_congregacao(g, bolas, lista_congregacao, _print=False):
     # print('Bolas do Bingo:', BolasDoBingo)
-    bolasDoBingoJson = bolas[0].bolasDoBingoJson
-    listaEnsaioAlameda = bolasDoBingoJson.ListaEnsaioAlameda
-    listaEnsaioJardimCopa1 = bolasDoBingoJson.ListaEnsaioJardimCopa1
-    listaEnsaioJardimCopa2 = bolasDoBingoJson.ListaEnsaioJardimCopa2
-    listaEnsaioNovaDivineia1 = bolasDoBingoJson.ListaEnsaioNovaDivineia1
-    listaEnsaioNovaDivineia2 = bolasDoBingoJson.ListaEnsaioNovaDivineia2
-    listaEnsaioPiedade = bolasDoBingoJson.ListaEnsaioPiedade
-    listaEnsaioVeneza4 = bolasDoBingoJson.ListaEnsaioVeneza4
+    bolas_do_bingo_json = bolas[0].bolasDoBingoJson
+    lista_ensaio_alameda = bolas_do_bingo_json.ListaEnsaioAlameda
+    lista_ensaio_jardim_copa1 = bolas_do_bingo_json.ListaEnsaioJardimCopa1
+    lista_ensaio_jardim_copa2 = bolas_do_bingo_json.ListaEnsaioJardimCopa2
+    lista_ensaio_nova_divineia1 = bolas_do_bingo_json.ListaEnsaioNovaDivineia1
+    lista_ensaio_nova_divineia2 = bolas_do_bingo_json.ListaEnsaioNovaDivineia2
+    lista_ensaio_piedade = bolas_do_bingo_json.ListaEnsaioPiedade
+    lista_ensaio_veneza4 = bolas_do_bingo_json.ListaEnsaioVeneza4
 
     if actions.ALAMEDA in lista_congregacao:
-        habilitarListaAlameda = ['']
-        for people in listaEnsaioAlameda:
-            bolasDoBingoJson = remove(bolasDoBingoJson, people)
+        habilitar_lista_alameda = ['']
+        for people in lista_ensaio_alameda:
+            bolas_do_bingo_json = remove(bolas_do_bingo_json, people)
     else:
-        habilitarListaAlameda = ['true']
-        for people in listaEnsaioAlameda:
-            bolasDoBingoJson = add(bolasDoBingoJson, people)
+        habilitar_lista_alameda = ['true']
+        for people in lista_ensaio_alameda:
+            bolas_do_bingo_json = add(bolas_do_bingo_json, people)
     if actions.JDCOPA1 in lista_congregacao:
-        habilitarListaJardimCopa1 = ['']
-        for people in listaEnsaioJardimCopa1:
-            bolasDoBingoJson = remove(bolasDoBingoJson, people)
+        habilitar_lista_jardim_copa1 = ['']
+        for people in lista_ensaio_jardim_copa1:
+            bolas_do_bingo_json = remove(bolas_do_bingo_json, people)
     else:
-        habilitarListaJardimCopa1 = ['true']
-        for people in listaEnsaioJardimCopa1:
-            bolasDoBingoJson = add(bolasDoBingoJson, people)
+        habilitar_lista_jardim_copa1 = ['true']
+        for people in lista_ensaio_jardim_copa1:
+            bolas_do_bingo_json = add(bolas_do_bingo_json, people)
     if actions.JDCOPA2 in lista_congregacao:
-        habilitarListaJardimCopa2 = ['']
-        for people in listaEnsaioJardimCopa2:
-            bolasDoBingoJson = remove(bolasDoBingoJson, people)
+        habilitar_lista_jardim_copa2 = ['']
+        for people in lista_ensaio_jardim_copa2:
+            bolas_do_bingo_json = remove(bolas_do_bingo_json, people)
     else:
-        habilitarListaJardimCopa2 = ['true']
-        for people in listaEnsaioJardimCopa2:
-            bolasDoBingoJson = add(bolasDoBingoJson, people)
+        habilitar_lista_jardim_copa2 = ['true']
+        for people in lista_ensaio_jardim_copa2:
+            bolas_do_bingo_json = add(bolas_do_bingo_json, people)
     if actions.ND1 in lista_congregacao:
-        habilitarListaNovaDivineia1 = ['']
-        for people in listaEnsaioNovaDivineia1:
-            bolasDoBingoJson = remove(bolasDoBingoJson, people)
+        habilitar_lista_nova_divineia11 = ['']
+        for people in lista_ensaio_nova_divineia1:
+            bolas_do_bingo_json = remove(bolas_do_bingo_json, people)
     else:
-        habilitarListaNovaDivineia1 = ['true']
-        for people in listaEnsaioNovaDivineia1:
-            bolasDoBingoJson = add(bolasDoBingoJson, people)
+        habilitar_lista_nova_divineia11 = ['true']
+        for people in lista_ensaio_nova_divineia1:
+            bolas_do_bingo_json = add(bolas_do_bingo_json, people)
     if actions.ND2 in lista_congregacao:
-        habilitarListaNovaDivineia2 = ['']
-        for people in listaEnsaioNovaDivineia2:
-            bolasDoBingoJson = remove(bolasDoBingoJson, people)
+        habilitar_lista_nova_divineia12 = ['']
+        for people in lista_ensaio_nova_divineia2:
+            bolas_do_bingo_json = remove(bolas_do_bingo_json, people)
     else:
-        habilitarListaNovaDivineia2 = ['true']
-        for people in listaEnsaioNovaDivineia2:
-            bolasDoBingoJson = add(bolasDoBingoJson, people)
+        habilitar_lista_nova_divineia12 = ['true']
+        for people in lista_ensaio_nova_divineia2:
+            bolas_do_bingo_json = add(bolas_do_bingo_json, people)
     if actions.PIEDADE in lista_congregacao:
-        habilitarListaPiedade = ['']
-        for people in listaEnsaioPiedade:
-            bolasDoBingoJson = remove(bolasDoBingoJson, people)
+        habilitar_lista_piedade = ['']
+        for people in lista_ensaio_piedade:
+            bolas_do_bingo_json = remove(bolas_do_bingo_json, people)
     else:
-        habilitarListaPiedade = ['true']
-        for people in listaEnsaioPiedade:
-            bolasDoBingoJson = add(bolasDoBingoJson, people)
+        habilitar_lista_piedade = ['true']
+        for people in lista_ensaio_piedade:
+            bolas_do_bingo_json = add(bolas_do_bingo_json, people)
     if actions.VENEZA4 in lista_congregacao:
-        habilitarListaVeneza4 = ['']
-        for people in listaEnsaioVeneza4:
-            bolasDoBingoJson = remove(bolasDoBingoJson, people)
+        habilitar_lista_veneza4 = ['']
+        for people in lista_ensaio_veneza4:
+            bolas_do_bingo_json = remove(bolas_do_bingo_json, people)
     else:
-        habilitarListaVeneza4 = ['true']
-        for people in listaEnsaioVeneza4:
-            bolasDoBingoJson = add(bolasDoBingoJson, people)
+        habilitar_lista_veneza4 = ['true']
+        for people in lista_ensaio_veneza4:
+            bolas_do_bingo_json = add(bolas_do_bingo_json, people)
 
-    jsonMontado = json_montado(
-        bolas_do_bingo_json=bolasDoBingoJson,
-        lista_ensaio_alameda=listaEnsaioAlameda,
-        lista_ensaio_jardim_copa_1=listaEnsaioJardimCopa1,
-        lista_ensaio_jardim_copa_2=listaEnsaioJardimCopa2,
-        lista_ensaio_nova_divineia_1=listaEnsaioNovaDivineia1,
-        lista_ensaio_nova_divineia_2=listaEnsaioNovaDivineia2,
-        lista_ensaio_piedade=listaEnsaioPiedade,
-        lista_ensaio_veneza_4=listaEnsaioVeneza4,
-        habilitar_lista_alameda=habilitarListaAlameda,
-        habilitar_lista_jardim_copa_1=habilitarListaJardimCopa1,
-        habilitar_lista_jardim_copa_2=habilitarListaJardimCopa2,
-        habilitar_lista_nova_divineia_1=habilitarListaNovaDivineia1,
-        habilitar_lista_nova_divineia_2=habilitarListaNovaDivineia2,
-        habilitar_lista_piedade=habilitarListaPiedade,
-        habilitar_lista_veneza_4=habilitarListaVeneza4
+    _json_montado = json_montado(
+        bolas_do_bingo_json=bolas_do_bingo_json,
+        lista_ensaio_alameda=lista_ensaio_alameda,
+        lista_ensaio_jardim_copa_1=lista_ensaio_jardim_copa1,
+        lista_ensaio_jardim_copa_2=lista_ensaio_jardim_copa2,
+        lista_ensaio_nova_divineia_1=lista_ensaio_nova_divineia1,
+        lista_ensaio_nova_divineia_2=lista_ensaio_nova_divineia2,
+        lista_ensaio_piedade=lista_ensaio_piedade,
+        lista_ensaio_veneza_4=lista_ensaio_veneza4,
+        habilitar_lista_alameda=habilitar_lista_alameda,
+        habilitar_lista_jardim_copa_1=habilitar_lista_jardim_copa1,
+        habilitar_lista_jardim_copa_2=habilitar_lista_jardim_copa2,
+        habilitar_lista_nova_divineia_1=habilitar_lista_nova_divineia11,
+        habilitar_lista_nova_divineia_2=habilitar_lista_nova_divineia12,
+        habilitar_lista_piedade=habilitar_lista_piedade,
+        habilitar_lista_veneza_4=habilitar_lista_veneza4
     )
-    update_db(g, jsonMontado)
+    update_db(g, _json_montado)
 
 
 def remove_historico(g, bolas, mes_escolhido, _print=False):
     # print('Bolas do Bingo:', BolasDoBingo)
-    bolasDoBingoJson = bolas[0].bolasDoBingoJson
-    nomeSorteado = bolasDoBingoJson.NomeSorteado
-    historicoSorteio = bolasDoBingoJson.HistoricoSorteio
+    bolas_do_bingo_json = bolas[0].bolasDoBingoJson
+    nome_sorteado = bolas_do_bingo_json.NomeSorteado
+    historico_sorteio = bolas_do_bingo_json.HistoricoSorteio
 
-    if mes_escolhido in historicoSorteio:
-        historicoSorteio.pop(mes_escolhido)
-    elif mes_escolhido == 'todos' and len(historicoSorteio) > 0:
-        historicoSorteio = {}
+    if mes_escolhido in historico_sorteio:
+        historico_sorteio.pop(mes_escolhido)
+    elif mes_escolhido == 'todos' and len(historico_sorteio) > 0:
+        historico_sorteio = {}
 
-    jsonMontado = json_montado(
-        bolas_do_bingo_json=bolasDoBingoJson,
-        nome_sorteado_anterior=bolasDoBingoJson.NomeSorteado,
-        nome_sorteado=nomeSorteado,
-        historico_sorteio=historicoSorteio
+    _json_montado = json_montado(
+        bolas_do_bingo_json=bolas_do_bingo_json,
+        nome_sorteado_anterior=bolas_do_bingo_json.NomeSorteado,
+        nome_sorteado=nome_sorteado,
+        historico_sorteio=historico_sorteio
     )
-    update_db(g, jsonMontado)
+    update_db(g, _json_montado)
