@@ -698,11 +698,8 @@ def config(_id):
             mes_maximo = list()
 
             for indice in meses.DICT_NUM_MES:
-                if indice <= datetime.now().month and \
-                        indice not in [1, 12]:
-                    mes_maximo.append(meses.DICT_NUM_MES[indice])
-                    mes_maximo.append(
-                        f'ensaio_{meses.DICT_NUM_MES[indice]}')
+                mes_maximo.append(meses.DICT_NUM_MES[indice])
+                mes_maximo.append(f'ensaio_{meses.DICT_NUM_MES[indice]}')
             # print('mes_maximo:', mes_maximo, '\n')
             # print('dados_presenca - chaves: \n', dados_presenca.keys())
             # print('dados_presenca: \n', dados_presenca)
