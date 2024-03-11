@@ -3,7 +3,7 @@ pytest
 Flask
 click
 requests
-pandas==1.5.3
+pandas
 Jinja2
 Werkzeug
 openpyxl

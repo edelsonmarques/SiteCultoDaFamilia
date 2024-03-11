@@ -628,7 +628,12 @@ def config(_id):
             caminho = './report/'
 
         def extract_months(_mes, mes_maximo, _writer):
-            if _mes in mes_maximo:
+            ok = False
+            for _mes_split in _mes.split('_'):
+                if _mes_split in mes_maximo:
+                    ok = True
+                    break
+            if ok:
                 # print('mes teste: ', _mes)
                 presenca_transp = pd.DataFrame(
                     presenca[_mes]).transpose()
@@ -699,7 +704,6 @@ def config(_id):
 
             for indice in meses.DICT_NUM_MES:
                 mes_maximo.append(meses.DICT_NUM_MES[indice])
-                mes_maximo.append(f'ensaio_{meses.DICT_NUM_MES[indice]}')
             # print('mes_maximo:', mes_maximo, '\n')
             # print('dados_presenca - chaves: \n', dados_presenca.keys())
             # print('dados_presenca: \n', dados_presenca)
@@ -715,7 +719,7 @@ def config(_id):
         out = io.BytesIO()
         writer = pd.ExcelWriter(out, engine='openpyxl')
         pdf_writer(writer)
-        writer.save()
+        writer.close()
         out.seek(0)
         add = send_file(out, download_name='output.xlsx', as_attachment=True)
         return add
