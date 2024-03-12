@@ -31,22 +31,22 @@ def remove_people(g, bolas, option, gj='', _print=False):
     nome_sorteado = bolas_do_bingo_json.NomeSorteado
     historico_sorteio = bolas_do_bingo_json.HistoricoSorteio
     mes_sorteio = bolas_do_bingo_json.MesSorteio
-    nome_sorteado_temp = ''
 
-    def remove_name(_list, action):
+    def remove_name(_list, action, _print=False):
         if len(_list) != 0 and option == action:
             name = [random.choice(list(_list))]
 
             # Remove o ganhador em listas específicas
             if option in [actions.JOVENS, actions.VISITANTES]:
                 _list.remove(name[0])
-                return name, _list
+                return name, _list, ''
             elif option in [actions.DINAMICA_FILHOS_PAIS]:
                 name_temp = [random.choice(_list[name[0]])]
-                return name, name_temp
-            return name
+                return name, _list, name_temp
+            return name, _list, ''
         else:
-            if option in action:
+            if option in action and _list == lista_de_out_nov and \
+                    selecao_evento_especial != '':
                 if selecao_evento_especial not in [events.SEMINARIO_3]:
                     name = [
                         random.choice(_list[gj][option])]
@@ -56,28 +56,40 @@ def remove_people(g, bolas, option, gj='', _print=False):
                     lista_678.extend(_list[gj]['7'].copy())
                     lista_678.extend(_list[gj]['6'].copy())
                     name = [random.choice(lista_678)]
-                return name
-        return nome_sorteado
-
-    nome_sorteado = remove_name(lista_geral, actions.GERAL)
-    nome_sorteado, lista_menor = remove_name(lista_menor, actions.JOVENS)
-    nome_sorteado, lista_visitante = remove_name(lista_visitante,
-                                                 actions.VISITANTES)
-    nome_sorteado = remove_name(lista_niver_casamento, actions.ANIVERSARIO)
-    nome_sorteado = remove_name(lista_dinamica, actions.DINAMICA)
-    nome_sorteado = remove_name(lista_dinamica_mae_pai,
-                                actions.DINAMICA_MAE_PAI)
-    nome_sorteado, nome_sorteado_temp = remove_name(
-        lista_dinamica_filhos_pais, actions.DINAMICA_FILHOS_PAIS)
-    nome_sorteado = remove_name(lista_ensaio, actions.ENSAIO)
-    nome_sorteado = remove_name(lista_ensaio_alameda, actions.ALAMEDA)
-    nome_sorteado = remove_name(lista_ensaio_jardim_copa1, actions.JDCOPA1)
-    nome_sorteado = remove_name(lista_ensaio_jardim_copa2, actions.JDCOPA2)
-    nome_sorteado = remove_name(lista_ensaio_nova_divineia1, actions.ND1)
-    nome_sorteado = remove_name(lista_ensaio_nova_divineia2, actions.ND2)
-    nome_sorteado = remove_name(lista_ensaio_piedade, actions.PIEDADE)
-    nome_sorteado = remove_name(lista_ensaio_veneza4, actions.VENEZA4)
-    nome_sorteado = remove_name(actions.SEMINARIO, actions.SEMINARIO)
+                return name, _list, ''
+        return nome_sorteado, _list, ''
+    nome_sorteado, lista_geral, nome_sorteado_temp = remove_name(
+        lista_geral, actions.GERAL)
+    nome_sorteado, lista_menor, nome_sorteado_temp = remove_name(
+        lista_menor, actions.JOVENS)
+    nome_sorteado, lista_visitante, nome_sorteado_temp = remove_name(
+        lista_visitante, actions.VISITANTES)
+    nome_sorteado, lista_niver_casamento, nome_sorteado_temp = remove_name(
+        lista_niver_casamento, actions.ANIVERSARIO)
+    nome_sorteado, lista_dinamica, nome_sorteado_temp = remove_name(
+        lista_dinamica, actions.DINAMICA)
+    nome_sorteado, lista_dinamica_mae_pai, nome_sorteado_temp = remove_name(
+        lista_dinamica_mae_pai, actions.DINAMICA_MAE_PAI)
+    nome_sorteado, lista_dinamica_filhos_pais, nome_sorteado_temp = (
+        remove_name(lista_dinamica_filhos_pais, actions.DINAMICA_FILHOS_PAIS))
+    nome_sorteado, lista_ensaio, nome_sorteado_temp = remove_name(
+        lista_ensaio, actions.ENSAIO)
+    nome_sorteado, lista_ensaio_alameda, nome_sorteado_temp = remove_name(
+        lista_ensaio_alameda, actions.ALAMEDA)
+    nome_sorteado, lista_ensaio_jardim_copa1, nome_sorteado_temp = remove_name(
+        lista_ensaio_jardim_copa1, actions.JDCOPA1)
+    nome_sorteado, lista_ensaio_jardim_copa2, nome_sorteado_temp = remove_name(
+        lista_ensaio_jardim_copa2, actions.JDCOPA2)
+    nome_sorteado, lista_ensaio_nova_divineia1, nome_sorteado_temp = (
+        remove_name(lista_ensaio_nova_divineia1, actions.ND1))
+    nome_sorteado, lista_ensaio_nova_divineia2, nome_sorteado_temp = (
+        remove_name(lista_ensaio_nova_divineia2, actions.ND2))
+    nome_sorteado, lista_ensaio_piedade, nome_sorteado_temp = remove_name(
+        lista_ensaio_piedade, actions.PIEDADE)
+    nome_sorteado, lista_ensaio_veneza4, nome_sorteado_temp = remove_name(
+        lista_ensaio_veneza4, actions.VENEZA4)
+    nome_sorteado, lista_de_out_nov, nome_sorteado_temp = remove_name(
+        lista_de_out_nov, actions.SEMINARIO)
 
     if nome_sorteado != ['']:
         if mes_sorteio[0] in historico_sorteio:
