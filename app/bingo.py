@@ -726,15 +726,18 @@ def config(_id):
 
     if request.method == 'POST' and 'confAPI' in request.form:
         confAPI = request.form['confAPI']
+        historico = None
         if confAPI.strip() == '':
             confAPI = bolasDoBingoJson.ConfAPI[0]
+            historico = bolasDoBingoJson.HistoricoSorteio
 
         # # carregar chamada das chaves
         listaChaves = carregar_chaves_api(confAPI)
 
         jsonMontado = json_montado(
             conf_api=[confAPI],
-            lista_mes_sorteio=sorted(listaChaves)
+            lista_mes_sorteio=sorted(listaChaves),
+            historico_sorteio=historico
         )
         update_db(g, jsonMontado)
         return redirect(url_for('bingo.config', _id=_id))
