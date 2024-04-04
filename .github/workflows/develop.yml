@@ -12,11 +12,11 @@ jobs:
       - name: Checkout do repositório
         uses: actions/checkout@v4.1.2
       - name: Conexão com o DetaSpace
-        uses: lizheming/deta-action@1.1.1
+        uses: neobrains/space-pipe@v0.5
         with:
           access_token: ${{ secrets.DETA_ACCESS_TOKEN }}
-          id: ${{ secrets.DETA_ID_PROJECT }}
-          release: False
+          project_id: ${{ secrets.DETA_ID_PROJECT }}
+          space_push: true
       - name: Executar o deploy
         run: echo "Deploy executado"
         
