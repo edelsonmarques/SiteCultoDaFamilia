@@ -14,10 +14,9 @@ jobs:
       - name: Conexão com o DetaSpace
         uses: lizheming/deta-action@1.1.1
         with:
-          run: echo "Conectando no DetaSpace"
           access_token: ${{ secrets.DETA_ACCESS_TOKEN }}
           id: ${{ secrets.DETA_ID_PROJECT }}
-          release: false
+          release: False
       - name: Executar o deploy
         run: echo "Deploy executado"
         
