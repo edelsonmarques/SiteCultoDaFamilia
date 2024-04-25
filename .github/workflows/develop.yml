@@ -1,0 +1,22 @@
+name: CI-CD
+on:
+  push:
+    branches:
+      - develop
+  workflow_dispatch:
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4.1.2
+      - name: Conexão com o DetaSpace
+        uses: neobrains/space-pipe@v0.5
+        with:
+          access_token: ${{ secrets.DETA_ACCESS_TOKEN }}
+          project_id: ${{ secrets.DETA_ID_PROJECT }}
+          space_push: true
+      - name: Executar o deploy
+        run: echo "Deploy executado"
+        
