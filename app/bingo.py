@@ -234,11 +234,14 @@ def config(_id):
                                   dados['nomeConjuge'])
         dados['juntosTitular'] = dados['juntosTitular'].apply(
             lambda x: f'nan{x}' if x.split('|')[0] == '' else x)
-        if mes[0].__contains__(meses.NOVEMBRO):
-            dados = dados.drop(columns=nomes_colunas.COLUNAS_LOAD_SEMINARIO)
-            print(dados.keys())
-        else:
-            dados = dados.drop(columns=nomes_colunas.COLUNAS_LOAD)
+        # if mes[0].__contains__(meses.NOVEMBRO):
+        #     dados_test = dados.loc[:, ['juntosConjuge', 'juntosTitular']]
+        #     print('dados:', dados_test.keys())
+        #     dados = dados.drop(columns=nomes_colunas.COLUNAS_LOAD_SEMINARIO)
+        #     print(dados.keys())
+        # else:
+        #     dados = dados.drop(columns=nomes_colunas.COLUNAS_LOAD)
+        dados = dados.loc[:, ['juntosConjuge', 'juntosTitular']]
         dados = dados.transpose()
         listaGeral = list()
         listaVisitante = list()
