@@ -814,32 +814,19 @@ def config(_id):
 
         def pdf_writer(_writer: pd.ExcelWriter =
                        caminho + 'report_historico.xlsx'):
-            mes_maximo = list()
-
-            for indice in meses.DICT_NUM_MES:
-                if indice in [11.1, 11.2, 11.3]:
-                    indice_ = 11
-                else:
-                    indice_ = indice
-                if indice_ <= datetime.now().month and \
-                        indice_ not in [1, 12]:
-                    mes_maximo.append(meses.DICT_NUM_MES[indice])
-                    mes_maximo.append(
-                        f'ensaio_{meses.DICT_NUM_MES[indice]}')
-            for _mes in dados:
-                if _mes in mes_maximo:
-                    # print('mes teste: ', _mes)
+            _mes = request.form['reportHistorico']
+            if _mes == 'todos':
+                for _mes in dados:
                     dados_temp = pd.DataFrame(dados[_mes])
-                    # print('chaves da presenca do mês em teste: ',
-                    # presenca_transp.keys())
-                    # print('presenca do mês em teste: \n',
-                    # presenca_transp)
                     dados_temp.to_excel(_writer, sheet_name=_mes)
+            else:
+                dados_temp = pd.DataFrame(dados[_mes])
+                dados_temp.to_excel(_writer, sheet_name=_mes)
 
         out = io.BytesIO()
         writer = pd.ExcelWriter(out, engine='openpyxl')
         pdf_writer(writer)
-        writer.save()
+        writer.close()
         out.seek(0)
         add = send_file(out, download_name='output.xlsx', as_attachment=True)
         return add

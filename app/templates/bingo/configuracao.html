@@ -356,7 +356,15 @@
                 </form>
                 <form method="post">
                         <label>Download Report - Histórico de Sorteios:</label>
-                        <input name="reportHistorico" type="submit" value="Download Report">
+                        <select name="reportHistorico">
+                            {% if bolas.bolasDoBingoJson.HistoricoSorteio.__len__() > 0%}
+                                {% for mes in bolas.bolasDoBingoJson.HistoricoSorteio %}
+                                    <option>{{mes}}</option>
+                                {% endfor %}
+                                <option>todos</option>
+                            {% endif %}
+                        </select>
+                        <input type="submit" value="Download Report">
                 </form>
             </div>
             <div class= "vertical"></div>
