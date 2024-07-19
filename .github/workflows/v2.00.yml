@@ -15,16 +15,6 @@ jobs:
         shell: bash
         run: |
           bash -c 'replace_pw () { pw="$1"; while read line; do var=$(echo $line | cut -d= -f1); value=$(echo $line | cut -d= -f2); if [ "$value" == "{{DJANGO_SUPERUSER_PASSWORD}}" ]; then echo "$var=$pw"; else echo "$var=$value"; fi; done }; cat ./Spacefile | replace_pw '\''${{ secrets.DJANGO_SUPERUSER_PASSWORD }}'\' > junk.$$; mv junk.$$ ./Spacefile
-          sed -i "s/{{DJANGO_SUPERUSER}}/${{ secrets.DJANGO_SUPERUSER }}/g" ./Spacefile
-          sed -i "s/{{'DETA_PROJECT_KEY'}}/${{ secrets.DETA_PROJECT_KEY }}/g" ./enums/env_deta.py
-          sed -i "s/{{'FIREBASE_URL'}}/${{ secrets.FIREBASE_URL }}/g" ./enums/env_deta.py
-          sed -i "s/{{'DJANGO_SECRET_KEY'}}/${{ secrets.DJANGO_SECRET_KEY }}/g" ./enums/env_deta.py
-          sed -i "s/{{'MYSQL_USER'}}/${{ secrets.MYSQL_USER }}/g" ./enums/env_deta.py
-          sed -i "s/{{'MYSQL_PASSWORD'}}/${{ secrets.MYSQL_PASSWORD }}/g" ./enums/env_deta.py
-          sed -i "s/{{'MYSQL_HOST'}}/${{ secrets.MYSQL_HOST }}/g" ./enums/env_deta.py
-          sed -i "s/{{'MYSQL_PORT'}}/${{ secrets.MYSQL_PORT }}/g" ./enums/env_deta.py
-          sed -i "s/{{'DETA_SORTEIO'}}/${{ secrets.DETA_SORTEIO }}/g" ./enums/env_deta.py
-          sed -i "s/{{'DETA_USER'}}/${{ secrets.DETA_USER }}/g" ./enums/env_deta.py
       - name: Conexão com o DetaSpace
         uses: neobrains/space-pipe@v0.5
         with:
