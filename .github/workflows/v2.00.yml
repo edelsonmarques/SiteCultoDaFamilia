@@ -14,7 +14,7 @@ jobs:
       - name: Atualizar arquivos sensíveis
         shell: bash
         run: |
-          bash -c 'replace_pw () { pw="$1"; while read line; do var=$(echo $line | cut -d= -f1); value=$(echo $line | cut -d= -f2); if [ "$value" == "{{DJANGO_SUPERUSER_PASSWORD}}" ]; then echo "$var=$pw"; else echo "$var=$value"; fi; done }; cat some_config_file | replace_pw '\''${{ secrets.DJANGO_SUPERUSER_PASSWORD }}'\' > junk.$$; mv junk.$$ some_config_file
+          bash -c 'replace_pw () { pw="$1"; while read line; do var=$(echo $line | cut -d= -f1); value=$(echo $line | cut -d= -f2); if [ "$value" == "{{DJANGO_SUPERUSER_PASSWORD}}" ]; then echo "$var=$pw"; else echo "$var=$value"; fi; done }; cat some_config_file | replace_pw '\''${{ secrets.DJANGO_SUPERUSER_PASSWORD }}'\' > junk.$$; mv junk.$$ ./Spacefile
           sed -i "s/{{DJANGO_SUPERUSER}}/${{ secrets.DJANGO_SUPERUSER }}/g" ./Spacefile
           sed -i "s/{{'DETA_PROJECT_KEY'}}/${{ secrets.DETA_PROJECT_KEY }}/g" ./enums/env_deta.py
           sed -i "s/{{'FIREBASE_URL'}}/${{ secrets.FIREBASE_URL }}/g" ./enums/env_deta.py
