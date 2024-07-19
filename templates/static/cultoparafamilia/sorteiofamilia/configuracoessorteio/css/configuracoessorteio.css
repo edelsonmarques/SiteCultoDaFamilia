@@ -1,0 +1,56 @@
+.campos-config{
+    width: 100%;
+    min-height: 150px;
+    /*border: solid 1px;*/
+    
+}
+
+.campos-config input[type=submit] {
+    align-self: start;
+    min-width: 10em;
+    background-color: var(--botoes-color);
+    font-weight: bold;
+    color: var(--botoes-text-color);
+    font-size: 15px;
+    margin: 0px 2.5px;
+    padding: 1px 10px;
+    border-radius: 8px;
+    border-width: 1px;
+    transition: 0.2s;
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.5)
+}
+
+.campos-config input[type=submit]:hover{
+    background-color: var(--botoes-hover-color);
+}
+
+.campos-config input[type=text] {
+    border-radius: 10px;
+    padding: 0 10px;
+}
+
+.campos-config label, .campos-config p{
+    font-weight: bold;
+}
+
+.campos-config label{
+    color: var(--text-color);
+}
+
+select{
+    padding: 0 10px;
+    border-radius: 10px;
+    border-width: 2px;
+}
+
+.set{
+    margin-bottom: 0em;
+    width: 40px;
+}
+
+.titulo-config{
+    margin: 1rem 0 0.25rem 0;
+    color: var(--titulo-sorteio-color);
+    margin: 1rem 0;
+    font-size: 1.17em;
+}

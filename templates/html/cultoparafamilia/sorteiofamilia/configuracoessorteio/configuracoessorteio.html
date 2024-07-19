@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block 'head' %}
+    <link rel="stylesheet" href="{% static 'cultoparafamilia/css/cultoparafamilia.css' %}">
+    <link rel="stylesheet" href="{% static 'cultoparafamilia/sorteiofamilia/css/sorteiofamilia.css' %}">
+    <link rel="stylesheet" href="{% static 'cultoparafamilia/sorteiofamilia/configuracoessorteio/css/configuracoessorteio.css' %}">
+    <script src="https://unpkg.com/htmx.org@1.9.11" integrity="sha384-0gxUXCCR8yv9FM2b+U3FDbsKthCI66oH5IA9fHppQq9DDMHuMauqq1ZHBpJxQ0J0" crossorigin="anonymous"></script>
+    {% block 'head_sorteiofamilia' %}{% endblock %}
+{% endblock %}
+
+{% block 'dashboard' %}
+    <form>
+        <div class="container">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <span><p class="text-uppercase fs-3 titulo-sorteio">Configurações do Sorteio</p></span>
+                </div>
+                <div>
+                    <ul class="sidebarup d-flex">
+                        <li>
+                            <span class="btn-up none-a">
+                                {% comment %} <i class='bx bx-save' hx-post="{% url 'config_list' %}" hx-vals='{"edit_list_post": "{{edit_list_post}}" }' hx-trigger="click" hx-target="#algo"></i> {% endcomment %}
+                                <i class='bx bx-refresh' hx-post="{% url 'config_list' %}" hx-vals='{"recarregar": "recarregar" }' hx-trigger="click" hx-target="#config_list"></i>
+                            </span>
+                            <span class="tooltip">Refresh</span>
+                        </li>
+                        <li>
+                            <span class="btn-up none-a">
+                                {% comment %} <i class='bx bx-save' hx-post="{% url 'config_list' %}" hx-vals='{"edit_list_post": "{{edit_list_post}}" }' hx-trigger="click" hx-target="#algo"></i> {% endcomment %}
+                                <i class='bx bx-save' hx-post="{% url 'config_list' %}" hx-trigger="click" hx-target="#config_list"></i>
+                            </span>
+                            <span class="tooltip">Salvar</span>
+                        </li>
+                        <li>
+                            <a href="{% url 'sorteio_familia' %}" class="btn-up none-a">
+                                <i class='bx bx-arrow-back' ></i>
+                            </a>
+                            <span class="tooltip">Voltar</span>
+                        </li>
+                </div>
+            </div>
+            <hr class="barra-hr">
+            {% include "cultoparafamilia/sorteiofamilia/configuracoessorteio/partials/part_configuracoes_sorteio.html" %}
+        </div>
+    </form>
+
+{% endblock %}
+
+{% block 'script_body' %}
+    <script src="{% static 'cultoparafamilia/js/cultoparafamilia.js' %}"></script>
+    {% block 'script_body_sorteiofamilia' %}
+    {% endblock %}
+{% endblock %}

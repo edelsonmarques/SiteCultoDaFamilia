@@ -1,0 +1,32 @@
+{% load static %}
+{% load define_tag %}
+
+<div id="historicos">
+    <p class="titulo-config">Histórico de Sorteios</p>
+    <form method='post'>{%csrf_token%}
+        <label>Escolha o mês que queira apagar da lista de histórico de sorteio:</label>
+        {% for mes in dados.historico.historicoSorteio %}
+            <label >Quantidade de cartões sorteados no mes {{ mes }}: {{ dados.historico.historicoSorteio|get_string:mes|length }}</label>
+        {% endfor %}
+        <br>
+        <select name="mes_historico">
+            {% if dados.historico.historicoSorteio|length > 0%}
+                {% for mes in dados.historico.historicoSorteio %}
+                    <option>{{mes}}</option>
+                {% endfor %}
+                <option>todos</option>
+            {% endif %}
+        </select>
+        <input type="submit" name="remove" value="Apagar Historico" hx-post="{% url 'historico' %}" hx-trigger="click" hx-target="#historicos">
+        <div>
+            <label>Download Report - Histórico de Sorteios:</label>
+            <input type="submit" name="report" value="Download Historico">
+        </div>
+    </form>
+</div>
+
+{% if logged %}
+    {% block 'script_body_cultoparafamilia' %}
+        <script src="{% static 'cultoparafamilia/arearestritafamilia/js/arearestritafamilia.js' %}"></script>
+    {% endblock %}
+{% endif %}

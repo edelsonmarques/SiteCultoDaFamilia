@@ -1,0 +1,75 @@
+.card-dashboard, .card-login{
+    background-color: var(--main-color);
+    margin-left: 10px;
+    margin-top: 40px;
+    text-align: center;
+    padding: 20px;
+}
+
+.card-dashboard{
+    cursor: pointer;
+    width: 70%;
+}
+
+.card-login{
+    border-radius: 40px;
+    width: 60%;
+}
+
+.none-a{
+    text-decoration: none;
+    color: var(--bs-white);
+}
+
+.postagem{
+    background-color: var(--main-color);
+    border-radius: 4px;
+    padding: 6px 12px;
+}
+
+.titulo{
+}
+
+.text-card{
+    font-size: 25px;
+}
+
+.btn-principal{
+    color:white;
+    border: none;
+    font-weight: bold;
+    background-color: var(--contrast-color);
+    padding: 5px;
+    margin-left: 10px;
+    margin-top: 40px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    width: 70%;
+}
+
+.btn-acesso-restrito{
+    color:white;
+    border: none;
+    font-weight: bold;
+    background-color: var(--contrast-color);
+    padding: 5px;
+    margin-left: 10px;
+    margin-top: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    width: 70%;
+}
+
+.edit_post, .edit_list_culto{
+    width: 40px;
+}
+
+.table_lista_culto{
+    min-width: 100%;
+}
+
+.dia_lista_culto{
+    max-width: 40%;
+}

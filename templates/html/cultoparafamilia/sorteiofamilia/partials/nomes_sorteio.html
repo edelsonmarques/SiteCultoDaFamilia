@@ -1,0 +1,33 @@
+{% load static %}
+{% load define_tag %}
+
+<div>
+    {% if dados.historico.nomeSorteado != '' %}
+        <p class="sorteado" id="titular">
+            {{ dados.historico.nomeSorteado|get_strip:'|,0' }}
+        </p>
+        <p class="conjuge" id="conjuge">
+            {{ dados.historico.nomeSorteado|get_strip:'|,-1' }}
+        </p>
+        <p class="congregacao" id="congregacao">
+            Congregação:  {{ dados.historico.nomeSorteado|get_strip:'|,1' }} - Cartão: {{ dados.historico.nomeSorteado|get_strip:'|,2' }}
+        </p>
+        <div class="loading" id="loading">
+        </div>
+    {% else %}
+        <p class="sorteado" id="titular">
+        </p>
+        <p class="conjuge" id="conjuge">
+        </p>
+        <p class="congregacao" id="congregacao">
+        </p>
+    {% endif %}
+</div>
+
+
+
+{% if logged %}
+    {% block 'script_body_cultoparafamilia' %}
+        <script src="{% static 'cultoparafamilia/arearestritafamilia/js/arearestritafamilia.js' %}"></script>
+    {% endblock %}
+{% endif %}

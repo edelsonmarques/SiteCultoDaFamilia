@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block 'head' %}
+    <link rel="stylesheet" href="{% static 'cultoparafamilia/css/cultoparafamilia.css' %}">
+    <script src="https://unpkg.com/htmx.org@1.9.11" integrity="sha384-0gxUXCCR8yv9FM2b+U3FDbsKthCI66oH5IA9fHppQq9DDMHuMauqq1ZHBpJxQ0J0" crossorigin="anonymous"></script>
+    {% block 'head_cultoparafamilia' %}{% endblock %}
+{% endblock %}
+
+{% block 'dashboard' %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10"> {% comment %}  Tabela central {% endcomment %}
+                <div class="row">
+                    <div class="col-md card-dashboard">
+                        <p class="text-card">AVISOS</p>
+                    </div>
+
+                    <div class="col-md card-dashboard">
+                        <p class="text-card">Lista de cultos anual</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md"> {% comment %}  AVISOS {% endcomment %}
+                        <br>
+                        {% include "cultoparafamilia/partials/postagem_list.html" %}
+                        {% block 'dashboard_avisos' %}{% endblock %}
+                    </div>
+
+                    <div class="col-md"> {% comment %}  Lista de cultos {% endcomment %}
+                        <br>
+                        {% include "cultoparafamilia/partials/lista_culto_list.html" %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md"> {% comment %}  Botões {% endcomment %}
+                <div class="row">
+                    {% if logged %}
+                        <span class="btn-principal"><a href="{% url 'sorteio_familia' %}" class="none-a">Página de sorteio</a></span>
+                        <span class="btn-acesso-restrito"><a href="{% url 'logout_area_restrita' %}" class="none-a">Logout</a></span>
+                    {% else %}
+                        {% if connected %}
+                            <span class="btn-principal"><a href="{% url 'logout_area_restrita' %}" class="none-a">Logout</a></span>
+                        {% else %}
+                            <span class="btn-principal"><a href="{% url 'login_area_restrita' %}" class="none-a">Acesso Restrito</a></span>
+                        {% endif %}
+                    {% endif %}
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block 'script_body' %}
+    <script src="{% static 'cultoparafamilia/js/cultoparafamilia.js' %}"></script>
+    {% block 'script_body_cultoparafamilia' %}
+    {% endblock %}
+{% endblock %}

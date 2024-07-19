@@ -1,0 +1,77 @@
+{% load static %}
+
+<div id="ensaio">
+    <form>{%csrf_token%}
+        <p class="titulo-config">Ensaio de Casais</p>
+        <p> <label>Dia de ensaio?</label>
+            {% if dados.habilitarEnsaio %}
+                <input type="submit" name="habilitar_ensaio" value="Desabilitar Modo Ensaio" hx-post="{% url 'habilitar_ensaio' %}" hx-trigger="click" hx-target="#ensaio">
+                {% else %}
+                <input type="submit" name="habilitar_ensaio" value="Habilitar Modo Ensaio" hx-post="{% url 'habilitar_ensaio' %}" hx-trigger="click" hx-target="#ensaio">
+            {% endif %}
+        </p>
+        {% if dados.habilitarEnsaio %}
+            <label>Quantidade de cartões cadastrados: {{ dados.ensaio.listaEnsaio.lista|length }}</label>
+            <p>
+                <br><br>
+                <label>Desabilitar Congregação:</label>
+                <br><br>
+                {% if not dados.ensaio.habilitarListaAlameda %}
+                    <input type="checkbox" name="des_alameda" value="alameda">
+                {% else %}
+                    <input type="checkbox" name="des_alameda" value="alameda" checked>
+                {% endif %}
+                <label>Alamedas ({{ dados.ensaio.listaEnsaioAlameda.lista|length }})</label>
+
+                {% if not dados.ensaio.habilitarListaJardimCopa1 %}
+                    <input type="checkbox" name="des_jdcopacabana1" value="jdcopacabana1">
+                {% else %}
+                    <input type="checkbox" name="des_jdcopacabana1" value="jdcopacabana1" checked>
+                {% endif %}
+                <label>Jardim Copacabana ({{ dados.ensaio.listaEnsaioJardimCopa1.lista|length }})</label>
+
+                {% if not dados.ensaio.habilitarListaJardimCopa2 %}
+                    <input type="checkbox" name="des_jdcopacabana2" value="jdcopacabana2">
+                {% else %}
+                    <input type="checkbox" name="des_jdcopacabana2" value="jdcopacabana2" checked>
+                {% endif %}
+                <label>Jardim Copacabana 2 ({{ dados.ensaio.listaEnsaioJardimCopa2.lista|length }})</label>
+
+                {% if not dados.ensaio.habilitarListaNovaDivineia1 %}
+                    <input type="checkbox" name="des_novadivineia1" value="novadivineia1">
+                {% else %}
+                    <input type="checkbox" name="des_novadivineia1" value="novadivineia1" checked>
+                {% endif %}
+                <label>Nova Divinéia ({{ dados.ensaio.listaEnsaioNovaDivineia1.lista|length }})</label>
+                <br>
+                {% if not dados.ensaio.habilitarListaNovaDivineia2 %}
+                    <input type="checkbox" name="des_novadivineia2" value="novadivineia2">
+                {% else %}
+                    <input type="checkbox" name="des_novadivineia2" value="novadivineia2" checked>
+                {% endif %}
+                <label>Nova Divinéia 2 ({{ dados.ensaio.listaEnsaioNovaDivineia2.lista|length }})</label>
+
+                {% if not dados.ensaio.habilitarListaPiedade %}
+                    <input type="checkbox" name="des_piedade" value="piedade">
+                {% else %}
+                    <input type="checkbox" name="des_piedade" value="piedade" checked>
+                {% endif %}
+                <label>Piedade ({{ dados.ensaio.listaEnsaioPiedade.lista|length }})</label>
+
+                {% if not dados.ensaio.habilitarListaVeneza4 %}
+                    <input type="checkbox" name="des_veneza4" value="veneza4">
+                {% else %}
+                    <input type="checkbox" name="des_veneza4" value="veneza4" checked>
+                {% endif %}
+                <label>Veneza 4 ({{ dados.ensaio.listaEnsaioVeneza4.lista|length }})</label>
+            </p>
+            <input type="submit" name="desabilitar_congregacao" value="Desabilitar" hx-post="{% url 'desabilitar_congregacao' %}" hx-trigger="click" hx-target="#config_list">
+        {% endif %}
+    </form>
+</div>
+
+{% if logged %}
+    {% block 'script_body_cultoparafamilia' %}
+        <script src="{% static 'cultoparafamilia/arearestritafamilia/js/arearestritafamilia.js' %}"></script>
+    {% endblock %}
+{% endif %}

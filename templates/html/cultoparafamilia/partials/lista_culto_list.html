@@ -1,0 +1,49 @@
+{% load static %}
+{% load define_tag %}
+
+<form id="include-lista-culto">
+    {% comment %} {'mes': '24/Fevereiro', 'numeromes': '02', 'tema': 'A pornografia como um vício destruidor de vidas'} {% endcomment %}
+    {% for index, lista_culto in lista_cultos.items %}
+        <div id="include-lista_culto-{{index}}">
+            <p class="postagem">{% csrf_token %}
+                <span class="d-flex justify-content-between">
+                    <span class="d-flex flex-column table_lista_culto">
+                        {% if edit_list_post and index in edit_list_post %}
+                            <span class="d-flex justify-content-between">
+                                <span class="titulo fw-bold fs-4 text-capitalize" >{{ index }}</span>
+                                <span class="d-flex dia_lista_culto">
+                                    <input type='number' min="1" max="31" placeholder={{ lista_culto.mes|define_dia_culto }} class='form-control' name='mes' value="{{ lista_culto.mes|define_dia_culto }}">
+                                    <span>/{{ index|title }}</span>
+                                </span>
+                            </span>
+                            <br>
+                            <input type='text' placeholder={{ lista_culto.tema }} class='form-control' name='tema'value="{{ lista_culto.tema }}">
+                        {% else %}
+                            <span class="d-flex justify-content-between">
+                                <span class="titulo fw-bold fs-4 text-capitalize" >{{ index }}</span>
+                                <span>{{ lista_culto.mes }}</span>
+                            </span>
+                            <br>
+                            <span class="fs-5">Tema: {{ lista_culto.tema }}</span>
+                        {% endif %}
+                    </span>
+                    {% if logged %}
+                        <span class="edit_list_culto">
+                            {% if edit_list_post and index in edit_list_post %}
+                                <i class='bx bx-save btn-edit' hx-post="{% url 'save_list_post' index %}" hx-vals='{"edit_list_post": "{{edit_list_post}}" }' hx-trigger="click" hx-target="#include-lista_culto-{{index}}"></i>
+                            {% else %}
+                                <i class='bx bx-pencil btn-edit' hx-post="{% url 'edit_list_post' index %}" hx-vals='{"edit_list_post": "{{edit_list_post}}" }' hx-trigger="click" hx-target="#include-lista_culto-{{index}}"></i>
+                            {% endif %}
+                        </span>
+                    {% endif %}
+                </span>
+            </p> 
+        </div>
+    {% endfor %}
+</form>
+
+{% if logged %}
+    {% block 'script_body_cultoparafamilia' %}
+        <script src="{% static 'cultoparafamilia/arearestritafamilia/js/arearestritafamilia.js' %}"></script>
+    {% endblock %}
+{% endif %}

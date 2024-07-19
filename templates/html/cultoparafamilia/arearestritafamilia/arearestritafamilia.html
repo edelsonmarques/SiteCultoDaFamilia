@@ -1,0 +1,26 @@
+{% extends "cultoparafamilia/cultoparafamilia.html" %}
+{% load static %}
+
+{% block 'head_cultoparafamilia' %}
+    <link rel="stylesheet" href="{% static 'cultoparafamilia/arearestritafamilia/css/arearestritafamilia.css' %}">
+{% endblock %}
+
+{% block 'dashboard_avisos' %}
+    <div id="add_cliente" class="adicionar-cliente">
+        <form>{% csrf_token %}
+            <hr style="background-color:gray;">
+            <div>
+                <span class="btn-principal" onclick="add_aviso('form-aviso')">+ Avisos</span>
+                
+                <div id="form-aviso">
+                    <br>
+                </div>
+            </div>
+            <input type="submit" value="Inserir" class="btn-principal" hx-post="{% url 'insert_list' %}" hx-trigger="click" hx-target="#include-postagem" onclick="ajuste_aviso('form-aviso')">
+        </form>
+    </div>
+{% endblock %}
+
+{% block 'script_body_cultoparafamilia' %}
+    <script src="{% static 'cultoparafamilia/arearestritafamilia/js/arearestritafamilia.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% load static %}
+{% load define_tag %}
+
+<div id="reports">
+    <section class="content_header_config">
+            <p class="titulo-config">Report</p>
+            <form method='post'>{%csrf_token%}
+                <label>Download Report - Usuários e meses:</label>
+                <select name="report_option">
+                    {% if dados.listaMesSorteio|length != 0 %}
+                        {% for mes in dados.listaMesSorteio %}
+                            {% if dados.mesSorteio == mes %}
+                                <option>{{mes}}</option>
+                            {% else %}
+                                <option>{{mes}}</option>
+                            {% endif %}
+                        {% endfor %}
+                        <option selected>todos</option>
+                        <option>usuarios</option>
+                    {% endif %}
+                </select>
+                <input type="submit" name="report" value="Download Report">
+            </form>
+        </header>
+    </section>
+</div>
+
+{% if logged %}
+    {% block 'script_body_cultoparafamilia' %}
+        <script src="{% static 'cultoparafamilia/arearestritafamilia/js/arearestritafamilia.js' %}"></script>
+    {% endblock %}
+{% endif %}

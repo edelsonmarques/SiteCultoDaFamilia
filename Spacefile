@@ -1,0 +1,20 @@
+v: 0
+app_name: AppCCasais
+micros:
+  - name: python-app
+    src: .
+    engine: python3.9
+    primary: true
+    public: true
+    commands:
+        - apt-get -y update
+        - export DEBIAN_FRONTEND=noninteractive
+        - apt-get -y install libopenblas-dev
+        - apt-get -y install libreadline-dev
+        - python3.9 -m pip install --root-user-action=ignore --upgrade pip
+        - python3.9 -m pip install --upgrade pip setuptools
+        - python3.9 -m pip install -r requirements.txt
+        - python3.9 manage.py makemigrations
+        - python3.9 manage.py migrate
+        - DJANGO_SUPERUSER_PASSWORD={{DJANGO_SUPERUSER_PASSWORD}} python3.9 manage.py createsuperuser --username {{DJANGO_SUPERUSER}} --email eudes@dummymail.com --noinput
+    run: gunicorn agenda66.wsgi:application

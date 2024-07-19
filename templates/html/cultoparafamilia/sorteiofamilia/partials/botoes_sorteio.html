@@ -1,0 +1,84 @@
+{% load static %}
+{% load define_tag %}
+
+<div>
+    <form>{%csrf_token%}
+        <div class="d-flex tela_botoes align-items-center justify-content-center">
+            {% if dados.habilitarEnsaio %}
+                {% if not dados.ensaio.habilitarListaAlameda %}
+                    <input name="alameda" type="submit" value="Alameda" onclick="girar({{dados.ensaio.listaEnsaioAlameda.lista}})" hx-post="{% url 'sort_alameda' %}" hx-trigger="click" hx-target="#nomes_view">
+                {% else %}
+                    <input class="btn-disable" name="" type="submit" value="Alameda">
+                {% endif %}
+                {% if not dados.ensaio.habilitarListaJardimCopa1 %}
+                    <input name="jdcopacabana1" type="submit" value="Jd. Copacabana" onclick="girar({{dados.ensaio.listaEnsaioJardimCopa1.lista}})" hx-post="{% url 'sort_jdcopacabana' %}" hx-trigger="click" hx-target="#nomes_view">
+                {% else %}
+                    <input class="btn-disable" name="" type="submit" value="Jd. Copacabana">
+                {% endif %}
+                {% if not dados.ensaio.habilitarListaJardimCopa2 %}
+                    <input name="jdcopacabana2" type="submit" value="Jd. Copacabana 2" onclick="girar({{dados.ensaio.listaEnsaioJardimCopa2.lista}})" hx-post="{% url 'sort_jdcopacabana2' %}" hx-trigger="click" hx-target="#nomes_view">
+                {% else %}
+                    <input class="btn-disable" name="" type="submit" value="Jd. Copacabana 2">
+                {% endif %}
+            {% endif %}
+        </div>
+        <div class="d-flex tela_botoes align-items-center justify-content-center">
+            {% if not dados.habilitarEnsaio %}
+                <input name="geral" type="submit" value="Toda a Igreja " onclick="girar({{dados.geral.listaGeral.lista}})" hx-post="{% url 'sort_geral' %}" hx-trigger="click" hx-target="#nomes_view">
+                <input name="jovens" type="submit" value=" Jovens " onclick="girar({{dados.geral.listaMenor.lista}})" hx-post="{% url 'sort_menor' %}" hx-trigger="click" hx-target="#nomes_view">
+                <input name="visitantes" type="submit" value="Visitantes" onclick="girar({{dados.geral.listaVisitante}})" hx-post="{% url 'sort_visitante' %}" hx-trigger="click" hx-target="#nomes_view">
+            {% endif %}
+            {% if dados.habilitarEnsaio %}
+                {% if not dados.ensaio.habilitarListaNovaDivineia1 %}
+                    <input name="novadivineia" type="submit" value="Nova Divinéia" onclick="girar({{dados.ensaio.listaEnsaioNovaDivineia1.lista}})" hx-post="{% url 'sort_novadivineia' %}" hx-trigger="click" hx-target="#nomes_view">
+                {% else %}
+                    <input class="btn-disable" name="" type="submit" value="Nova Divinéia">
+                {% endif %}
+                {% if not dados.ensaio.habilitarListaNovaDivineia2 %}
+                    <input name="novadivineia2" type="submit" value="Nova Divinéia 2" onclick="girar({{dados.ensaio.listaEnsaioNovaDivineia2.lista}})" hx-post="{% url 'sort_novadivineia2' %}" hx-trigger="click" hx-target="#nomes_view">
+                {% else %}
+                    <input class="btn-disable" name="" type="submit" value="Nova Divinéia 2">
+                {% endif %}
+                {% if not dados.ensaio.habilitarListaPiedade %}
+                    <input name="piedade" type="submit" value="Piedade" onclick="girar({{dados.ensaio.listaEnsaioPiedade.lista}})" hx-post="{% url 'sort_piedade' %}" hx-trigger="click" hx-target="#nomes_view">
+                {% else %}
+                    <input class="btn-disable" name="" type="submit" value="Piedade">
+                {% endif %}
+            {% endif %}
+        </div>
+        <div class="d-flex tela_botoes align-items-center justify-content-center">
+            {% if dados.habilitarEnsaio %}
+                {% if not dados.ensaio.habilitarListaVeneza4 %}
+                    <input name="veneza4" type="submit" value="Veneza 4" onclick="girar({{dados.ensaio.listaEnsaioVeneza4.lista}})" hx-post="{% url 'sort_veneza4' %}" hx-trigger="click" hx-target="#nomes_view">
+                {% else %}
+                    <input class="btn-disable" name="" type="submit" value="Veneza 4">
+                {% endif %}
+                <input name="ensaio" type="submit" value="Ensaio" onclick="girar({{dados.ensaio.listaEnsaio}})" hx-post="{% url 'sort_ensaio' %}" hx-trigger="click" hx-target="#nomes_view">
+            {% endif %}
+            {% if not dados.habilitarEnsaio and dados.geral.listaDinamica|length >= 0 %}
+                {% if dados.habilitarEvento and dados.evento.selecaoEventoEspecial|length != 0 and dados.evento.selecaoEventoEspecial|selecao:'NOTEVENTOSEMINARIO' %}
+                    <input name="dinamica" type="submit" value="Dinâmica - {{dados.evento.selecaoEventoEspecial|plural:'0,plural'}}" onclick="girar({{dados.evento.listaDinamicaMaePai.lista}})">
+                    <input name="dinamica" type="submit" value="Dinâmica - {{dados.evento.selecaoEventoEspecial|plural:'1,plural'}}" onclick="girar({{dados.evento.listaDinamicaMaePai.lista}})">
+                {% else %}
+                    <input name="dinamica" type="submit" value="Dinâmica" onclick="girar({{dados.geral.listaDinamica}})" hx-post="{% url 'sort_dinamica' %}" hx-trigger="click" hx-target="#nomes_view">
+                {% endif %}
+            {% endif %}
+            <input name="aniversario" type="submit" value="Aniversário de Casamento" onclick="girar({{dados.geral.listaNiverCasamento.lista}})" hx-post="{% url 'sort_niverCasamento' %}" hx-trigger="click" hx-target="#nomes_view">
+        </div>
+        <div class="d-flex tela_botoes align-items-center justify-content-center">
+            {% if dados.habilitarEnsaio and dados.geral.listaDinamica|length >= 0 %}
+                {% if dados.habilitarEvento and dados.evento.selecaoEventoEspecial|length != 0 and dados.evento.selecaoEventoEspecial|selecao:'NOTEVENTOSEMINARIO' %}
+                    <input name="dinamica" type="submit" value="Dinâmica - {{dados.evento.selecaoEventoEspecial|plural:'0,singular'}}" onclick="girar({{dados.ensaio.listaEnsaio.lista}})">
+                {% else %}
+                    <input name="dinamica" type="submit" value="Dinâmica" onclick="girar({{dados.geral.listaDinamica}})" hx-post="{% url 'sort_dinamica_ensaio' %}" hx-trigger="click" hx-target="#nomes_view">
+                {% endif %}
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+{% if logged %}
+    {% block 'script_body_cultoparafamilia' %}
+        <script src="{% static 'cultoparafamilia/arearestritafamilia/js/arearestritafamilia.js' %}"></script>
+    {% endblock %}
+{% endif %}

@@ -1,0 +1,26 @@
+:root{
+
+    /*--main-color: #ac4147;*/
+    --main-color: #0a58ca;
+    /*--dark-color: #411f2d;*/
+    --dark-color: #002960;
+    --light-color: #ffc27f;
+    /*--contrast-color: #f88863;*/
+    --contrast-color: #f83535;
+    --differential-color: #ffe29a;
+    --details-color: #fff;
+    --text-color: #000;
+    /*--background-section-color: #2A2A2A;*/
+    --background-section-color: #eee;
+    --tooltip-color: #fff;
+    --titular-color: #ff0000;
+    --conjuge-color: #0004ff;
+    --congregacao-color: #000;
+    --disable-color: red;
+    --botoes-color: rgb(0, 47, 255);
+    --botoes-text-color: #fff;
+    --botoes-hover-color: #d5011d;
+    --titulo-sorteio-color: #377ba8;
+    --line-color: #000;
+
+}

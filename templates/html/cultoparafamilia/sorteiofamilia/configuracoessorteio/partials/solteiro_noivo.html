@@ -1,0 +1,14 @@
+{% load static %}
+
+<div class='d-flex flex-column w-50 ms-2'>
+    <p class="titulo-config">Solteiro/Noivos para geral</p>
+    <label for="menor_solteiro">Cartão fidelidade de noivos: [Congregação|N° cartão fidelidade]</label>
+    <label >Quantidade de cartões cadastrados: {{dados.geral.listaMenor.lista|length}}</label>
+    <input name="menor_solteiro" class='w-100' id="menor_solteiro" type="text">
+</div>
+
+{% if logged %}
+    {% block 'script_body_cultoparafamilia' %}
+        <script src="{% static 'cultoparafamilia/arearestritafamilia/js/arearestritafamilia.js' %}"></script>
+    {% endblock %}
+{% endif %}

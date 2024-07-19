@@ -1,0 +1,36 @@
+name: CI-CD
+on:
+  push:
+    branches:
+      - v2.00
+  workflow_dispatch:
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4.1.2
+      - name: Atualizar arquivos sensíveis
+        shell: bash
+        run: |
+          sed -i "s/{{DJANGO_SUPERUSER_PASSWORD}}/${{ secrets.DJANGO_SUPERUSER_PASSWORD }}/g" ./Spacefile
+          sed -i "s/{{DJANGO_SUPERUSER}}/${{ secrets.DJANGO_SUPERUSER }}/g" ./Spacefile
+          sed -i "s/{{'DETA_PROJECT_KEY'}}/${{ secrets.DETA_PROJECT_KEY }}/g" ./enums/env_deta.py
+          sed -i "s/{{'FIREBASE_URL'}}/${{ secrets.FIREBASE_URL }}/g" ./enums/env_deta.py
+          sed -i "s/{{'DJANGO_SECRET_KEY'}}/${{ secrets.DJANGO_SECRET_KEY }}/g" ./enums/env_deta.py
+          sed -i "s/{{'MYSQL_USER'}}/${{ secrets.MYSQL_USER }}/g" ./enums/env_deta.py
+          sed -i "s/{{'MYSQL_PASSWORD'}}/${{ secrets.MYSQL_PASSWORD }}/g" ./enums/env_deta.py
+          sed -i "s/{{'MYSQL_HOST'}}/${{ secrets.MYSQL_HOST }}/g" ./enums/env_deta.py
+          sed -i "s/{{'MYSQL_PORT'}}/${{ secrets.MYSQL_PORT }}/g" ./enums/env_deta.py
+          sed -i "s/{{'DETA_SORTEIO'}}/${{ secrets.DETA_SORTEIO }}/g" ./enums/env_deta.py
+          sed -i "s/{{'DETA_USER'}}/${{ secrets.DETA_USER }}/g" ./enums/env_deta.py
+      - name: Conexão com o DetaSpace
+        uses: neobrains/space-pipe@v0.5
+        with:
+          access_token: ${{ secrets.DETA_ACCESS_TOKEN }}
+          project_id: ${{ secrets.DETA_ID_PROJECT }}
+          space_push: true
+      - name: Executar o deploy
+        run: echo "Deploy executado"
+        

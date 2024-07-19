@@ -1,0 +1,46 @@
+{% load define_tag %}
+
+{% comment %} TODO: Trocar ID da div {% endcomment %}
+<div id='config_list'>{% csrf_token %}
+    <div class="d-flex flex-column justify-content-center">
+        <div class="d-flex justify-content-center align-items-center campos-config">
+            {% include "cultoparafamilia/sorteiofamilia/configuracoessorteio/partials/conf_api.html" %}
+            <div class="vr"></div>
+            {% include "cultoparafamilia/sorteiofamilia/configuracoessorteio/partials/solteiro_noivo.html" %}
+        </div>
+        <hr class="barra-hr my-2">
+        <div class="d-flex justify-content-center campos-config align-items-center">
+            {% if dados.evento.selecaoEventoEspecial|length > 0 and dados.evento.selecaoEventoEspecial|get_conteins:"0,singular"%}
+                <div class="w-30 mes_ensaio d-flex flex-column me-2">
+            {% else %}
+                <div class="w-50 mes_ensaio d-flex flex-column me-2">
+            {% endif %}
+                    {% mes_include pages_names dados logged%}
+            </div>
+            <div class="vr"></div>
+            {% if dados.evento.selecaoEventoEspecial|length > 0 and dados.evento.selecaoEventoEspecial|get_conteins:"0,singular"%}
+                <div class="w-70 ms-2">
+            {% else %}
+                <div class="w-50 ms-2">
+            {% endif %}
+                    {% dinamica_include pages_names dados logged%}
+            </div>
+        </div>
+        <hr class="barra-hr my-2">
+        <div class="d-flex justify-content-left campos-config align-items-center">
+            <div class="w-100">
+                {% include "cultoparafamilia/sorteiofamilia/configuracoessorteio/partials/ensaios.html" %}
+            </div>
+        </div>
+        <hr class="barra-hr my-2">
+        <div class="d-flex justify-content-center campos-config align-items-center">
+            <div class="w-50 me-2">
+                {% include "cultoparafamilia/sorteiofamilia/configuracoessorteio/partials/historicos.html" %}
+            </div>
+            <div class="vr"></div>
+            <div class="w-50 ms-2">
+                {% include "cultoparafamilia/sorteiofamilia/configuracoessorteio/partials/reports.html" %}
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,40 @@
+{% load static %}
+{% load define_tag %}
+
+<div>
+    <p class="titulo-config">Mês do sorteio</p>
+    <label>Escolha o mês que queira realizar o sorteio:</label>
+    <br>
+    <label >Quantidade de cartões cadastrados: {{ dados|sum_values:'listaGeral,listaVisitante,listaMenor'}}</label>
+    <br>
+    <label >Visitantes: {{ dados.geral.listaVisitante|length }}</label>
+    <br>
+    <label >Aniversantes de Casamento: {{ dados.geral.listaNiverCasamento.lista|length }}</label>
+    <br>
+    <select name="carregar" class="w-50">
+        {% for mes in dados.listaMesSorteio %}
+            {% if dados.mesSorteio == mes %}
+                <option selected>{{mes}}</option>
+            {% else %}
+                <option>{{mes}}</option>
+            {% endif %}
+        {% endfor %}
+        {% if 'outubro' in dados.ListaMesSorteio %}
+            {% for mes in mes_nov %}
+                {% if mes not in dados.listaMesSorteio %}
+                    {% if dados.mesSorteio == mes %}
+                        <option selected>{{mes}}</option>
+                    {% else %}
+                        <option>{{mes}}</option>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </select>
+</div>
+
+{% if logged %}
+    {% block 'script_body_cultoparafamilia' %}
+        <script src="{% static 'cultoparafamilia/arearestritafamilia/js/arearestritafamilia.js' %}"></script>
+    {% endblock %}
+{% endif %}

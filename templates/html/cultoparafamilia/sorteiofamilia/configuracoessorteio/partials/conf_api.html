@@ -1,0 +1,14 @@
+{% load static %}
+
+<div class="w-50 me-2">
+    {{dados.confAPI}}
+    <p class="titulo-config">Configuração API</p>
+    <label for="confAPI">API configurada: </label>
+    <input name="confAPI" class='w-100' id="confAPI" type="text" value="{{dados.confAPI}}">
+</div>
+
+{% if logged %}
+    {% block 'script_body_cultoparafamilia' %}
+        <script src="{% static 'cultoparafamilia/arearestritafamilia/js/arearestritafamilia.js' %}"></script>
+    {% endblock %}
+{% endif %}

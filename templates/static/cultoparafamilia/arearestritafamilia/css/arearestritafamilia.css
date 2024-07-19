@@ -1,0 +1,30 @@
+.btn-exclude{
+    color:white;
+    border: none;
+    font-weight: bold;
+    background-color: var(--contrast-color);
+    padding: 5px;
+    margin-left: 10px;
+    margin-top: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    width: 70%;
+}
+
+.btn-edit{
+    color:white;
+    border: none;
+    font-weight: bold;
+    background-color: var(--contrast-color);
+    padding: 5px;
+    margin-left: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    width: 70%;
+}
+
+.table_lista_culto{
+    min-width: calc(100% - 40px);
+}

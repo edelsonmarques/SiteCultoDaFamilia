@@ -1,0 +1,41 @@
+{% load static %}
+
+<form id="include-postagem">
+    {% for index, postagem in postagens.items %}
+        <div id="include-postagem-{{index}}">
+            <p class="postagem">{% csrf_token %}
+                <span class="d-flex justify-content-between">
+                    <span class="d-flex flex-column w-100">
+                        {% if edit_post and index in edit_post %}
+                            <input type='text' placeholder='Título(pode ser vazio)' class='form-control' name='titulo' value="{{ postagem.titulo }}"> 
+                            <textarea type='text' placeholder='Aviso(não pode ser vazio)' class='form-control' name='texto'>{{ postagem.texto }}</textarea>
+                        {% else %}
+                            {% if postagem.titulo != "" %}
+                                <span class="titulo fw-bold fs-4">{{ postagem.titulo }}</span>
+                            {% endif %} 
+                            {% if postagem.texto != "" %}
+                                <span class="texto">{{ postagem.texto }}</span>
+                            {% endif %} 
+                        {% endif %} 
+                    </span>
+                    {% if logged %}
+                        <span class="edit_post">
+                            {% if edit_post and index in edit_post %}
+                                <i class='bx bx-save btn-edit' hx-post="{% url 'save_post' index %}" hx-vals='{"edit_post": "{{edit_post}}" }' hx-trigger="click" hx-target="#include-postagem-{{index}}"></i>
+                            {% else %}
+                                <i class='bx bx-pencil btn-edit' hx-post="{% url 'edit_post' index %}" hx-vals='{"edit_post": "{{edit_post}}" }' hx-trigger="click" hx-target="#include-postagem-{{index}}"></i>
+                            {% endif %}
+                            <i class='bx bx-trash btn-exclude' hx-delete="{% url 'exclude_post' index %}" hx-trigger="click" hx-target="#include-postagem-{{index}}"></i>
+                        </span>
+                    {% endif %}
+                </span>
+            </p>
+        </div>
+    {% endfor %}
+</form>
+
+{% if logged %}
+    {% block 'script_body_cultoparafamilia' %}
+        <script src="{% static 'cultoparafamilia/arearestritafamilia/js/arearestritafamilia.js' %}"></script>
+    {% endblock %}
+{% endif %}

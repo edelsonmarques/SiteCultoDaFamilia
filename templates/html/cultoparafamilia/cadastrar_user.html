@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block 'head' %}
+    <link rel="stylesheet" href="{% static 'cultoparafamilia/css/cultoparafamilia.css' %}">
+    <script src="https://unpkg.com/htmx.org@1.9.11" integrity="sha384-0gxUXCCR8yv9FM2b+U3FDbsKthCI66oH5IA9fHppQq9DDMHuMauqq1ZHBpJxQ0J0" crossorigin="anonymous"></script>
+    {% block 'head_cultoparafamilia' %}{% endblock %}
+{% endblock %}
+
+{% block 'dashboard' %}
+    <div class="container">
+        <div class="row">
+            <div class="d-flex flex-md-column justify-content-center align-items-center"> {% comment %}  Tabela central {% endcomment %}
+                <div class="col-md card-login">
+                    <div class="row"> {% comment %}  Imagem do agenda66 {% endcomment %}
+                        <div class="d-flex justify-content-center align-items-center">
+                            <img class="logo" src="{% static 'general/img/icone sem fundo.png' %}" alt="Paris">
+                            {% comment %} <p class="text-logo">{{pages_names.HOME_NAME}}</p> {% endcomment %}
+                        </div>
+                    </div>
+                    <hr>
+                    <form action="{% url 'cadastrar_user' %}" method="POST">{% csrf_token %}
+                        <div class="mb-2">
+                            <div class="d-flex justify-content-left">
+                                <div class="me-2 w-25 d-flex justify-content-left">
+                                    <label for="username" class="me-2">Username:</label>
+                                </div>
+                                <div class="w-100">
+                                    <input type="text" name="username" id="" class="form-control" placeholder="Username" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <div class="d-flex justify-content-left">
+                                <div class="me-2 w-25 d-flex justify-content-left">
+                                    <label for="senha">Password:</label>
+                                </div>
+                                <div class="w-100">
+                                    <input type="password" name="password" class="form-control" placeholder="Password" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <input type="submit" value="Cadastrar" class="btn btn-success btn-dark-color">
+                            {% if next %}
+                                <input type="hidden" name="next" value={{ next }}>
+                            {% endif %}
+                            {% comment %} <a href="#" class="btn btn-outline-light">Não possuo uma conta</a> {% endcomment %}
+                        </div>
+                    </form>
+                    <hr>
+                    <p>ou</p>
+                    <hr>
+                    <form action="{% url 'login_area_restrita' %}" method="POST">{% csrf_token %}
+                        <div class="mb-2">
+                            <div class="d-flex justify-content-left">
+                                <div class="me-2 w-25 d-flex justify-content-left">
+                                    <label for="congregacao" class="me-2">Congregação:</label>
+                                </div>
+                                <div class="w-100">
+                                    {% comment %} # TODO: criar escolha de congregação quando configurar por congregação {% endcomment %}
+                                    <input type="text" name="congregacao" class="form-control" placeholder="Digite sua congregação">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <div class="d-flex justify-content-left">
+                                <div class="me-2 w-25 d-flex justify-content-left">
+                                    <label for="cartao" class="me-2">Nº do cartão:</label>
+                                </div>
+                                <div class="w-100">
+                                    <input type="text" name="cartao" class="form-control" placeholder="Digite seu nº do cartão">
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <input type="submit" value="Cadastrar" class="btn btn-success btn-dark-color">
+                            {% if next %}
+                                <input type="hidden" name="next" value={{ next }}>
+                            {% endif %}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block 'script_body' %}
+    <script src="{% static 'cultoparafamilia/js/cultoparafamilia.js' %}"></script>
+    {% block 'script_body_cultoparafamilia' %}
+    {% endblock %}
+{% endblock %}

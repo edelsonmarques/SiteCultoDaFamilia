@@ -1,0 +1,150 @@
+{% load static %}
+{% load define_tag %}
+
+<div id="dinamica_evento">
+    {% comment %} {{dados.evento}} {% endcomment %}
+    {% if dados.habilitarEvento %}
+        {% if dados.evento.selecaoEventoEspecial|length != 0 and dados.evento.selecaoEventoEspecial|selecao:'EVENTOSEMINARIOBLANK' %}
+            {% comment %} <br> {% endcomment %}
+            <div class="d-flex justify-content-center campos-config align-items-center">
+                <div class="w-50 me-2">
+                    <p class="titulo-config">Dinâmica de Dia dos(as) {{dados.evento.selecaoEventoEspecial|plural:'0,plural'}}
+                    <p>
+                    <label for="dinamica_mae_pai">Cartão fidelidade para a dinâmica dos(as) {{dados.evento.selecaoEventoEspecial|plural:'0,plural'}}: [Congregação|N° cartão fidelidade]</label>
+                    <label >Quantidade de cartões cadastrados: {{ dados.evento.listaDinamicaMaePai.lista|length }}</label>
+                    <br>
+                    <input name="dinamica_mae_pai" class='w-100' id="dinamica_mae_pai" type="text" value="">
+                    {% if dados.evento.selecaoListaMaePai|length > 0 %}
+                        <label>Quantidade de cartões pendentes: {{ dados.evento.selecaoListaMaePai|length }}</label>
+                        {% for cartao in dados.evento.selecaoListaMaePai %}
+                            <br>
+                            <p>
+                                <label for="selecao_lista_mae_pai">Cartão {{ cartao }}:</label>
+                                <br>
+                                <input type="checkbox" name="selecao,{{ cartao }},0" value="0">
+                                {{ dados.evento.selecaoListaMaePai|maepai:cartao|maepai:0 }}
+                                <br>
+                                <input type="checkbox" name="selecao,{{ cartao }},1" value="1">
+                                {{ dados.evento.selecaoListaMaePai|maepai:cartao|maepai:-1 }}
+                            </p>
+                        {% endfor %}
+                        <input type="submit" name="salvar_mae_pai" id="selecao_lista_mae_pai" value="Salvar" hx-post="{% url 'selecao_mae_pai' %}" hx-trigger="click" hx-target="#dinamica_evento">
+                    {% endif %}
+                </div>
+                <div class= "vr"></div>
+                <div class="w-50 ms-2">
+                    <p class="titulo-config">Dinâmica de {{dados.evento.selecaoEventoEspecial|plural:'1,plural'}} e {{dados.evento.selecaoEventoEspecial|plural:'0,plural'}}
+                        <input type="submit" name="habilitar_evento" value="Desabilitar Modo Filhos"  hx-post="{% url 'habilitar_evento' %}" hx-trigger="click" hx-target="#config_list">
+                    </p>
+                    <label >Quantidade de cartões cadastrados: {{ dados.evento.listaDinamicaFilhosPais.lista|length }}</label>
+                    <label for="dinamica_filho">Cartão fidelidade dos(as) {{dados.evento.selecaoEventoEspecial|plural:'1,plural'|lower}} para a dinâmica: [Congregação|N° cartão fidelidade]</label>
+                    <input name="dinamica_filho" class='w-100' id="dinamica_filho" type="text" value="">
+                    <label for="dinamica_mae">Cartão fidelidade do(a) {{dados.evento.selecaoEventoEspecial|plural:'0,singular'|lower}} para a dinâmica: [Congregação|N° cartão fidelidade]</label>
+                    <div class="d-flex flex-column">
+                        <input name="dinamica_mae" class='w-100' id="dinamica_mae" type="text" value="">
+                        <input type="submit" class='mt-1' value="Inserir" hx-post="{% url 'selecao_filhos_pais' %}" hx-trigger="click" hx-target="#dinamica_evento">
+                    </div>
+                    {% if dados.evento.selecaoListaFilhosPais|length > 0 %}
+                        <br>
+                        <label>Quantidade de cartões pendentes: {{ dados.evento.selecaoListaFilhosPais|length }}</label>
+                        {% for cartao in dados.evento.selecaoListaFilhosPais %}
+                            <br>
+                            <p>
+                                <label for="selecao_lista_filhos_pais">Cartão {{ cartao }}:</label>
+                                {% for parente in dados.evento.selecaoListaFilhosPais|maepai:cartao %}
+                                    <br>
+                                    <label for="selecao_lista_filhos_pais">
+                                        {% if parente == 'pais' %}
+                                            {{dados.evento.selecaoEventoEspecial|plural:'0,plural'}}
+                                        {% else %}
+                                            {{dados.evento.selecaoEventoEspecial|plural:'1,plural'}}
+                                        {% endif %}
+                                        :
+                                    </label>
+                                    {% for index in dados.evento.selecaoListaFilhosPais|maepai:cartao|maepai:parente %}
+                                        <br>
+                                        {% if parente == 'pais' %}
+                                            <input type="checkbox" name="selecao,{{ cartao }},{{dados.evento.selecaoEventoEspecial|plural:'0,singular'}},{{dados.evento.selecaoListaFilhosPais|maepai:cartao|maepai:parente|get_index:index}}" value="{{dados.evento.selecaoListaFilhosPais|maepai:cartao|maepai:parente|get_index:index}}">
+                                        {% else %}
+                                            <input type="checkbox" name="selecao,{{ cartao }},{{dados.evento.selecaoEventoEspecial|plural:'1,singular'}},{{dados.evento.selecaoListaFilhosPais|maepai:cartao|maepai:parente|get_index:index}}" value="{{dados.evento.selecaoListaFilhosPais|maepai:cartao|maepai:parente|get_index:index}}">
+                                        {% endif %}
+                                        {{ index|maepai:"0" }}
+                                    {% endfor %}
+                                {% endfor %}
+
+                            </p>
+                        {% endfor %}
+                        <input type="submit" name="salvar_filhos_pais" id="selecao_lista_filhos_pais" value="Salvar" hx-post="{% url 'selecao_filhos_pais' %}" hx-trigger="click" hx-target="#dinamica_evento">
+                    {% endif %}
+                </div>
+            </div>
+        {% elif dados.evento.selecaoEventoEspecial|length != 0 and dados.evento.selecaoEventoEspecial|selecao:'EVENTOSEMINARIO' %}
+            <div>
+                <p class="titulo-config"`>
+                        {% if dados.evento.selecaoEventoEspecial|get_conteins:'0,Seminário' %}
+                            Dinâmica de Casais no {{ dados.evento.selecaoEventoEspecial|get_string:0 }}
+                        {% else %}
+                            Dinâmica de Casais no mês de Outubro
+                        {% endif %}
+                        <input type="submit" name="carregar_seminario" value="Carregar presenças">
+                        <input type="submit" name="habilitar_evento" value="Desabilitar Modo Eventos" hx-post="{% url 'habilitar_evento' %}" hx-trigger="click" hx-target="#config_list">
+                </p>
+                <form>{%csrf_token%}
+                    {% if dados.evento.listaDeOutNov|length > 0  %}
+                        <label >Quantidade de cartões / qtd sorteios por presenças:</label>
+                        {% for i in dados.evento.listaDeOutNov.jovens %}
+                            <label class="d-flex"> 
+                                <div class="w-35">Jovens com {{ i }} presenças: {{ dados.evento.listaDeOutNov.jovens|get_string:i|length }}</div>
+                                <div class=""> <input class= "set" name="set_jovens_{{i}}" type="text" value="{{dados.evento.listaSet.jovens|get_string:i}}" required></div>
+                                <div class="w-35"> ||  Geral com {{ i }} presenças: {{ dados.evento.listaDeOutNov.geral|get_string:i|length }}</div>
+                                <div class=""> <input class= "set" name="set_geral_{{i}}" type="text" value="{{dados.evento.listaSet.geral|get_string:i}}"></div>
+                            </label>
+                        {% endfor %}
+                        <input type="submit" value="Setar Sorteios" hx-post="{% url 'set_sorteios' %}" hx-trigger="click" hx-target="#dinamica_evento">
+                    {% endif %}
+                </form>
+                <form class="d-flex flex-column mt-2">{%csrf_token%}
+                    <label for="dinamica_seminario">Cartão fidelidade para a dinâmica do grupo: [Congregação|N° cartão fidelidade]</label>
+                    <label >Quantidade de cartões cadastrados: {{ dados.geral.listaDinamica|length }}</label>
+                    <input name="dinamica_seminario" id="dinamica_seminario" type="text" value="" required>
+                    <input type="submit" class="mt-1" value="Inserir" hx-post="{% url 'set_dinamica_seminario' %}" hx-trigger="click" hx-target="#dinamica_evento">
+                </form>
+            </div> 
+        {% else %}
+            <div>
+                <p class="titulo-config">Dinâmica de eventos</p>
+                <label>Escolha o evento desejado:</label>
+                <br>
+                <select name="carregar_evento">
+                    <option>Dia das Mães</option>
+                    <option>Dia dos Pais</option>
+                    <option>Dia dos Avós</option>
+                    {% for evento in events.EVENTOSEMINARIO %}
+                        <option>{{ evento }}</option>
+                    {% endfor %}
+                </select>
+                {% comment %} TODO: direcionar para o ponto correto com o htmlx {% endcomment %}
+                <p class="mt-2">
+                    <input type="submit" value="Carregar" hx-post="{% url 'carregar_evento' %}" hx-trigger="click" hx-target="#config_list">
+                    <input type="submit" name="voltar" value="Voltar" hx-post="{% url 'habilitar_evento' %}" hx-trigger="click" hx-target="#config_list">
+                </p>
+            </div>
+        {% endif %}
+    {% else %}
+        <div>
+            <p class="titulo-config">Dinâmica de Casais
+                {% comment %} Inserir complemento para o botão e trocar as informações de dinamica de casais com o htmlx {% endcomment %}
+                <input type="submit" name="habilitar_evento" value="Habilitar Modo Eventos" hx-post="{% url 'habilitar_evento' %}" hx-trigger="click" hx-target="#config_list">
+            </p>
+            <label for="dinamica">Cartão fidelidade para a dinâmica do grupo: [Congregação|N° cartão fidelidade]</label>
+            <label >Quantidade de cartões cadastrados: {{ dados.geral.listaDinamica|length }}</label>
+            <input name="dinamica" class='w-100' id="dinamica" type="text" required>
+        </div>
+    {% endif %}
+</div>
+
+{% if logged %}
+    {% block 'script_body_cultoparafamilia' %}
+        <script src="{% static 'cultoparafamilia/arearestritafamilia/js/arearestritafamilia.js' %}"></script>
+    {% endblock %}
+{% endif %}
