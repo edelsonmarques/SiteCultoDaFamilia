@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Checkout do repositório
         uses: actions/checkout@v4.1.2
+      - name: Add Mask
+        run: echo "::add-mask::${{ secrets.DJANGO_SUPERUSER_PASSWORD }}"
       - name: Atualizar arquivos sensíveis (DJANGO_SUPERUSER_PASSWORD)
         shell: bash
         run: |
@@ -19,6 +21,10 @@ jobs:
         shell: bash
         run: |
           sed -i "s/{{DJANGO_SUPERUSER}}/${{ secrets.DJANGO_SUPERUSER }}/g" ./Spacefile
+      - name: visualizar spacefile
+        shell: bash
+        run: |
+          cat ./Spacefile
       - name: Atualizar arquivos sensíveis (DETA_PROJECT_KEY)
         shell: bash
         run: |
