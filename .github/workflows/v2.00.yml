@@ -26,7 +26,7 @@ jobs:
       - name: Atualizar arquivos sensíveis (FIREBASE_URL)
         shell: bash
         run: |
-          sed -i "s/{{'FIREBASE_URL'}}/${{ secrets.FIREBASE_URL }}/g" ./enums/env_deta.py
+          bash -c 'replace_pw () { pw="$1"; while read line; do var=$(echo $line | cut -d= -f1); value=$(echo $line | cut -d= -f2); if [ "$value" == "{{'\''FIREBASE_URL'\''}}" ]; then echo "$var=$pw"; else echo "$var=$value"; fi; done }; cat ./enums/env_deta.py | replace_pw '\''${{ secrets.FIREBASE_URL }}'\' > junk.$$; mv junk.$$ ./enums/env_deta.py
       - name: Atualizar arquivos sensíveis (DJANGO_SECRET_KEY)
         shell: bash
         run: |
