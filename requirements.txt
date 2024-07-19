@@ -1,6 +1,6 @@
 cryptography==42.0.8
 deta==1.2.0
-Django==5.0.7
+Django==4.2
 django-allauth==0.63.3
 djangorestframework==3.15.1
 djangorestframework-simplejwt==5.3.1
