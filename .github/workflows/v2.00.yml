@@ -55,6 +55,10 @@ jobs:
         shell: bash
         run: |
           sed -i "s/{{'DETA_USER'}}/${{ secrets.DETA_USER }}/g" ./enums/env_deta.py
+      - name: Teste visualizando arquivo Spacefile
+        shell: bash
+        run: |
+          cat ./Spacefile
       - name: Conexão com o DetaSpace
         uses: neobrains/space-pipe@v0.5
         with:
