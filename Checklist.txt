@@ -1,18 +1,11 @@
+TODO: Verificar se há necessidade de criar telas para criar usuario novo e realizar login, pois necessita de login para rodar o sistema de sorteio.
+TODO: Tratar erros com retorno de mensagens
+
 TODO: Gerenciar o carregamento de outras APIs, caso alguém queria mudar para seu usuário
 TODO: Fazer logout na barra lateral
 TODO: Fazer a parte do perfil de usuário
 TODO: Ajustar o layout das páginas
-TODO: Ajustar as cores do template
 TODO: Ajustar página inicial
 TODO: Ajustar página de calendário
-TODO: Apagar print dos saves
 TODO: Retirar do sorteio as pessoas que já estão no Histórico
 TODO: Ajustar modo eventos
-
-
-
-TODO: Verificar se há necessidade de criar telas para criar usuario novo e realizar login, pois necessita de login para rodar o sistema de sorteio.
-TODO: SUBSTITUIR VALORES FIXOS COM VALORES SECRETOS
-TODO: Tratar erros com retorno de mensagens
-TODO: Ajustar o sorteando na tela de sorteio
-TODO: Verificar se lista ta vazia, para não gerar atraso

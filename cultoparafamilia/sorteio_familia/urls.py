@@ -22,6 +22,8 @@ htmx_urlpatterns = [
     path('sort_veneza4/', htmx_views.sort_veneza4, name='sort_veneza4'),
     path('sort_ensaio/', htmx_views.sort_ensaio, name='sort_ensaio'),
     path('sort_dinamica_ensaio/', htmx_views.sort_dinamica_ensaio, name='sort_dinamica_ensaio'),
+    path('sort_dinamica_mae_pai/', htmx_views.sort_dinamica_mae_pai, name='sort_dinamica_mae_pai'),
+    path('sort_dinamica_filhos_pais/', htmx_views.sort_dinamica_filhos_pais, name='sort_dinamica_filhos_pais'),
 ]
 
 urlpatterns += htmx_urlpatterns

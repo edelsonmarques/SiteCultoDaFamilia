@@ -49,6 +49,9 @@ class Lista(BaseModel, Base):
         import random
         
         # sorteia em self.lista
+        if type(self.lista) == dict:
+            escolha = random.choice([item for item in self.lista.keys()])
+            return {escolha: self.lista[escolha] }
         if len(self.lista) > 0:
             return random.choice(self.lista)
         
@@ -159,17 +162,12 @@ class Evento(BaseModel, Base):
     def __str__(self):
         return self.str()
     
-    def sortear(self, lista:str, presenca: str):
-        lista = lista.lower()
-        if lista == 'maepai':
-            return self.listaDinamicaMaePai
-        elif lista == 'filhos':
-            # verificar esse caso
-            return self
-        elif lista =='geral':
+    def sortear(self, lista:str, presenca: str = ""):
+        if lista == 'geral':
             return self.listaDeOutNov.geral[presenca]
         elif lista == 'jovens':
             return self.listaDeOutNov.jovens[presenca]
+        return self[lista].sortear()
     
     def reset(self):
         evento = Evento()
@@ -560,6 +558,23 @@ def is_superuser(username):
     except User.DoesNotExist:
         return False
 
+
+def return_username(username):
+    try:
+        user = User.objects.get(username=username).first_name
+        if user == "":
+            user = User.objects.get(username=username).username
+        return user
+    except User.DoesNotExist:
+        return False
+    
+
+def return_info_user(request):
+    return {
+        'logged': is_superuser(str(auth.get_user(request))), 
+        'connected': is_logged(str(auth.get_user(request))), 
+        'username': return_username(str(auth.get_user(request)))
+        }
 
 if __name__ == '__main__':
     user = User_field(username='eudes', password='123')

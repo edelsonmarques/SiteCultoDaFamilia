@@ -1,9 +1,12 @@
 from datetime import timedelta
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 from enums import enums
 from enums.env_deta import SECRET_KEY, MYSQL_HOST, MYSQL_PASSWORD, MYSQL_PORT, MYSQL_USER
 import pymysql
+
+load_dotenv()
 pymysql.install_as_MySQLdb()
 
 
@@ -18,7 +21,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+if os.getenv('LOCAL'):
+    DEBUG = True
+else:
+    DEBUG = False
+    
 
 ALLOWED_HOSTS = ['*']
 

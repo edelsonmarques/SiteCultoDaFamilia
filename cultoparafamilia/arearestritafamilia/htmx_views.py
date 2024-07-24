@@ -9,7 +9,7 @@ from time import sleep
 from enums.mes import mes_num_dict
 from enums.pages_links import pages_links
 from django.views.decorators.csrf import csrf_exempt
-from cultoparafamilia.sorteio_familia.models import is_logged, is_superuser
+from cultoparafamilia.sorteio_familia.models import return_info_user
 from cultoparafamilia.db.firebase import load_postagens, insert_postagens, delete_postagens, update_postagens, load_lista_cultos
 
 # Create your views here.
@@ -29,13 +29,13 @@ def insert_list(request):
             id_post = f"{usuario}_{datetime.now().strftime('%Y_%m_%d_%H_%M_%S_%f')}"
             postagens[id_post] = {'titulo': ti, 'texto': te}
             insert_postagens("postagem", id_post, {'titulo': ti, 'texto': te})
-    return render(request, posixpath.join('cultoparafamilia', 'partials', 'postagem_list.html'), {'postagens': postagens, 'logged': is_superuser(auth.get_user(request))})
+    return render(request, posixpath.join('cultoparafamilia', 'partials', 'postagem_list.html'), {'postagens': postagens, **return_info_user(request)})
     
 @csrf_exempt
 @login_required(login_url=pages_links['LOGIN_PAGE'])
 def exclude_post(request, id_post):
     delete_postagens("postagem", id_post)
-    return render(request, posixpath.join('cultoparafamilia', 'partials', 'postagem_list.html'), {'logged': is_superuser(auth.get_user(request))})
+    return render(request, posixpath.join('cultoparafamilia', 'partials', 'postagem_list.html'), {**return_info_user(request)})
 
 @login_required(login_url=pages_links['LOGIN_PAGE'])
 def save_post(request, id_post):
@@ -53,7 +53,7 @@ def save_post(request, id_post):
     except KeyError:
         pass
     edit_post = list(edit_post)
-    return render(request, posixpath.join('cultoparafamilia', 'partials', 'postagem_list.html'), {'postagens': postagem, 'logged': is_superuser(auth.get_user(request)), 'edit_post': edit_post})
+    return render(request, posixpath.join('cultoparafamilia', 'partials', 'postagem_list.html'), {'postagens': postagem, 'edit_post': edit_post, **return_info_user(request)})
 
 
 @login_required(login_url=pages_links['LOGIN_PAGE'])
@@ -67,7 +67,7 @@ def edit_post(request, id_post):
         edit_post = list(edit_post)
     else:
         edit_post = [id_post]
-    return render(request, posixpath.join('cultoparafamilia', 'partials', 'postagem_list.html'), {'postagens': postagem, 'logged': is_superuser(auth.get_user(request)), 'edit_post': edit_post})
+    return render(request, posixpath.join('cultoparafamilia', 'partials', 'postagem_list.html'), {'postagens': postagem, 'edit_post': edit_post, **return_info_user(request)})
 
 
 @login_required(login_url=pages_links['LOGIN_PAGE'])
@@ -94,7 +94,7 @@ def save_list_post(request, id_post):
     except KeyError:
         pass
     edit_list_post = list(edit_list_post)
-    return render(request, posixpath.join('cultoparafamilia', 'partials', 'lista_culto_list.html'), {'lista_cultos': lista_culto, 'logged': is_superuser(auth.get_user(request)), 'edit_list_post': edit_list_post})
+    return render(request, posixpath.join('cultoparafamilia', 'partials', 'lista_culto_list.html'), {'lista_cultos': lista_culto, 'edit_list_post': edit_list_post, **return_info_user(request)})
 
 
 @login_required(login_url=pages_links['LOGIN_PAGE'])
@@ -109,7 +109,7 @@ def edit_list_post(request, id_post):
         edit_list_post = list(edit_list_post)
     else:
         edit_list_post = [id_post]
-    return render(request, posixpath.join('cultoparafamilia', 'partials', 'lista_culto_list.html'), {'lista_cultos': lista_culto, 'logged': is_superuser(auth.get_user(request)), 'edit_list_post': edit_list_post})
+    return render(request, posixpath.join('cultoparafamilia', 'partials', 'lista_culto_list.html'), {'lista_cultos': lista_culto, 'edit_list_post': edit_list_post, **return_info_user(request)})
 
 def none_page(request):
     return HttpResponse('Nenhuma página será retornada.')

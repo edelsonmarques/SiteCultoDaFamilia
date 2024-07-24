@@ -7,7 +7,7 @@ from enums.congregacoes import congregacoes_names, congregacoes_lists_names
 from enums.pages_names import pages_names
 from enums.pages_links import pages_links
 from enums.events import EVENTOSEMINARIO, evento
-from cultoparafamilia.sorteio_familia.models import DadosDict, is_logged, is_superuser
+from cultoparafamilia.sorteio_familia.models import DadosDict, return_info_user
 from cultoparafamilia.db.firebase import load_lista_presenca, load_lista_usuarios
 from cultoparafamilia.sorteio_familia.functions.mover_congregacoes import retirar_congregacao, inserir_congregacao
 
@@ -21,16 +21,16 @@ def config_list(request):
         set_mes_sorteio(request, save=True, recharge=True)
         # TODO: Recarregar a API para atualizar a lista de mês sorteio
         _, dados = dados.load()
-        return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'part_configuracoes_sorteio.html'), {'pages_names': pages_names, 'dados': dados.to_object(), 'logged': is_superuser(auth.get_user(request))})
+        return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'part_configuracoes_sorteio.html'), {'pages_names': pages_names, 'dados': dados.to_object(), **return_info_user(request)})
     if request.POST['confAPI'] not in [dados.confAPI]:
         set_api(request, save=True)
         _, dados = dados.load()
-        return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'part_configuracoes_sorteio.html'), {'pages_names': pages_names, 'dados': dados.to_object(), 'logged': is_superuser(auth.get_user(request))})
+        return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'part_configuracoes_sorteio.html'), {'pages_names': pages_names, 'dados': dados.to_object(), **return_info_user(request)})
     if request.POST['carregar'] not in [dados.mesSorteio, '']:
         set_mes_sorteio(request, save=True)
         # testar o que realmente vai precisar
         _, dados = dados.load()
-        return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'part_configuracoes_sorteio.html'), {'pages_names': pages_names, 'dados': dados.to_object(), 'logged': is_superuser(auth.get_user(request))})
+        return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'part_configuracoes_sorteio.html'), {'pages_names': pages_names, 'dados': dados.to_object(), **return_info_user(request)})
     
     if 'dinamica_mae_pai' in request.POST and (request.POST['dinamica_mae_pai'] != ''):
         selecao_mae_pai(request, save=True)
@@ -42,7 +42,7 @@ def config_list(request):
         move_to_geral(request, save=True)
     if atualizou:
         _, dados = dados.load()
-    return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'part_configuracoes_sorteio.html'), {'pages_names': pages_names, 'dados': dados.to_object(), 'logged': is_superuser(auth.get_user(request))})
+    return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'part_configuracoes_sorteio.html'), {'pages_names': pages_names, 'dados': dados.to_object(), **return_info_user(request)})
 
 @login_required(login_url=pages_links['LOGIN_PAGE'])
 def habilitar_evento(request):
@@ -59,7 +59,7 @@ def habilitar_evento(request):
             habilitar_evento = True
     dados.habilitarEvento = habilitar_evento
     dados.save()
-    return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'part_configuracoes_sorteio.html'), {'pages_names': pages_names, 'dados': dados.to_object(), 'logged': is_superuser(auth.get_user(request)), 'events': {'EVENTOSEMINARIO': EVENTOSEMINARIO}})
+    return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'part_configuracoes_sorteio.html'), {'pages_names': pages_names, 'dados': dados.to_object(), 'events': {'EVENTOSEMINARIO': EVENTOSEMINARIO}, **return_info_user(request)})
 
 @login_required(login_url=pages_links['LOGIN_PAGE'])
 def carregar_evento(request):
@@ -67,7 +67,7 @@ def carregar_evento(request):
     _, dados = dados.load()
     dados.evento.selecaoEventoEspecial = evento(request.POST['carregar_evento'])
     dados.save()
-    return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'part_configuracoes_sorteio.html'), {'pages_names': pages_names, 'dados': dados.to_object(), 'logged': is_superuser(auth.get_user(request)), 'events': {'EVENTOSEMINARIO': EVENTOSEMINARIO}})
+    return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'part_configuracoes_sorteio.html'), {'pages_names': pages_names, 'dados': dados.to_object(), 'events': {'EVENTOSEMINARIO': EVENTOSEMINARIO}, **return_info_user(request)})
 
 @login_required(login_url=pages_links['LOGIN_PAGE'])
 def selecao_mae_pai(request, save=False):
@@ -87,20 +87,20 @@ def selecao_mae_pai(request, save=False):
         cartao = select.split(',')[1]
         pos_pessoa = int(select.split(',')[2])
         if cartao not in dados.evento.listaDinamicaMaePai.filtro:
+            dados.evento.listaDinamicaMaePai.filtro[f'{cartao}'] = []
+            dados.evento.listaDinamicaMaePai.filtro[cartao].append(dados.evento.selecaoListaMaePai[cartao][pos_pessoa])
             dados.evento.listaDinamicaMaePai.lista.append(dados.evento.selecaoListaMaePai[cartao][pos_pessoa])
-            dados.evento.listaDinamicaMaePai.filtro[cartao] = dados.evento.selecaoListaMaePai[cartao][pos_pessoa]
         dados.evento.selecaoListaMaePai.pop(cartao)
     
     dados.save()
     if not save:
-        return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'dinamica_eventos.html'), {'pages_names': pages_names, 'dados': dados.to_object(), 'logged': is_superuser(auth.get_user(request)), 'events': {'EVENTOSEMINARIO': EVENTOSEMINARIO}})
+        return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'dinamica_eventos.html'), {'pages_names': pages_names, 'dados': dados.to_object(), 'events': {'EVENTOSEMINARIO': EVENTOSEMINARIO}, **return_info_user(request)})
     return True
 
 @login_required(login_url=pages_links['LOGIN_PAGE'])
 def selecao_filhos_pais(request):
     dados = DadosDict(username=auth.get_user(request).username)
     _, dados = dados.load()
-    
     # inserir pessoa
     if request.POST['dinamica_mae'] != '':
         for cartao in request.POST['dinamica_mae'].split(','):
@@ -114,7 +114,7 @@ def selecao_filhos_pais(request):
                     if filho in dados.geral.listaMenor.filtro:
                         dados.evento.selecaoListaFilhosPais[cartao]['filhos'].append(dados.geral.listaMenor.filtro[filho][0])
                     elif filho in dados.geral.listaGeral.filtro:
-                        for adulto in dados.geral.listaGeral.filtro[cartao]:
+                        for adulto in dados.geral.listaGeral.filtro[filho]:
                             dados.evento.selecaoListaFilhosPais[cartao]['filhos'].append(adulto)
                 else:
                     dados.evento.selecaoListaFilhosPais[cartao]['filhos'].append(filho)
@@ -137,7 +137,7 @@ def selecao_filhos_pais(request):
             separacao[cartao]['pais'] = []
         pos_pessoa = int(select.split(',')[3])
         texto = ""
-        if parente.lower().__contains__('filho'):
+        if (parente.lower().__contains__('filho') or parente.lower().__contains__('neto')):
             texto = f'{parente}: {dados.evento.selecaoListaFilhosPais[cartao]["filhos"][pos_pessoa].split("|")[0]}|{cartao}'
             separacao[cartao]['filhos'].append(texto)
         else:
@@ -166,7 +166,7 @@ def selecao_filhos_pais(request):
         dados.evento.selecaoListaFilhosPais.pop(cartao)
             
     dados.save()
-    return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'dinamica_eventos.html'), {'pages_names': pages_names, 'dados': dados.to_object(), 'logged': is_superuser(auth.get_user(request)), 'events': {'EVENTOSEMINARIO': EVENTOSEMINARIO}})
+    return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'dinamica_eventos.html'), {'pages_names': pages_names, 'dados': dados.to_object(), 'events': {'EVENTOSEMINARIO': EVENTOSEMINARIO}, **return_info_user(request)})
 
 @login_required(login_url=pages_links['LOGIN_PAGE'])
 def set_sorteios(request):
@@ -181,7 +181,7 @@ def set_sorteios(request):
             else:
                 dados.evento.listaSet[CJ][qtd] = int(request.POST[key][0])
     dados.save()
-    return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'dinamica_eventos.html'), {'pages_names': pages_names, 'dados': dados.to_object(), 'logged': is_superuser(auth.get_user(request)), 'events': {'EVENTOSEMINARIO': EVENTOSEMINARIO}})
+    return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'dinamica_eventos.html'), {'pages_names': pages_names, 'dados': dados.to_object(), 'events': {'EVENTOSEMINARIO': EVENTOSEMINARIO}, **return_info_user(request)})
 
 @login_required(login_url=pages_links['LOGIN_PAGE'])
 def set_dinamica_seminario(request):
@@ -194,7 +194,7 @@ def set_dinamica_seminario(request):
     dados.geral.listaDinamica.extend(list(lista))
     dados.geral.listaDinamica = list(set(dados.geral.listaDinamica))
     dados.save()
-    return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'dinamica_eventos.html'), {'pages_names': pages_names, 'dados': dados.to_object(), 'logged': is_superuser(auth.get_user(request)), 'events': {'EVENTOSEMINARIO': EVENTOSEMINARIO}})
+    return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'dinamica_eventos.html'), {'pages_names': pages_names, 'dados': dados.to_object(), 'events': {'EVENTOSEMINARIO': EVENTOSEMINARIO}, **return_info_user(request)})
 
 @login_required(login_url=pages_links['LOGIN_PAGE'])
 def set_dinamica(request, save=False):
@@ -209,7 +209,7 @@ def set_dinamica(request, save=False):
     dados.geral.listaDinamica = list(set(dados.geral.listaDinamica))
     dados.save()
     if not save:
-        return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'dinamica_eventos.html'), {'pages_names': pages_names, 'dados': dados.to_object(), 'logged': is_superuser(auth.get_user(request))})
+        return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'dinamica_eventos.html'), {'pages_names': pages_names, 'dados': dados.to_object(), **return_info_user(request)})
     return True
 
 @login_required(login_url=pages_links['LOGIN_PAGE'])
@@ -229,7 +229,7 @@ def set_api(request, save=False):
     # TODO: carregar a API para poder funcionar direitinho
     dados.save()
     if not save:
-        return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'part_configuracoes_sorteio.html'), {'pages_names': pages_names, 'dados': dados.to_object(), 'logged': is_superuser(auth.get_user(request))})
+        return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'part_configuracoes_sorteio.html'), {'pages_names': pages_names, 'dados': dados.to_object(), **return_info_user(request)})
 
 @login_required(login_url=pages_links['LOGIN_PAGE'])
 def set_mes_sorteio(request, save=False, recharge=False):
@@ -245,7 +245,7 @@ def set_mes_sorteio(request, save=False, recharge=False):
     # TODO: Implementar para carregar o mês do sorteio selecionado!
     dados.save()
     if not save and not recharge:
-        return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'part_configuracoes_sorteio.html'), {'pages_names': pages_names, 'dados': dados.to_object(), 'logged': is_superuser(auth.get_user(request))})
+        return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'part_configuracoes_sorteio.html'), {'pages_names': pages_names, 'dados': dados.to_object(), **return_info_user(request)})
 
 @login_required(login_url=pages_links['LOGIN_PAGE'])
 def move_to_geral(request, save=False):
@@ -270,7 +270,7 @@ def move_to_geral(request, save=False):
     dados.geral.listaGeral.lista = list(set(dados.geral.listaGeral.lista))
     dados.save()
     if not save:
-        return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'part_configuracoes_sorteio.html'), {'pages_names': pages_names, 'dados': dados.to_object(), 'logged': is_superuser(auth.get_user(request))})
+        return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'part_configuracoes_sorteio.html'), {'pages_names': pages_names, 'dados': dados.to_object(), **return_info_user(request)})
     return True
 
 @login_required(login_url=pages_links['LOGIN_PAGE'])
@@ -284,7 +284,7 @@ def habilitar_ensaio(request):
         habilitar_ensaio = True
     dados.habilitarEnsaio = habilitar_ensaio
     dados.save()
-    return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'ensaios.html'), {'pages_names': pages_names, 'dados': dados.to_object(), 'logged': is_superuser(auth.get_user(request)), 'events': {'EVENTOSEMINARIO': EVENTOSEMINARIO}})    
+    return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'ensaios.html'), {'pages_names': pages_names, 'dados': dados.to_object(), 'events': {'EVENTOSEMINARIO': EVENTOSEMINARIO}, **return_info_user(request)})
 
 @login_required(login_url=pages_links['LOGIN_PAGE'])
 def desabilitar_congregacao(request):
@@ -299,7 +299,7 @@ def desabilitar_congregacao(request):
                 dados.ensaio[congregacoes_names[congregacao]] = False
                 dados.ensaio = inserir_congregacao(dados.ensaio, dados.ensaio[congregacoes_lists_names[congregacao]])
     dados.save()
-    return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'part_configuracoes_sorteio.html'), {'pages_names': pages_names, 'dados': dados.to_object(), 'logged': is_superuser(auth.get_user(request)), 'events': {'EVENTOSEMINARIO': EVENTOSEMINARIO}})    
+    return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'part_configuracoes_sorteio.html'), {'pages_names': pages_names, 'dados': dados.to_object(), 'events': {'EVENTOSEMINARIO': EVENTOSEMINARIO}, **return_info_user(request)})
 
 @login_required(login_url=pages_links['LOGIN_PAGE'])
 def historico(request):
@@ -313,7 +313,7 @@ def historico(request):
             for historico in meses:
                 dados.historico.historicoSorteio.pop(historico)
         dados.save()
-    return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'historicos.html'), {'pages_names': pages_names, 'dados': dados.to_object(), 'logged': is_superuser(auth.get_user(request)), 'events': {'EVENTOSEMINARIO': EVENTOSEMINARIO}})    
+    return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'partials',  'historicos.html'), {'pages_names': pages_names, 'dados': dados.to_object(), 'events': {'EVENTOSEMINARIO': EVENTOSEMINARIO}, **return_info_user(request)})
 
 # TODO: Realizar carregar presença nos seminário
 # TODO: Verificar se falta algum outro passo de configurações

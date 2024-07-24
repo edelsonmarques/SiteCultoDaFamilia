@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 import posixpath
 from enums.pages_names import pages_names
 from enums.pages_links import pages_links
-from cultoparafamilia.sorteio_familia.models import User_field, is_logged, is_staff, is_superuser
+from cultoparafamilia.sorteio_familia.models import User_field, is_logged, is_superuser, return_info_user
 from cultoparafamilia.db.firebase import load_lista_cultos, load_postagens
 
 # Create your views here.
@@ -16,11 +16,11 @@ def cultoparafamilia(request):
         postagens = load_postagens()
         lista_cultos = load_lista_cultos()
         # return HttpResponse('Página cultoparafamilia')
-        return render(request, posixpath.join('cultoparafamilia', 'cultoparafamilia.html'), {'pages_names': pages_names, 'postagens': postagens, 'lista_cultos': lista_cultos, 'logged': is_superuser(str(auth.get_user(request))), 'connected': is_logged(str(auth.get_user(request)))})
+        return render(request, posixpath.join('cultoparafamilia', 'cultoparafamilia.html'), {'pages_names': pages_names, 'postagens': postagens, 'lista_cultos': lista_cultos, **return_info_user(request)})
 
 def login_area_restrita(request, _print=False):
     if request.method == "GET" and not is_logged(str(auth.get_user(request))):
-        return render(request, posixpath.join('cultoparafamilia', 'login_area_restrita.html'), {'pages_names': pages_names, 'next': request.GET.get('next')})
+        return render(request, posixpath.join('cultoparafamilia', 'login_area_restrita.html'), {'pages_names': pages_names, 'next': request.GET.get('next'), **return_info_user(request)})
     elif request.method == "POST":
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -49,7 +49,7 @@ def logout_area_restrita(request):
 @login_required(login_url=pages_links['LOGIN_PAGE'])
 def cadastrar_user(request, _print=False):
     if request.method == "GET" and is_superuser(str(auth.get_user(request))):
-        return render(request, posixpath.join('cultoparafamilia', 'cadastrar_user.html'), {'pages_names': pages_names, 'next': request.GET.get('next')})
+        return render(request, posixpath.join('cultoparafamilia', 'cadastrar_user.html'), {'pages_names': pages_names, 'next': request.GET.get('next'), **return_info_user(request)})
     elif request.method == "POST":
         username = request.POST.get('username')
         password = request.POST.get('password')

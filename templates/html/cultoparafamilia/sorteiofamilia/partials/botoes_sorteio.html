@@ -57,8 +57,8 @@
             {% endif %}
             {% if not dados.habilitarEnsaio and dados.geral.listaDinamica|length >= 0 %}
                 {% if dados.habilitarEvento and dados.evento.selecaoEventoEspecial|length != 0 and dados.evento.selecaoEventoEspecial|selecao:'NOTEVENTOSEMINARIO' %}
-                    <input name="dinamica" type="submit" value="Dinâmica - {{dados.evento.selecaoEventoEspecial|plural:'0,plural'}}" onclick="girar({{dados.evento.listaDinamicaMaePai.lista}})">
-                    <input name="dinamica" type="submit" value="Dinâmica - {{dados.evento.selecaoEventoEspecial|plural:'1,plural'}}" onclick="girar({{dados.evento.listaDinamicaMaePai.lista}})">
+                    <input name="dinamica" type="submit" value="Dinâmica - {{dados.evento.selecaoEventoEspecial|plural:'0,plural'}}" onclick="girar({{dados.evento.listaDinamicaMaePai.lista}})" hx-post="{% url 'sort_dinamica_mae_pai' %}" hx-trigger="click" hx-target="#nomes_view">
+                    <input name="dinamica" type="submit" value="Dinâmica - {{dados.evento.selecaoEventoEspecial|plural:'1,plural'}}" onclick="girar({{dados.evento.listaDinamicaFilhosPais.lista}})" hx-post="{% url 'sort_dinamica_filhos_pais' %}" hx-trigger="click" hx-target="#nomes_view">
                 {% else %}
                     <input name="dinamica" type="submit" value="Dinâmica" onclick="girar({{dados.geral.listaDinamica}})" hx-post="{% url 'sort_dinamica' %}" hx-trigger="click" hx-target="#nomes_view">
                 {% endif %}

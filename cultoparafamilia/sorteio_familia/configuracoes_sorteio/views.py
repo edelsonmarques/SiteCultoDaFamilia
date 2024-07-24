@@ -6,7 +6,7 @@ import posixpath
 from enums.pages_names import pages_names
 from enums.pages_links import pages_links
 from enums import nomes_colunas
-from cultoparafamilia.sorteio_familia.models import DadosDict, is_logged, is_superuser
+from cultoparafamilia.sorteio_familia.models import DadosDict, is_superuser, return_info_user
 from cultoparafamilia.db.firebase import load_lista_presenca, load_lista_usuarios
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -16,9 +16,8 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 def configuracoes_sorteio(request):
     dados = DadosDict(username=auth.get_user(request).username)
     _, dados = dados.load()
-    
     if request.method == "GET" and is_superuser(str(auth.get_user(request))):
-        return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'configuracoessorteio.html'), {'pages_names': pages_names, 'dados': dados.to_object(), 'logged': is_superuser(auth.get_user(request))})
+        return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'configuracoessorteio.html'), {'pages_names': pages_names, 'dados': dados.to_object(), **return_info_user(request)})
     if request.method == "POST":
         import pandas as pd
         import io
@@ -107,6 +106,6 @@ def configuracoes_sorteio(request):
                 )
                 response['Content-Disposition'] = f'attachment; filename={filename}'
                 return response
-        return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'configuracoessorteio.html'), {'pages_names': pages_names, 'dados': dados.to_object(), 'logged': is_superuser(auth.get_user(request))})
+        return render(request, posixpath.join('cultoparafamilia', 'sorteiofamilia', 'configuracoessorteio', 'configuracoessorteio.html'), {'pages_names': pages_names, 'dados': dados.to_object(), **return_info_user(request)})
     return redirect('cultoparafamilia')
     # TODO: Realizar todos os passos de configurações

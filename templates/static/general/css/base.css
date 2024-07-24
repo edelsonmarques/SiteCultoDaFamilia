@@ -292,3 +292,10 @@
   font-weight: bold;
   color: var(--text-color);
 }
+
+#avatar {
+  max-width: 200px; /* Tamanho da imagem */
+  max-height: 200px;
+  border-radius: 50%; /* Para tornar a imagem circular */
+  background-color: #ccc;
+}

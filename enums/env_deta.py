@@ -48,4 +48,3 @@ if os.getenv('DETA_USER'):
 else:
     DETA_USER = '{{DETA_USER}}'
     
-    
