@@ -112,12 +112,12 @@ WSGI_APPLICATION = f'{enums.SITE_NAME}.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'agenda66',
-        "USER": MYSQL_USER,
-        "PASSWORD": MYSQL_PASSWORD,
-        "HOST": MYSQL_HOST,
-        "PORT": MYSQL_PORT,
+        "USER": 'cultodafamilia',
+        "PASSWORD": 'uFlZMckAfmvprDeXPlzyzXL3shQHaa4I',
+        "HOST": 'dpg-crfcsotsvqrc73f73aa0-a',
+        "PORT": 5432,
         'OPTIONS': {
             'autocommit': True,
             # 'init_command': "SET sql_mode='STRICT_TRANS_TABLES'" ,
