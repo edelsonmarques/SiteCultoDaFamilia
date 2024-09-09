@@ -203,7 +203,7 @@ def sort_ensaio(request):
 def sort_alameda(request):
     dados = DadosDict(username=auth.get_user(request).username)
     _, dados = dados.load()
-    if len(dados.ensaio.listaEnsaioAlameda.lista) > 0:
+    if len(dados.ensaio.listaEnsaioAlameda.lista) > 0 and not dados.ensaio.habilitarListaAlameda:
         if dados.mesSorteio not in dados.historico.historicoSorteio:
             dados.historico.historicoSorteio[dados.mesSorteio] = []
         
@@ -220,7 +220,7 @@ def sort_alameda(request):
 def sort_jdcopacabana(request):
     dados = DadosDict(username=auth.get_user(request).username)
     _, dados = dados.load()
-    if len(dados.ensaio.listaEnsaioJardimCopa1.lista) > 0:
+    if len(dados.ensaio.listaEnsaioJardimCopa1.lista) > 0 and not dados.ensaio.habilitarListaJardimCopa1:
         if dados.mesSorteio not in dados.historico.historicoSorteio:
             dados.historico.historicoSorteio[dados.mesSorteio] = []
         dados = sortear_dadosensaio(dados, 'listaEnsaioJardimCopa1')
@@ -236,7 +236,7 @@ def sort_jdcopacabana(request):
 def sort_jdcopacabana2(request):
     dados = DadosDict(username=auth.get_user(request).username)
     _, dados = dados.load()
-    if len(dados.ensaio.listaEnsaioJardimCopa2.lista) > 0:
+    if len(dados.ensaio.listaEnsaioJardimCopa2.lista) > 0 and not dados.ensaio.habilitarListaJardimCopa2:
         if dados.mesSorteio not in dados.historico.historicoSorteio:
             dados.historico.historicoSorteio[dados.mesSorteio] = []
         
@@ -253,7 +253,7 @@ def sort_jdcopacabana2(request):
 def sort_novadivineia(request):
     dados = DadosDict(username=auth.get_user(request).username)
     _, dados = dados.load()
-    if len(dados.ensaio.listaEnsaioNovaDivineia1.lista) > 0:
+    if len(dados.ensaio.listaEnsaioNovaDivineia1.lista) > 0 and not dados.ensaio.habilitarListaNovaDivineia1:
         if dados.mesSorteio not in dados.historico.historicoSorteio:
             dados.historico.historicoSorteio[dados.mesSorteio] = []
         
@@ -270,7 +270,7 @@ def sort_novadivineia(request):
 def sort_novadivineia2(request):
     dados = DadosDict(username=auth.get_user(request).username)
     _, dados = dados.load()
-    if len(dados.ensaio.listaEnsaioNovaDivineia2.lista) > 0:
+    if len(dados.ensaio.listaEnsaioNovaDivineia2.lista) > 0 and not dados.ensaio.habilitarListaNovaDivineia2:
         if dados.mesSorteio not in dados.historico.historicoSorteio:
             dados.historico.historicoSorteio[dados.mesSorteio] = []
         
@@ -287,7 +287,7 @@ def sort_novadivineia2(request):
 def sort_piedade(request):
     dados = DadosDict(username=auth.get_user(request).username)
     _, dados = dados.load()
-    if len(dados.ensaio.listaEnsaioPiedade.lista) > 0:
+    if len(dados.ensaio.listaEnsaioPiedade.lista) > 0 and not dados.ensaio.habilitarListaPiedade:
         if dados.mesSorteio not in dados.historico.historicoSorteio:
             dados.historico.historicoSorteio[dados.mesSorteio] = []
         
@@ -304,7 +304,7 @@ def sort_piedade(request):
 def sort_veneza4(request):
     dados = DadosDict(username=auth.get_user(request).username)
     _, dados = dados.load()
-    if len(dados.ensaio.listaEnsaioVeneza4.lista) > 0:
+    if len(dados.ensaio.listaEnsaioVeneza4.lista) > 0 and not dados.ensaio.habilitarListaVeneza4:
         if dados.mesSorteio not in dados.historico.historicoSorteio:
             dados.historico.historicoSorteio[dados.mesSorteio] = []
         
@@ -536,7 +536,8 @@ def remover_pessoa_evento_filho_pai_lista(dados: DadosDict):
     
     if cartao in dados.evento.listaDinamicaMaePai.filtro:
         for pessoa in filtro:
-            dados.evento.listaDinamicaMaePai.lista.remove(pessoa)
+            if pessoa in dados.evento.listaDinamicaMaePai.lista: 
+                dados.evento.listaDinamicaMaePai.lista.remove(pessoa)
         dados.evento.listaDinamicaMaePai.filtro.pop(cartao)
         
     for pessoa in filtro:

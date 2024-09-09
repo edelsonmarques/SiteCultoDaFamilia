@@ -1,3 +1,6 @@
+TODO: Ajustar recarregar mês atual quando não modificar nada
+
+
 TODO: Verificar se há necessidade de criar telas para criar usuario novo e realizar login, pois necessita de login para rodar o sistema de sorteio.
 TODO: Tratar erros com retorno de mensagens
 

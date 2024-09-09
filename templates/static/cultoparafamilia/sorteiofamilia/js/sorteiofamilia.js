@@ -11,7 +11,7 @@ function iniciarAnimacao(lista) {
     var divCartao = document.getElementById('congregacao');
     var divLoading = document.getElementById('loading');
     var frames = ['Sorteando.', 'Sorteando..', 'Sorteando...'];
-    var framesNulo = ['Sem pessoa, voltando.', 'Sem pessoa, voltando.', 'Sem pessoa, voltando.'];
+    var framesNulo = ['Sem cartões, voltando.', 'Sem cartões, voltando.', 'Sem cartões, voltando.'];
     var i = 0;
     divTitulo.style.opacity = 0.3
     divCartao.style.opacity = 0.3
