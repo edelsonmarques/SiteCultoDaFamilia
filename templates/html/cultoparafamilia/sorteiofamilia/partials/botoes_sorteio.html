@@ -8,17 +8,17 @@
                 {% if not dados.ensaio.habilitarListaAlameda %}
                     <input name="alameda" type="submit" value="Alameda" onclick="girar({{dados.ensaio.listaEnsaioAlameda.lista}})" hx-post="{% url 'sort_alameda' %}" hx-trigger="click" hx-target="#nomes_view">
                 {% else %}
-                    <input class="btn-disable" name="" type="submit" value="Alameda">
+                    <input class="btn-disable" name="" type="submit" value="Alameda" onclick="girar([])" hx-post="{% url 'sort_alameda' %}" hx-trigger="click" hx-target="#nomes_view">
                 {% endif %}
                 {% if not dados.ensaio.habilitarListaJardimCopa1 %}
                     <input name="jdcopacabana1" type="submit" value="Jd. Copacabana" onclick="girar({{dados.ensaio.listaEnsaioJardimCopa1.lista}})" hx-post="{% url 'sort_jdcopacabana' %}" hx-trigger="click" hx-target="#nomes_view">
                 {% else %}
-                    <input class="btn-disable" name="" type="submit" value="Jd. Copacabana">
+                    <input class="btn-disable" name="" type="submit" value="Jd. Copacabana" onclick="girar([])" hx-post="{% url 'sort_jdcopacabana' %}" hx-trigger="click" hx-target="#nomes_view">
                 {% endif %}
                 {% if not dados.ensaio.habilitarListaJardimCopa2 %}
                     <input name="jdcopacabana2" type="submit" value="Jd. Copacabana 2" onclick="girar({{dados.ensaio.listaEnsaioJardimCopa2.lista}})" hx-post="{% url 'sort_jdcopacabana2' %}" hx-trigger="click" hx-target="#nomes_view">
                 {% else %}
-                    <input class="btn-disable" name="" type="submit" value="Jd. Copacabana 2">
+                    <input class="btn-disable" name="" type="submit" value="Jd. Copacabana 2" onclick="girar([])" hx-post="{% url 'sort_jdcopacabana2' %}" hx-trigger="click" hx-target="#nomes_view">
                 {% endif %}
             {% endif %}
         </div>
@@ -32,17 +32,17 @@
                 {% if not dados.ensaio.habilitarListaNovaDivineia1 %}
                     <input name="novadivineia" type="submit" value="Nova Divinéia" onclick="girar({{dados.ensaio.listaEnsaioNovaDivineia1.lista}})" hx-post="{% url 'sort_novadivineia' %}" hx-trigger="click" hx-target="#nomes_view">
                 {% else %}
-                    <input class="btn-disable" name="" type="submit" value="Nova Divinéia">
+                    <input class="btn-disable" name="" type="submit" value="Nova Divinéia" onclick="girar([])" hx-post="{% url 'sort_novadivineia' %}" hx-trigger="click" hx-target="#nomes_view">
                 {% endif %}
                 {% if not dados.ensaio.habilitarListaNovaDivineia2 %}
                     <input name="novadivineia2" type="submit" value="Nova Divinéia 2" onclick="girar({{dados.ensaio.listaEnsaioNovaDivineia2.lista}})" hx-post="{% url 'sort_novadivineia2' %}" hx-trigger="click" hx-target="#nomes_view">
                 {% else %}
-                    <input class="btn-disable" name="" type="submit" value="Nova Divinéia 2">
+                    <input class="btn-disable" name="" type="submit" value="Nova Divinéia 2" onclick="girar([])" hx-post="{% url 'sort_novadivineia2' %}" hx-trigger="click" hx-target="#nomes_view">
                 {% endif %}
                 {% if not dados.ensaio.habilitarListaPiedade %}
                     <input name="piedade" type="submit" value="Piedade" onclick="girar({{dados.ensaio.listaEnsaioPiedade.lista}})" hx-post="{% url 'sort_piedade' %}" hx-trigger="click" hx-target="#nomes_view">
                 {% else %}
-                    <input class="btn-disable" name="" type="submit" value="Piedade">
+                    <input class="btn-disable" name="" type="submit" value="Piedade" onclick="girar([])" hx-post="{% url 'sort_piedade' %}" hx-trigger="click" hx-target="#nomes_view">
                 {% endif %}
             {% endif %}
         </div>
@@ -51,9 +51,9 @@
                 {% if not dados.ensaio.habilitarListaVeneza4 %}
                     <input name="veneza4" type="submit" value="Veneza 4" onclick="girar({{dados.ensaio.listaEnsaioVeneza4.lista}})" hx-post="{% url 'sort_veneza4' %}" hx-trigger="click" hx-target="#nomes_view">
                 {% else %}
-                    <input class="btn-disable" name="" type="submit" value="Veneza 4">
+                    <input class="btn-disable" name="" type="submit" value="Veneza 4" onclick="girar([])" hx-post="{% url 'sort_veneza4' %}" hx-trigger="click" hx-target="#nomes_view">
                 {% endif %}
-                <input name="ensaio" type="submit" value="Ensaio" onclick="girar({{dados.ensaio.listaEnsaio}})" hx-post="{% url 'sort_ensaio' %}" hx-trigger="click" hx-target="#nomes_view">
+                <input name="ensaio" type="submit" value="Ensaio" onclick="girar({{dados.ensaio.listaEnsaio.lista}})" hx-post="{% url 'sort_ensaio' %}" hx-trigger="click" hx-target="#nomes_view">
             {% endif %}
             {% if not dados.habilitarEnsaio and dados.geral.listaDinamica|length >= 0 %}
                 {% if dados.habilitarEvento and dados.evento.selecaoEventoEspecial|length != 0 and dados.evento.selecaoEventoEspecial|selecao:'NOTEVENTOSEMINARIO' %}
